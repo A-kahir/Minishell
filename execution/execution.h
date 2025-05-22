@@ -31,10 +31,10 @@ typedef enum s_type_node
 
 typedef enum s_type_redir
 {
-	TRUNCATE,  // >
-	APPEND,    // >>
-	READ_F,    // <
-	HEREDOC    // <<
+	TRUNCATE,  // > Redirects standard output to a file, overwriting the file if it exists.
+	APPEND,    // >> Redirects standard output to a file, appending to the file if it exists.
+	READ_F,    // < Redirects a file as standard input to a command.
+	HEREDOC    // << Tells the shell to read input until a specific delimiter is reached.
 }	t_type_redir;
 
 typedef struct s_redir
@@ -69,10 +69,24 @@ typedef struct s_data
 // prin funcl
 void ft_exec(t_data *data, char **env);
 
-
+// func execution :
+void ft_handle_heredoc(char *delimiter);
+char	**ft_get_path(char *cmd, char **env);
+int open_infile(char *infile);
+int open_outfiles(char *outfile, int append);
 
 // utils execution : 
 void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(char **cmd);
+void	free_split(char **split);
+
+// Libft func :
+char	*ft_strjoin(char *s1, char *s2);
+char	**ft_split(const char *s, char c);
+char	*ft_strchr(const char *s, int c);
+int	ft_strcmp(char *s1, char *s2);
+int ft_strlen(char *str);
+char	*ft_strdup(char *s1);
+int	ft_strncmp(char *s1, char *s2, size_t n);
 
 #endif
