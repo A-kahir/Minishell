@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:58 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/22 16:30:20 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/24 16:12:58 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,10 @@ int ft_is_numeric(char *str)
 void ft_exit(char **str)
 {
     int i;
-    long exit_code; // i want to test if i change them to unsigned long;
+    unsigned long exit_code;
 
     i = 0;
     exit_code = 0;
-    if (!str[i] || ft_strcmp(str[i], "exit") != 0)
-        return;
     printf("exit\n");
     if (str[i + 1] && str[i + 2])
     {

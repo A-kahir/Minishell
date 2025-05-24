@@ -60,6 +60,41 @@ int is_empty(char *s)
 	}
 	return 1;
 }
+t_type_redir get_redir_type(char *s)
+{
+	if (strcmp(s, ">") == 0)
+		return TRUNCATE;
+	else if (strcmp(s, ">>") == 0)
+		return APPEND;
+	else if (strcmp(s, "<") == 0)
+		return READ_F;
+	else if (strcmp(s, "<<") == 0)
+		return HEREDOC;
+	return NOT_REDIR;
+}
+
+t_redir *add_redir(t_redir *head, t_type_redir type, char *target)
+{
+	t_redir *new = malloc(sizeof(t_redir));
+	if (!new) return head;
+	new->type = type;
+	new->target = strdup(target);
+	new->next = NULL;
+	if (!head)
+		return new;
+	t_redir *tmp = head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
+	return head;
+}
+
+int cmd_array_len(char **cmd) {
+    int i = 0;
+    while (cmd && cmd[i])
+        i++;
+    return i;
+}
 
 t_data *create_cmd_node(char *cmd_str)
 {
@@ -76,12 +111,41 @@ t_data *create_cmd_node(char *cmd_str)
 	node->left = NULL;
 	node->right = NULL;
 
-	node->cmd = split_by_space(cmd_str);
+	char **tokens = split_by_space(cmd_str);
+	int i = 0;
+	char **cmd_parts = malloc(sizeof(char *) * (cmd_array_len(tokens) + 1));
+	int j = 0;
+
+	while (tokens[i])
+	{
+		t_type_redir redir_type = NOT_REDIR;
+
+		if ((redir_type = get_redir_type(tokens[i])) != NOT_REDIR)
+		{
+			if (tokens[i + 1])
+			{
+				node->redir = add_redir(node->redir, redir_type, tokens[i + 1]);
+				i += 2;
+				continue;
+			}
+			else
+				break; // Invalid syntax, skip
+		}
+		cmd_parts[j++] = strdup(tokens[i++]);
+	}
+	cmd_parts[j] = NULL;
+
+	for (int k = 0; tokens[k]; k++)
+		free(tokens[k]);
+	free(tokens);
+
+	node->cmd = cmd_parts;
 	if (node->cmd && node->cmd[0])
 		node->builtin_type = check_builtin(node->cmd[0]);
 
 	return node;
 }
+
 
 int count_pipes(char *input)
 {
@@ -114,13 +178,6 @@ char **split_by_pipe(char *input, int *count)
 	}
 	free(input_dup);
 	return tokens;
-}
-
-int cmd_array_len(char **cmd) {
-    int i = 0;
-    while (cmd && cmd[i])
-        i++;
-    return i;
 }
 
 // Helper to merge two cmd arrays into a new one
@@ -221,13 +278,7 @@ int main(int argc, char **argv, char **env)
             free(input);
             continue;
         }
-        if (strcmp(input, "exit") == 0)
-        {
-            free(input);
-            break;
-        }
         add_history(input);
-
         int pipe_count = 0;
         char **pipe_tokens = split_by_pipe(input, &pipe_count);
         if (!pipe_tokens)

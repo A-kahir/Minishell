@@ -42,9 +42,6 @@ static void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char *
 	if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
 		(perror("dup2 output failed"), exit(1));
 	ft_close_pipes(pipes, n_cmds);
-	ft_check_inf_outf(curr);
-	if (curr->redir && curr->redir->type == 3)
-		ft_handle_heredoc(curr->redir->target);
 	cmd_args = ft_get_path(curr->cmd[i], env);
 	if (cmd_args && execve(cmd_args[0], cmd_args, env) == -1)
 		(perror("execve failed"), exit(1));
@@ -84,7 +81,14 @@ void ft_exec(t_data *data, char **env)
 	}
 	else if (data->type == 1)
 	{
-		printf("************** HAVE A CMD *************\n");
-		printf("data=> %s\n", data->cmd[0]);
+		if (data->builtin_type != -1)
+		{
+			if (data->builtin_type != 0 && data->redir->type == -1)
+				ft_is_builtins(data, env);
+		}
+		if (data->redir->type != -1)
+		{
+			ft_is_redir(data, env);
+		}
 	}
 }

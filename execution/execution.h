@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/22 20:45:44 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/24 17:14:19 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef enum s_type_node
 
 typedef enum s_type_redir
 {
+	NOT_REDIR = -1,
 	TRUNCATE,  // > Redirects standard output to a file, overwriting the file if it exists.
 	APPEND,    // >> Redirects standard output to a file, appending to the file if it exists.
 	READ_F,    // < Redirects a file as standard input to a command.
@@ -69,6 +70,22 @@ typedef struct s_data
 // prin funcl
 void ft_exec(t_data *data, char **env);
 
+
+// builtins func :
+void ft_is_builtins(t_data *data, char **env);
+void ft_echo(char **str);
+void ft_cd(char **str);
+void ft_pwd(char **str);
+//export
+void	ft_unset(char **args, char ***env);
+void	ft_env(char **str, char **env);
+void ft_exit(char **str);
+
+
+// redirections func :
+void ft_is_redir(t_data *data, char **env);
+void ft_trancate(t_data *data, char **env);
+
 // func execution :
 void ft_handle_heredoc(char *delimiter);
 char	**ft_get_path(char *cmd, char **env);
@@ -88,5 +105,6 @@ int	ft_strcmp(char *s1, char *s2);
 int ft_strlen(char *str);
 char	*ft_strdup(char *s1);
 int	ft_strncmp(char *s1, char *s2, size_t n);
+int	ft_atoi(const char *str);
 
 #endif
