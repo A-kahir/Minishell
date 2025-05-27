@@ -57,6 +57,8 @@ void ft_exec(t_data *data, char **env)
 	{
 		int nb_cmd = ft_count_cmds(data->cmd);
 		pipes = malloc(sizeof(int[2]) * (nb_cmd - 1));
+		if (!pipes)
+			return ;
 		i = 0;
 		while (i < nb_cmd - 1)
 			if (pipe(pipes[i++]) == -1)
@@ -81,11 +83,11 @@ void ft_exec(t_data *data, char **env)
 	}
 	else if (data->type == 1)
 	{
-		if (data->builtin_type != -1)
-		{
-			if (data->builtin_type != 0 && data->redir->type == -1)
-				ft_is_builtins(data, env);
-		}
+		// if (data->builtin_type != -1)
+		// {
+		// 	//need if statement for test : echo hello > bnj
+		// 	ft_is_builtins(data, env);
+		// }
 		if (data->redir->type != -1)
 		{
 			ft_is_redir(data, env);
