@@ -24,7 +24,7 @@ static void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char *
 	cmd_args = ft_get_path(curr->cmd[0], env);
 	printf("cmd_args=> %s\n", cmd_args[0]);
 	printf("cmd_args=> %s\n", cmd_args[1]);
-	if (cmd_args && execve(cmd_args[0], cmd_args, env) == -1)
+	if (execve(cmd_args[0], curr->cmd, env))
 		(perror("execve failed"), exit(1));
 	else if (!cmd_args)
 	{
@@ -64,8 +64,6 @@ void ft_exec(t_data *data, char **env)
 	}
 	else if (data->type == 1)
 	{
-		printf ("we have in cmd[0] ===> %s\n", data->cmd[0]);
-		printf ("we have in cmd[1] ===> %s\n", data->cmd[1]);
 		char *command = ft_check_built_redir(data, 0);
 		if (command == NULL)
 		{
