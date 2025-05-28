@@ -1,312 +1,373 @@
 #include "execution.h"
 
-
+// Function to check if a string is a builtin command
 t_type_buil check_builtin(char *cmd)
 {
-	if (strcmp(cmd, "echo") == 0) return IS_ECHO;
-	if (strcmp(cmd, "cd") == 0) return IS_CD;
-	if (strcmp(cmd, "pwd") == 0) return IS_PWD;
-	if (strcmp(cmd, "export") == 0) return IS_EXPORT;
-	if (strcmp(cmd, "unset") == 0) return IS_UNSET;
-	if (strcmp(cmd, "env") == 0) return IS_ENV;
-	if (strcmp(cmd, "exit") == 0) return IS_EXIT;
-	return NOT_BUILTIN;
+	if (!cmd || !*cmd)
+		return (NOT_BUILTIN);
+	if (strcmp(cmd, "echo") == 0)
+		return (IS_ECHO);
+	if (strcmp(cmd, "cd") == 0)
+		return (IS_CD);
+	if (strcmp(cmd, "pwd") == 0)
+		return (IS_PWD);
+	if (strcmp(cmd, "export") == 0)
+		return (IS_EXPORT);
+	if (strcmp(cmd, "unset") == 0)
+		return (IS_UNSET);
+	if (strcmp(cmd, "env") == 0)
+		return (IS_ENV);
+	if (strcmp(cmd, "exit") == 0)
+		return (IS_EXIT);
+	return (NOT_BUILTIN);
 }
 
-char **split_by_space(char *str)
+// Function to check if a token is a redirection operator
+t_type_redir check_redirection(char *token)
 {
-	char **result = NULL;
+	if (!token || !*token)
+		return (NOT_REDIR);
+	if (strcmp(token, ">") == 0)
+		return (TRUNCATE);
+	if (strcmp(token, ">>") == 0)
+		return (APPEND);
+	if (strcmp(token, "<") == 0)
+		return (READ_F);
+	if (strcmp(token, "<<") == 0)
+		return (HEREDOC);
+	return (NOT_REDIR);
+}
+
+// Function to create a new redirection node
+t_redir *create_redir_node(t_type_redir type, char *target)
+{
+	t_redir *new_redir;
+
+	if (!target)
+		return (NULL);
+	new_redir = malloc(sizeof(t_redir));
+	if (!new_redir)
+		return (NULL);
+	new_redir->type = type;
+	new_redir->target = strdup(target);
+	if (!new_redir->target)
+	{
+		free(new_redir);
+		return (NULL);
+	}
+	new_redir->next = NULL;
+	return (new_redir);
+}
+
+// Function to add a redirection to the list
+void add_redir_to_list(t_redir **redir_list, t_redir *new_redir)
+{
+	t_redir *current;
+
+	if (!*redir_list)
+	{
+		*redir_list = new_redir;
+		return;
+	}
+	current = *redir_list;
+	while (current->next)
+		current = current->next;
+	current->next = new_redir;
+}
+
+// Function to create a new data node
+t_data *create_data_node(void)
+{
+	t_data *new_data = malloc(sizeof(t_data));
+	if (!new_data)
+		return (NULL);
+	new_data->type = CMD_NODE;
+	new_data->redir = NULL;
+	new_data->builtin_type = NOT_BUILTIN;
+	new_data->cmd = NULL;
+	new_data->next = NULL;
+	return (new_data);
+}
+
+// Function to tokenize input string
+char **tokenize_input(char *input)
+{
+	char **tokens;
 	char *token;
-	int i = 0;
-
-	// First pass: count words
-	char *tmp = strdup(str);
-	char *save = tmp;
+	char *input_copy;
 	int count = 0;
-	token = strtok(tmp, " \t");
-	while (token)
+	int capacity = 64;
+
+	if (!input)
+		return (NULL);
+	input_copy = strdup(input);
+	if (!input_copy)
+		return (NULL);
+	tokens = malloc(sizeof(char*) * capacity);
+	if (!tokens)
 	{
+		free(input_copy);
+		return (NULL);
+	}
+
+	token = strtok(input_copy, " \t\n");
+	while (token != NULL)
+	{
+		if (count >= capacity - 1)
+		{
+			capacity *= 2;
+			tokens = realloc(tokens, sizeof(char*) * capacity);
+			if (!tokens)
+			{
+				free(input_copy);
+				return (NULL);
+			}
+		}
+		tokens[count] = strdup(token);
+		if (!tokens[count])
+		{
+			free(input_copy);
+			return (NULL);
+		}
 		count++;
-		token = strtok(NULL, " \t");
+		token = strtok(NULL, " \t\n");
 	}
-	free(save);
+	tokens[count] = NULL;
+	free(input_copy);
+	return (tokens);
+}
 
-	// Allocate array
-	result = malloc(sizeof(char *) * (count + 1));
-	if (!result)
-		return NULL;
+// Function to count command arguments (excluding redirections)
+int count_cmd_args(char **tokens, int start, int end)
+{
+	int count = 0;
+	int i = start;
 
-	// Second pass: fill array
-	tmp = strdup(str);
-	save = tmp;
-	token = strtok(tmp, " \t");
-	while (token)
+	while (i < end)
 	{
-		result[i++] = strdup(token);
-		token = strtok(NULL, " \t");
+		if (check_redirection(tokens[i]) != NOT_REDIR)
+		{
+			i += 2; // skip redirection operator and target
+			continue;
+		}
+		count++;
+		i++;
 	}
-	result[i] = NULL;
-	free(save);
-	return result;
+	return (count);
 }
 
-int is_empty(char *s)
+// Function to extract command arguments
+char **extract_cmd_args(char **tokens, int start, int end)
 {
-	while (*s)
-	{
-		if (*s != ' ' && *s != '\t')
-			return 0;
-		s++;
-	}
-	return 1;
-}
-t_type_redir get_redir_type(char *s)
-{
-	if (strcmp(s, ">") == 0)
-		return TRUNCATE;
-	else if (strcmp(s, ">>") == 0)
-		return APPEND;
-	else if (strcmp(s, "<") == 0)
-		return READ_F;
-	else if (strcmp(s, "<<") == 0)
-		return HEREDOC;
-	return NOT_REDIR;
-}
-
-t_redir *add_redir(t_redir *head, t_type_redir type, char *target)
-{
-	t_redir *new = malloc(sizeof(t_redir));
-	if (!new) return head;
-	new->type = type;
-	new->target = strdup(target);
-	new->next = NULL;
-	if (!head)
-		return new;
-	t_redir *tmp = head;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-	return head;
-}
-
-int cmd_array_len(char **cmd) {
-    int i = 0;
-    while (cmd && cmd[i])
-        i++;
-    return i;
-}
-
-t_data *create_cmd_node(char *cmd_str)
-{
-	if (!cmd_str || is_empty(cmd_str))
-		return NULL;
-
-	t_data *node = malloc(sizeof(t_data));
-	if (!node)
-		return NULL;
-
-	node->type = CMD_NODE;
-	node->redir = NULL;
-	node->builtin_type = NOT_BUILTIN;
-	node->left = NULL;
-	node->right = NULL;
-
-	char **tokens = split_by_space(cmd_str);
-	int i = 0;
-	char **cmd_parts = malloc(sizeof(char *) * (cmd_array_len(tokens) + 1));
+	int count = count_cmd_args(tokens, start, end);
+	char **cmd_args;
+	int i = start;
 	int j = 0;
 
-	while (tokens[i])
-	{
-		t_type_redir redir_type = NOT_REDIR;
+	if (count == 0)
+		return (NULL);
 
-		if ((redir_type = get_redir_type(tokens[i])) != NOT_REDIR)
+	cmd_args = malloc(sizeof(char*) * (count + 1));
+	if (!cmd_args)
+		return (NULL);
+
+	while (i < end)
+	{
+		if (check_redirection(tokens[i]) != NOT_REDIR)
 		{
-			if (tokens[i + 1])
+			i += 2;
+			continue;
+		}
+		cmd_args[j] = strdup(tokens[i]);
+		if (!cmd_args[j])
+		{
+			while (--j >= 0)
+				free(cmd_args[j]);
+			free(cmd_args);
+			return (NULL);
+		}
+		j++;
+		i++;
+	}
+	cmd_args[j] = NULL;
+	return (cmd_args);
+}
+
+// Function to extract redirections from tokens
+t_redir *extract_redirections(char **tokens, int start, int end)
+{
+	t_redir *redir_list = NULL;
+	t_type_redir redir_type;
+	int i = start;
+
+	while (i < end)
+	{
+		redir_type = check_redirection(tokens[i]);
+		if (redir_type != NOT_REDIR)
+		{
+			if (i + 1 < end) // make sure we have a target
 			{
-				node->redir = add_redir(node->redir, redir_type, tokens[i + 1]);
-				i += 2;
-				continue;
+				t_redir *new_redir = create_redir_node(redir_type, tokens[i + 1]);
+				if (new_redir)
+					add_redir_to_list(&redir_list, new_redir);
+			}
+			i += 2; // skip redirection operator and target
+		}
+		else
+			i++;
+	}
+	return (redir_list);
+}
+
+// Function to parse input and create data structure
+t_data *parse_input(char *input)
+{
+	char **tokens;
+	t_data *head = NULL;
+	t_data *current = NULL;
+	int token_count = 0;
+	int i = 0;
+	int start = 0;
+	int has_pipe = 0;
+
+	if (!input || strlen(input) == 0)
+		return (NULL);
+
+	// Tokenize input
+	tokens = tokenize_input(input);
+	if (!tokens)
+		return (NULL);
+
+	// Count tokens and check for pipes
+	while (tokens[token_count])
+	{
+		if (strcmp(tokens[token_count], "|") == 0)
+			has_pipe = 1;
+		token_count++;
+	}
+
+	// Parse tokens
+	i = 0;
+	start = 0;
+	while (i <= token_count)
+	{
+		if (i == token_count || strcmp(tokens[i], "|") == 0)
+		{
+			// Create new data node
+			t_data *new_data = create_data_node();
+			if (!new_data)
+				break;
+
+			// Set node type
+			if (has_pipe)
+				new_data->type = PIPE_NODE;
+			else
+				new_data->type = CMD_NODE;
+
+			// Extract command arguments
+			new_data->cmd = extract_cmd_args(tokens, start, i);
+
+			// Check for builtin
+			if (new_data->cmd && new_data->cmd[0])
+				new_data->builtin_type = check_builtin(new_data->cmd[0]);
+			else
+				new_data->builtin_type = NOT_BUILTIN;
+
+			// Extract redirections
+			new_data->redir = extract_redirections(tokens, start, i);
+
+			// Add to list
+			if (!head)
+			{
+				head = new_data;
+				current = head;
 			}
 			else
-				break; // Invalid syntax, skip
-		}
-		cmd_parts[j++] = strdup(tokens[i++]);
-	}
-	cmd_parts[j] = NULL;
+			{
+				current->next = new_data;
+				current = new_data;
+			}
 
-	for (int k = 0; tokens[k]; k++)
-		free(tokens[k]);
+			start = i + 1;
+		}
+		i++;
+	}
+	i = 0;
+	while (tokens[i])
+	{
+		free(tokens[i]);
+		i++;
+	}
 	free(tokens);
 
-	node->cmd = cmd_parts;
-	if (node->cmd && node->cmd[0])
-		node->builtin_type = check_builtin(node->cmd[0]);
-
-	return node;
+	return (head);
 }
 
-
-int count_pipes(char *input)
+// Function to free the data structure
+void free_data_structure(t_data *data)
 {
-	int count = 0;
-	for (int i = 0; input[i]; i++)
-		if (input[i] == '|')
-			count++;
-	return count;
-}
+	t_data *current = data;
+	t_data *next;
 
-char **split_by_pipe(char *input, int *count)
-{
-	int pipes = count_pipes(input);
-	*count = pipes + 1;
-
-	char **tokens = malloc(sizeof(char *) * (*count));
-	char *input_dup = strdup(input);
-	char *saveptr = NULL;
-
-	char *token = strtok_r(input_dup, "|", &saveptr);
-	int i = 0;
-	while (token && i < *count)
+	while (current)
 	{
-		while (*token == ' ' || *token == '\t') token++;
-		int len = strlen(token);
-		while (len > 0 && (token[len-1] == ' ' || token[len-1] == '\t')) token[--len] = '\0';
+		next = current->next;
 
-		tokens[i++] = strdup(token);
-		token = strtok_r(NULL, "|", &saveptr);
-	}
-	free(input_dup);
-	return tokens;
-}
-
-// Helper to merge two cmd arrays into a new one
-char **merge_cmd_arrays(char **a, char **b) {
-    int len_a = cmd_array_len(a);
-    int len_b = cmd_array_len(b);
-    char **merged = malloc(sizeof(char *) * (len_a + len_b + 1));
-    if (!merged) return NULL;
-
-    for (int i = 0; i < len_a; i++)
-        merged[i] = strdup(a[i]);
-    for (int j = 0; j < len_b; j++)
-        merged[len_a + j] = strdup(b[j]);
-
-    merged[len_a + len_b] = NULL;
-    return merged;
-}
-
-t_data *build_tree_from_pipes(char **tokens, int start, int end) {
-    if (start > end)
-        return NULL;
-
-    t_data *left = create_cmd_node(tokens[start]);
-    if (!left) return NULL;
-
-    for (int i = start + 1; i <= end; i++) {
-        t_data *pipe_node = malloc(sizeof(t_data));
-        if (!pipe_node)
-            return NULL;
-        pipe_node->type = PIPE_NODE;
-        pipe_node->redir = NULL;
-        pipe_node->builtin_type = NOT_BUILTIN;
-        pipe_node->left = left;
-
-        t_data *right_cmd = create_cmd_node(tokens[i]);
-        pipe_node->right = right_cmd;
-
-        // Merge cmd arrays from left node and right command node
-        pipe_node->cmd = merge_cmd_arrays(left->cmd, right_cmd->cmd);
-
-        // free left->cmd and right_cmd->cmd because merged cmd is duplicated strings
-        for (int k = 0; left->cmd && left->cmd[k]; k++)
-            free(left->cmd[k]);
-        free(left->cmd);
-        left->cmd = NULL;
-
-        for (int k = 0; right_cmd->cmd && right_cmd->cmd[k]; k++)
-            free(right_cmd->cmd[k]);
-        free(right_cmd->cmd);
-        right_cmd->cmd = NULL;
-
-        left = pipe_node;
-    }
-    return left;
-}
-
-void free_tree(t_data *root)
-{
-	if (!root)
-		return;
-
-	if (root->cmd)
-	{
-		for (int i = 0; root->cmd[i]; i++)
-			free(root->cmd[i]);
-		free(root->cmd);
-	}
-	if (root->redir)
-	{
-		t_redir *r = root->redir;
-		while (r)
+		// Free command array
+		if (current->cmd)
 		{
-			t_redir *tmp = r;
-			free(r->target);
-			r = r->next;
-			free(tmp);
+			int i = 0;
+			while (current->cmd[i])
+			{
+				free(current->cmd[i]);
+				i++;
+			}
+			free(current->cmd);
 		}
-	}
-	free_tree(root->left);
-	free_tree(root->right);
-	free(root);
-}
 
-// ------------ Main Function ------------
+		// Free redirections
+		t_redir *redir = current->redir;
+		t_redir *next_redir;
+		while (redir)
+		{
+			next_redir = redir->next;
+			free(redir->target);
+			free(redir);
+			redir = next_redir;
+		}
+
+		free(current);
+		current = next;
+	}
+}
 
 int main(int argc, char **argv, char **env)
 {
-    (void)argc;
-    (void)argv;
+	char *input;
+	t_data *parsed_data;
 
-    while (1)
-    {
-        char *input = readline("Minishell-3.2$~ ");
-        if (!input)
-            break;
-        if (strlen(input) == 0)
-        {
-            free(input);
-            continue;
-        }
-        add_history(input);
-        int pipe_count = 0;
-        char **pipe_tokens = split_by_pipe(input, &pipe_count);
-        if (!pipe_tokens)
-        {
-            free(input);
-            continue;
-        }
 
-        // Build the tree properly from pipe tokens
-        t_data *root = build_tree_from_pipes(pipe_tokens, 0, pipe_count - 1);
-        if (!root)
-        {
-            for (int i = 0; i < pipe_count; i++)
-                free(pipe_tokens[i]);
-            free(pipe_tokens);
-            free(input);
-            continue;
-        }
 
-        ft_exec(root, env);
+	while (1)
+	{
+		input = readline("minishell-3.2$~ ");
+		if (!input)
+			break;
+		if (strlen(input) > 0)
+			add_history(input);
+		if (strlen(input) == 0)
+		{
+			free(input);
+			continue;
+		}
+		parsed_data = parse_input(input);
 
-        for (int i = 0; i < pipe_count; i++)
-            free(pipe_tokens[i]);
-        free(pipe_tokens);
-
-        free_tree(root);
-        free(input);
-    }
-    return 0;
+		if (parsed_data)
+		{
+			ft_exec(parsed_data, env);
+			free_data_structure(parsed_data);
+		}
+		free(input);
+	}
+	return (0);
 }
-

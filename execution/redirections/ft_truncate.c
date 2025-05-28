@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/24 18:24:32 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/27 14:08:36 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,15 @@ void ft_trancate(t_data *data, char **env)
     int i;
     int j;
 
-    printf("data->cmd[0] => %s\n", data->cmd[0]);
-    printf("data->cmd[1] => %s\n", data->cmd[1]);
-    printf("type => %d\n", data->redir->type);
-    printf("taget======>%s\n", data->redir->target);
+    printf("***********IS TRUNCATE******\n");
+    printf("type=> %d\n", data->redir->type);
+    printf("taget=> %s\n", data->redir->target);
+    int k = 0;
+    while (k <= 3)
+    {
+        printf("cmd[%d]=> %s\n", k, data->cmd[k]);
+        k++;
+    }
     if (ft_strcmp(data->cmd[0], "echo") == 0 && ft_strcmp(data->cmd[1], ">") != 0)
     {
         fd = ft_open_outfile(data);
@@ -66,9 +71,10 @@ void ft_trancate(t_data *data, char **env)
         //     fd = ft_open_outfile(data);
         //     return ;
         // }
-        cmds = ft_get_path(data->cmd[0], env);
+        // cmds = ft_get_path(data->cmd[0], env);
         if (cmds[0] != NULL)
         {
+            printf("dkhelllt\n");
             printf("we have a cmd=> %s\n", cmds[0]);
             if (cmds[0] && execve(cmds[0], cmds, env) == -1)
                 perror("execve");

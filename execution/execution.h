@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/24 17:14:19 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/28 13:18:56 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,8 @@ typedef struct s_data
 	t_type_node type; // if i have a pipe you need to give me type->PIPE_NODE else if he is a builtin or just a cmd = type->CMD_NOED
 	t_redir *redir;           // redirection list
 	t_type_buil builtin_type; // store the builtin directly (not in a substruct)
-	char **cmd;               // {"cd", "Documents", NULL}
-	struct s_data *left;
-	struct s_data *right;
+	char **cmd;               // {"cd", "cat", "-e",  "Documents", "builtins" NULL}
+	struct s_data *next;
 }	t_data;
 
 // prin funcl
@@ -94,8 +93,9 @@ int open_outfiles(char *outfile, int append);
 
 // utils execution : 
 void ft_close_pipes(int pipes[][2], int n_cmds);
-int ft_count_cmds(char **cmd);
+int ft_count_cmds(t_data *cmd);
 void	free_split(char **split);
+char *ft_check_built_redir(t_data *data, int flag);
 
 // Libft func :
 char	*ft_strjoin(char *s1, char *s2);

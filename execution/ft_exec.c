@@ -12,27 +12,6 @@
 
 #include "execution.h"
 
-static void ft_check_inf_outf(t_data *curr)
-{
-	int fd_inf;
-	int fd_outf;
-
-	if (curr->redir && (curr->redir->type == 0 || curr->redir->type == 3))
-	{
-		fd_inf = open_infile(curr->redir->target);
-		if (dup2(fd_inf, 0) == -1)
-			(perror("dup2 infile failed"), close(fd_inf), exit(1));
-		close(fd_inf);
-	}
-	if (curr->redir && (curr->redir->type == 1 || curr->redir->type == 2))
-	{
-		fd_outf = open_outfiles(curr->redir->target, curr->redir->type == 2);
-		if (dup2(fd_outf, 1) == -1)
-			(perror("dup2 outfile failed"), close(fd_outf), exit(1));
-		close(fd_outf);
-	}
-}
-
 static void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
 {
 	char	**cmd_args;
@@ -42,53 +21,74 @@ static void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char *
 	if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
 		(perror("dup2 output failed"), exit(1));
 	ft_close_pipes(pipes, n_cmds);
-	cmd_args = ft_get_path(curr->cmd[i], env);
+	cmd_args = ft_get_path(curr->cmd[0], env);
+	printf("cmd_args=> %s\n", cmd_args[0]);
+	printf("cmd_args=> %s\n", cmd_args[1]);
 	if (cmd_args && execve(cmd_args[0], cmd_args, env) == -1)
 		(perror("execve failed"), exit(1));
+	else if (!cmd_args)
+	{
+		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
+	}
 }
 
 void ft_exec(t_data *data, char **env)
 {
-	pid_t pid;
+	int		n_cmds;
+	int		i;
+	pid_t	pid;
 	int		(*pipes)[2];
-	int i;
 
+	i = 0;
+	n_cmds = ft_count_cmds(data);
+	pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+	while (i < n_cmds - 1)
+		if (pipe(pipes[i++]) == -1)
+			(perror("Pipe creation failed"), exit(1));
 	if (data->type == 0)
 	{
-		int nb_cmd = ft_count_cmds(data->cmd);
-		pipes = malloc(sizeof(int[2]) * (nb_cmd - 1));
-		if (!pipes)
-			return ;
 		i = 0;
-		while (i < nb_cmd - 1)
-			if (pipe(pipes[i++]) == -1)
-				(perror("Pipe creation failed"), exit(1));
-		i = 0;
-		while (i < nb_cmd)
+		while (i < n_cmds)
 		{
 			pid = fork();
 			if (pid == -1)
-				(ft_close_pipes(pipes, nb_cmd), perror("Fork failed"), exit(1));
+				(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
 			else if (pid == 0)
-				ft_child_pro(data, pipes, i, nb_cmd, env);
+				ft_child_pro(data, pipes, i, n_cmds, env);
+			data = data->next;
 			i++;
 		}
-		ft_close_pipes(pipes, nb_cmd);
-		i = 0;
-		while (i < nb_cmd)
-		{
-			wait(NULL);
-			i++;
-		}
+		ft_close_pipes(pipes, n_cmds);
+		while (wait(NULL) > 0);
+		free(pipes);
 	}
 	else if (data->type == 1)
 	{
-		// if (data->builtin_type != -1)
-		// {
-		// 	//need if statement for test : echo hello > bnj
-		// 	ft_is_builtins(data, env);
-		// }
-		if (data->redir->type != -1)
+		printf ("we have in cmd[0] ===> %s\n", data->cmd[0]);
+		printf ("we have in cmd[1] ===> %s\n", data->cmd[1]);
+		char *command = ft_check_built_redir(data, 0);
+		if (command == NULL)
+		{
+			i = 0;
+			while (i < n_cmds)
+			{
+				pid = fork();
+				if (pid == -1)
+					(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+				else if (pid == 0)
+					ft_child_pro(data, pipes, i, n_cmds, env);
+				data = data->next;
+				i++;
+			}
+			ft_close_pipes(pipes, n_cmds);
+			while (wait(NULL) > 0);
+			free(pipes);
+		}
+		else if (data->builtin_type != -1)
+		{
+			ft_is_builtins(data, env);
+		}
+		else if (data->redir->type != -1)
 		{
 			ft_is_redir(data, env);
 		}

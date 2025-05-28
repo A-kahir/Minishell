@@ -6,20 +6,21 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 20:31:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/22 20:31:59 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/28 12:54:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-int ft_count_cmds(char **cmd)
+int ft_count_cmds(t_data *cmd)
 {
-    int i;
+    int count;
 
-    i = 0;
-    while (cmd[i] != NULL)
+    count = 0;
+    while (cmd)
     {
-        i++;
+        count++;
+        cmd = cmd->next;
     }
-    return (i);
+    return (count);
 }
