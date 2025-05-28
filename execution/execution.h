@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/28 13:18:56 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/28 18:54:06 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ typedef struct s_data
 
 // prin funcl
 void ft_exec(t_data *data, char **env);
-
 
 // builtins func :
 void ft_is_builtins(t_data *data, char **env);

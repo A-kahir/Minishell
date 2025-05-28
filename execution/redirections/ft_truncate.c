@@ -6,13 +6,39 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/27 14:08:36 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/28 19:25:16 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-int ft_open_outfile(t_data *data)
+static void	ft_child_redir(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
+{
+	char	**cmd_args;
+
+	if (n_cmds == 1)
+    {
+        if (dup2(pipes[0][1], STDOUT_FILENO) == -1)
+            (perror("dup2 output failed"), exit(1));
+    }
+    else
+    {
+        if (i > 0 && dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
+            (perror("dup2 input failed"), exit(1));
+        if (i < n_cmds - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)
+            (perror("dup2 output failed"), exit(1));
+    }
+	ft_close_pipes(pipes, n_cmds);
+	cmd_args = ft_get_path(curr->cmd[0], env);
+	if (execve(cmd_args[0], curr->cmd, env))
+		(perror("execve failed"), exit(1));
+	if (!cmd_args[0])
+	{
+		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
+	}
+}
+
+static int ft_open_outfile(t_data *data)
 {
     int outf_fd;
 
@@ -34,16 +60,8 @@ void ft_trancate(t_data *data, char **env)
     int fd;
     int i;
     int j;
+    int		pipes[1][2];
 
-    printf("***********IS TRUNCATE******\n");
-    printf("type=> %d\n", data->redir->type);
-    printf("taget=> %s\n", data->redir->target);
-    int k = 0;
-    while (k <= 3)
-    {
-        printf("cmd[%d]=> %s\n", k, data->cmd[k]);
-        k++;
-    }
     if (ft_strcmp(data->cmd[0], "echo") == 0 && ft_strcmp(data->cmd[1], ">") != 0)
     {
         fd = ft_open_outfile(data);
@@ -66,22 +84,33 @@ void ft_trancate(t_data *data, char **env)
     }
     else
     {
-        // if (ft_strcmp(data->cmd[1], ">") == 0)
-        // {
-        //     fd = ft_open_outfile(data);
-        //     return ;
-        // }
-        // cmds = ft_get_path(data->cmd[0], env);
-        if (cmds[0] != NULL)
+        cmds = ft_get_path(data->cmd[0], env);
+        if (!cmds)
         {
-            printf("dkhelllt\n");
-            printf("we have a cmd=> %s\n", cmds[0]);
-            if (cmds[0] && execve(cmds[0], cmds, env) == -1)
-                perror("execve");
+            free(cmds);
+            return ;
         }
-        else if (cmds[0] == NULL)
+        else if (cmds[0] != NULL)
         {
-            printf("HIS NULL\n");
+            pipe(pipes[0]);
+            fd = ft_open_outfile(data);
+            pid_t pid = fork();
+            if (pid == -1)
+		        (close(fd), exit(1));
+	        else if (pid == 0)
+                 ft_child_redir(data, pipes, 0, 1, env);
+            else
+            {
+                close(pipes[0][1]);
+                char c;
+                while (read(pipes[0][0], &c, 1) > 0)
+                {
+                    write(fd, &c, 1);
+                }
+                close(pipes[0][0]);
+		        wait(NULL);
+                close(fd);
+            }
         }
     }
 }
