@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/29 14:17:40 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/29 20:17:03 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ static void	ft_child_redir(t_data *curr, int pipes[][2], int i, int n_cmds, char
 
 	if (n_cmds == 1)
     {
-        if (dup2(pipes[0][1], STDOUT_FILENO) == -1)
+        if (dup2(pipes[0][1], 1) == -1)
             (perror("dup2 output failed"), exit(1));
     }
     else
     {
-        if (i > 0 && dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
+        if (i > 0 && dup2(pipes[i - 1][0], 0) == -1)
             (perror("dup2 input failed"), exit(1));
-        if (i < n_cmds - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)
+        if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
             (perror("dup2 output failed"), exit(1));
     }
 	ft_close_pipes(pipes, n_cmds);
@@ -54,7 +54,7 @@ static int ft_open_outfile(t_data *data)
     return (outf_fd);
 }
 
-void ft_trancate(t_data *data, char **env)
+void ft_trancate(t_data *data, t_data *curr, int flag, char **env)
 {
     char **cmds;
     int fd;
@@ -62,18 +62,47 @@ void ft_trancate(t_data *data, char **env)
     int j;
     int		pipes[1][2];
 
-    if (ft_strcmp(data->cmd[0], "echo") == 0 && ft_strcmp(data->cmd[1], ">") != 0)
+    if (flag == 0)
     {
-        fd = ft_open_outfile(data);
+        pipe(pipes[0]);
+        fd = ft_open_outfile(curr);
+        int n_cmds = ft_count_cmds(data);
+        int (*pp)[2];
+        pp = malloc(sizeof(int[2]) * (n_cmds - 1));
+        while (i < n_cmds - 1)
+		if (pipe(pipes[i++]) == -1)
+			(perror("Pipe creation failed"), exit(1));
+        i = 0;
+		while (i < n_cmds)
+		{
+			pid_t pid = fork();
+			if (pid == -1)
+				(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+			else if (pid == 0)
+				ft_child_pro(data, pipes, i, n_cmds, env);
+			data = data->next;
+			i++;
+		}
+        return ;
+    }
+    if (curr->cmd == NULL)
+    {
+        fd = ft_open_outfile(curr);
+        write(fd, "", 0);
+        return ;
+    }
+    if (ft_strcmp(curr->cmd[0], "echo") == 0 && ft_strcmp(curr->cmd[1], ">") != 0)
+    {
+        fd = ft_open_outfile(curr);
         i = 1;
-        while (data->cmd[i] != NULL)
+        while (curr->cmd[i] != NULL)
         {
             j = 0;
-            if (data->cmd[i][j] != '\0')
+            if (curr->cmd[i][j] != '\0')
             {
-                while (data->cmd[i][j] != '\0')
+                while (curr->cmd[i][j] != '\0')
                 {
-                    write(fd, &data->cmd[i][j], 1);
+                    write(fd, &curr->cmd[i][j], 1);
                     j++;
                 }
                 write(fd, " ", 1);
@@ -84,21 +113,16 @@ void ft_trancate(t_data *data, char **env)
     }
     else
     {
-        cmds = ft_get_path(data->cmd[0], env);
-        if (!cmds)
-        {
-            free(cmds);
-            return ;
-        }
-        else if (cmds[0] != NULL)
+        cmds = ft_get_path(curr->cmd[0], env);
+        if (cmds[0] != NULL)
         {
             pipe(pipes[0]);
-            fd = ft_open_outfile(data);
+            fd = ft_open_outfile(curr);
             pid_t pid = fork();
             if (pid == -1)
 		        (close(fd), exit(1));
 	        else if (pid == 0)
-                 ft_child_redir(data, pipes, 0, 1, env);
+                 ft_child_redir(curr, pipes, 0, 1, env);
             else
             {
                 close(pipes[0][1]);

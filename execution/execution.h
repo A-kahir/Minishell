@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/29 13:30:41 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/29 20:18:07 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,14 @@ typedef struct s_data
 
 // prin funcl
 void ft_exec(t_data *data, char **env);
+void ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
 
 // builtins func :
 void ft_is_builtins(t_data *data, char **env);
 void ft_echo(char **str);
 void ft_cd(char **str);
 void ft_pwd(char **str);
+
 //export
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
@@ -82,13 +84,14 @@ void ft_exit(char **str);
 
 // redirections func :
 void ft_is_redir(t_data *data, char **env);
-void ft_trancate(t_data *data, char **env);
+void ft_trancate(t_data *data, t_data *curr, int flag, char **env);
 
 // func execution :
 void ft_handle_heredoc(char *delimiter);
 char	**ft_get_path(char *cmd, char **env);
 int open_infile(char *infile);
 int open_outfiles(char *outfile, int append);
+int ft_flag_redir(t_data *data);
 
 // utils execution : 
 void ft_close_pipes(int pipes[][2], int n_cmds);

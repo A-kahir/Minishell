@@ -12,7 +12,7 @@
 
 #include "execution.h"
 
-static void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
+void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
 {
 	char	**cmd_args;
 
@@ -38,12 +38,13 @@ void ft_exec(t_data *data, char **env)
 	int		(*pipes)[2];
 
 	i = 0;
+	int flag_redir = ft_flag_redir(data);
 	n_cmds = ft_count_cmds(data);
 	pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
 	while (i < n_cmds - 1)
 		if (pipe(pipes[i++]) == -1)
 			(perror("Pipe creation failed"), exit(1));
-	if (data->type == 0)
+	if (data->type == 0 && flag_redir == 0)
 	{
 		i = 0;
 		while (i < n_cmds)
@@ -60,10 +61,10 @@ void ft_exec(t_data *data, char **env)
 		while (wait(NULL) > 0);
 		free(pipes);
 	}
-	else if (data->type == 1)
+	else if (data->type == 1 || flag_redir == 1)
 	{
 		char *command = ft_check_built_redir(data, env);
-		if (ft_strcmp(command, "cmd") == 0)
+		if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 		{
 			i = 0;
 			while (i < n_cmds)
@@ -84,7 +85,7 @@ void ft_exec(t_data *data, char **env)
 		{
 			ft_is_builtins(data, env);
 		}
-		if (ft_strcmp(command, "redir") == 0)
+		if (flag_redir == 1)
 		{
 			ft_is_redir(data, env);
 		}

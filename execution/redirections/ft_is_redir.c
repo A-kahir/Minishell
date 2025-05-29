@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:28:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/28 19:22:34 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/29 18:46:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,33 @@
 
 void ft_is_redir(t_data *data, char **env)
 {
-    if (data->redir->type == 0)
+    t_data *curr;
+    
+    curr = data;
+    int flag = 0;
+    while (curr)
     {
-        ft_trancate(data, env);
+        if (curr->redir && curr->redir->type != -1)
+        {
+            if (curr == data)
+                flag = 1;
+            break;
+        }
+        curr = curr->next;
     }
-    else if (data->redir->type == 1)
+    if (curr->redir->type == 0)
+    {
+        ft_trancate(data, curr, flag, env);
+    }
+    else if (curr->redir->type == 1)
     {
         printf("append\n");
     }
-    else if (data->redir->type == 2)
+    else if (curr->redir->type == 2)
     {
         printf("Read_F\n");
     }
-    else if (data->redir->type == 3)
+    else if (curr->redir->type == 3)
     {
         printf("Herdoc\n");
     }
