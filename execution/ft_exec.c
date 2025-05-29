@@ -62,8 +62,8 @@ void ft_exec(t_data *data, char **env)
 	}
 	else if (data->type == 1)
 	{
-		char *command = ft_check_built_redir(data, 0);
-		if (command == NULL && data->redir->type == -1)
+		char *command = ft_check_built_redir(data, env);
+		if (ft_strcmp(command, "cmd") == 0)
 		{
 			i = 0;
 			while (i < n_cmds)
@@ -80,13 +80,13 @@ void ft_exec(t_data *data, char **env)
 			while (wait(NULL) > 0);
 			free(pipes);
 		}
-		else if (data->redir->type != -1)
-		{
-			ft_is_redir(data, env);
-		}
-		else if (data->builtin_type != -1)
+		if (ft_strcmp(command, "built") == 0)
 		{
 			ft_is_builtins(data, env);
+		}
+		if (ft_strcmp(command, "redir") == 0)
+		{
+			ft_is_redir(data, env);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/28 18:54:06 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/29 13:30:41 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int open_outfiles(char *outfile, int append);
 void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
 void	free_split(char **split);
-char *ft_check_built_redir(t_data *data, int flag);
+char *ft_check_built_redir(t_data *data, char **env);
 
 // Libft func :
 char	*ft_strjoin(char *s1, char *s2);
