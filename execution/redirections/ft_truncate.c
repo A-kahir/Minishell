@@ -78,13 +78,7 @@ void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
             (perror("dup2 outfile failed"), close(fd), exit(1));
         close(fd);
     }
-    int j = 0;
-    while (j < n_cmds - 1)
-    {
-        close(pp[j][0]);
-        close(pp[j][1]);
-        j++;
-    }
+    ft_close_pipes(pp, n_cmds);
     cmd = ft_get_path(data->cmd[0], env);
     if (!cmd || !cmd[0])
     {
@@ -114,9 +108,7 @@ void ft_trancate(t_data *data, t_data *curr, int flag, char **env)
         while (i < n_cmds - 1)
         {
             if (pipe(pipes[i]) == -1)
-            {
                 (perror("pipe creation failed"), free(pipes), exit(1));
-            }
             i++;
         }
         t_data *tmp = data;
@@ -137,13 +129,7 @@ void ft_trancate(t_data *data, t_data *curr, int flag, char **env)
             tmp = tmp->next;
             i++;
         }
-        i = 0;
-        while (i < n_cmds - 1)
-        {
-            close(pipes[i][0]);
-            close(pipes[i][1]);
-            i++;
-        }
+        ft_close_pipes(pipes, n_cmds);
         free(pipes);
         while (wait(NULL) > 0);
         return ;
