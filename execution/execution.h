@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/30 14:31:52 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/31 14:13:11 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void ft_exit(char **str);
 
 // redirections func :
 void ft_is_redir(t_data *data, char **env);
-void ft_trancate(t_data *data, t_data *curr, int flag, char **env);
+void ft_tran_app(t_data *data, t_data *curr, int flag, char **env);
 
 // func execution :
 void ft_handle_heredoc(char *delimiter);

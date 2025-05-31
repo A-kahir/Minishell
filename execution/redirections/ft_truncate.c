@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/30 20:41:06 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/31 14:13:03 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,18 @@ static int ft_open_outfile(t_data *data)
 {
     int outf_fd;
 
-    if (data->redir->target)
+    if (data->redir->target && data->redir->type == 0)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+        if (outf_fd < 0)
+        {
+            perror("Error opening output file");
+            exit(1);
+        }
+    }
+    else if (data->redir->target && data->redir->type == 1)
+    {
+        outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
         if (outf_fd < 0)
         {
             perror("Error opening output file");
@@ -74,7 +83,7 @@ void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
         fd = ft_open_outfile(data);
         if (fd == -1)
             (perror("open outfile failed"), exit(1));
-        if (dup2(fd, STDOUT_FILENO) == -1)
+        if (dup2(fd, 1) == -1)
             (perror("dup2 outfile failed"), close(fd), exit(1));
         close(fd);
     }
@@ -90,7 +99,7 @@ void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
 }
 
 
-void ft_trancate(t_data *data, t_data *curr, int flag, char **env)
+void ft_tran_app(t_data *data, t_data *curr, int flag, char **env)
 {
     char **cmds;
     int fd;

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:28:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/29 18:46:04 by akahir           ###   ########.fr       */
+/*   Updated: 2025/05/31 14:06:14 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void ft_is_redir(t_data *data, char **env)
         }
         curr = curr->next;
     }
-    if (curr->redir->type == 0)
+    if (curr->redir->type == 0 || curr->redir->type == 1)
     {
         ft_trancate(data, curr, flag, env);
     }
-    else if (curr->redir->type == 1)
-    {
-        printf("append\n");
-    }
+    // else if (curr->redir->type == 1)
+    // {
+    //     printf("append\n");
+    // }
     else if (curr->redir->type == 2)
     {
         printf("Read_F\n");
