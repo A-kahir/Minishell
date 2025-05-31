@@ -17,8 +17,8 @@ int ft_open_infile(t_data *data)
 {
     int inf_fd;
 
-    if (!data->redir->target)
-		return (-1);
+    if (!data->redir || !data->redir->target)
+        return (-1);
     inf_fd = open(data->redir->target, O_RDONLY);
     if (inf_fd < 0)
     {
@@ -86,6 +86,7 @@ void ft_read_f(t_data *data, t_data *curr, int flag, char **env)
         int n_cmds = ft_count_cmds(data);
         int		(*pipes)[2];
 	    pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+        i = 0;
 	    while (i < n_cmds - 1)
 	    	if (pipe(pipes[i++]) == -1)
 	    		(perror("Pipe creation failed"), exit(1));
