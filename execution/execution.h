@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/01 15:39:19 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/01 19:09:50 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_data
 
 // prin funcl
 void ft_exec(t_data *data, char **env);
-void ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
+void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
 
 // builtins func :
 void ft_is_builtins(t_data *data, char **env);
