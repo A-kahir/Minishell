@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_truncate.c                                      :+:      :+:    :+:   */
+/*   ft_tran_app.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/31 14:13:03 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/01 14:31:23 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,10 @@ static void	ft_child_redir(t_data *curr, int pipes[][2], int i, int n_cmds, char
     }
 	ft_close_pipes(pipes, n_cmds);
 	cmd_args = ft_get_path(curr->cmd[0], env);
+	if (!cmd_args[0])
+		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
 	if (execve(cmd_args[0], curr->cmd, env))
 		(perror("execve failed"), exit(1));
-	if (!cmd_args[0])
-	{
-		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
-	}
 }
 
 static int ft_open_outfile(t_data *data)

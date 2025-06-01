@@ -12,23 +12,26 @@
 
 #include "../execution.h"
 
-void ft_handle_heredoc(char *delimiter)
+int ft_handle_heredoc(char *del)
 {
-    int     pipe_fd[2];
-    char    *line;
+    int pipe_fd[2];
+    char *line;
 
     if (pipe(pipe_fd) == -1)
+        (perror("pipe failed"), exit(1));
+    if (!del)
     {
-        perror("pipe failed");
-        exit(1);
+        fprintf(stderr, "heredoc: delimiter is NULL\n");
+        close(pipe_fd[0]);
+        close(pipe_fd[1]);
+        return (-1);
     }
     while (1)
     {
-        write(1, "> ", 2);
-        line = readline(NULL);
+        line = readline("> ");
         if (!line)
             break;
-        if (ft_strcmp(line, delimiter) == 0)
+        if (ft_strcmp(line, del) == 0)
         {
             free(line);
             break;
@@ -38,7 +41,5 @@ void ft_handle_heredoc(char *delimiter)
         free(line);
     }
     close(pipe_fd[1]);
-    if (dup2(pipe_fd[0], 0) == -1)
-        (perror("dup2 heredoc failed"), exit(1));
-    close(pipe_fd[0]);
+    return (pipe_fd[0]);
 }

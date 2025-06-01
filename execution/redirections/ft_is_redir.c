@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:28:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/31 18:26:53 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/01 16:31:11 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,30 @@ void ft_is_redir(t_data *data, char **env)
     }
     else if (curr->redir->type == 3)
     {
-        printf("Herdoc\n");
+        int fd = ft_handle_heredoc(curr->redir->target);
+        printf("fd===> %d\n", fd);
+        if (fd == -1)
+        {
+            perror("heredoc");
+            return ;
+        }
+        if (dup2(fd, 0) == -1)
+        {
+            perror("dup2 heredoc");
+            close(fd);
+            return ;
+        }
+        close(fd);
+        char **cmd_args = ft_get_path(curr->cmd[0], env);
+        if (!cmd_args)
+        {
+            printf("minishell: %s: command not found\n", curr->cmd[0]);
+            return ;
+        }
+        if (execve(cmd_args[0], curr->cmd, env) == -1)
+        {
+            perror("execve failed");
+            return ;
+        }
     }
 }

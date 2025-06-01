@@ -24,8 +24,10 @@ void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
 	cmd_args = ft_get_path(curr->cmd[0], env);
 	if (!cmd_args)
 		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
-	if (execve(cmd_args[0], curr->cmd, env))
+	if (execve(cmd_args[0], curr->cmd, env) == -1)
+	{
 		(perror("execve failed"), exit(1));
+	}
 }
 
 void ft_exec(t_data *data, char **env)
