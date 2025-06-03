@@ -99,6 +99,8 @@ int ft_handle_heredoc(char *del);
 void    ft_heredoc_before(t_data *data, char **env);
 void	ft_child_hered_bef(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
 		// -> heredoc after :
+void ft_heredoc_after(t_data *data, char **env);
+void ft_child_hered_aft(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
 
 
 // **************func execution*****************

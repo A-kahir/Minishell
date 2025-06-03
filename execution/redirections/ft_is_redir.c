@@ -40,7 +40,7 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
     {
         if (heredoc->after_hered == 1 && heredoc->before_hered == 0)
         {
-            printf("is after\n");
+            ft_heredoc_after(data, env);
         }
         else if (heredoc->before_hered == 1 && heredoc->after_hered == 0)
         {

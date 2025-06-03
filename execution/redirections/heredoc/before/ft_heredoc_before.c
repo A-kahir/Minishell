@@ -24,10 +24,7 @@ void    ft_heredoc_before(t_data *data, char **env)
     while (i < n_cmds - 1)
     {
         if (pipe(pipes[i]) == -1)
-        {
-            perror("Pipe creation failed");
-            exit(1);
-        }
+            (perror("Pipe creation failed"), exit(1));
         i++;
     }
     t_data *curr = data;
@@ -36,11 +33,7 @@ void    ft_heredoc_before(t_data *data, char **env)
     {
         pid_t pid = fork();
         if (pid == -1)
-        {
-            perror("Fork failed");
-            ft_close_pipes(pipes, n_cmds);
-            exit(1);
-        }
+            perror("Fork failed"), ft_close_pipes(pipes, n_cmds), exit(1);
         else if (pid == 0)
         {
             ft_child_hered_bef(curr, pipes, i, n_cmds, hered_fd, env);
