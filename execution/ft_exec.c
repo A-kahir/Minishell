@@ -12,7 +12,7 @@
 
 #include "execution.h"
 
-void ft_exec(t_data *data, char **env)
+void ft_exec(t_data *data, char **env, t_heredoc *heredoc)
 {
 	int		n_cmds;
 	int		i;
@@ -69,7 +69,7 @@ void ft_exec(t_data *data, char **env)
 		}
 		if (flag_redir == 1)
 		{
-			ft_is_redir(data, env);
+			ft_is_redir(data, env, heredoc);
 		}
 	}
 }

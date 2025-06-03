@@ -32,7 +32,7 @@ void	ft_child_hered(t_data *curr, int pipes[][2], int i, int n_cmds, int fd, cha
 	}
 }
 
-void ft_is_redir(t_data *data, char **env)
+void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
 {
     t_data *curr;
     
@@ -58,28 +58,43 @@ void ft_is_redir(t_data *data, char **env)
     }
     else if (curr->redir->type == 3)
     {
-        int fd = ft_handle_heredoc(curr->redir->target);
-        int i = 0;
-        int flag_redir = ft_flag_redir(data);
-	    int n_cmds = ft_count_cmds(data);
-        int		(*pipes)[2];
-	    pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
-        while (i < n_cmds - 1)
-		if (pipe(pipes[i++]) == -1)
-			(perror("Pipe creation failed"), exit(1));
-        i = 0;
-		while (i < n_cmds)
-		{
-			pid_t pid = fork();
-			if (pid == -1)
-				(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
-			else if (pid == 0)
-				ft_child_hered(data, pipes, i, n_cmds, fd, env);
-			data = data->next;
-			i++;
-		}
-		ft_close_pipes(pipes, n_cmds);
-		while (wait(NULL) > 0);
-		free(pipes);
+        if (heredoc->after_hered == 1 && heredoc->before_hered == 0)
+        {
+            printf("is after\n");
+        }
+        else if (heredoc->before_hered == 1 && heredoc->after_hered == 0)
+        {
+            printf("is before\n");
+        }
+        else if (heredoc->middle_hered == 1)
+        {
+            printf("is meddle\n");
+        }
+        
     }
 }
+
+
+// int fd = ft_handle_heredoc(curr->redir->target);
+//         int i = 0;
+//         int flag_redir = ft_flag_redir(data);
+// 	    int n_cmds = ft_count_cmds(data);
+//         int		(*pipes)[2];
+// 	    pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+//         while (i < n_cmds - 1)
+// 		if (pipe(pipes[i++]) == -1)
+// 			(perror("Pipe creation failed"), exit(1));
+//         i = 0;
+// 		while (i < n_cmds)
+// 		{
+// 			pid_t pid = fork();
+// 			if (pid == -1)
+// 				(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+// 			else if (pid == 0)
+// 				ft_child_hered(data, pipes, i, n_cmds, fd, env);
+// 			data = data->next;
+// 			i++;
+// 		}
+// 		ft_close_pipes(pipes, n_cmds);
+// 		while (wait(NULL) > 0);
+// 		free(pipes);

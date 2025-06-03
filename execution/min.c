@@ -341,12 +341,114 @@ void free_data_structure(t_data *data)
 	}
 }
 
+void detect_heredoc_position(t_data *data, t_heredoc *heredoc, char *original_input)
+{
+	t_data *curr;
+	t_data *heredoc_node = NULL;
+	int node_count = 0;
+	int heredoc_position = -1;
+	int pos = 0;
+
+	// Reset
+	heredoc->before_hered = 0;
+	heredoc->middle_hered = 0;
+	heredoc->after_hered = 0;
+
+	// Count nodes and find heredoc position
+	curr = data;
+	while (curr)
+	{
+		t_redir *redir = curr->redir;
+		while (redir)
+		{
+			if (redir->type == HEREDOC)
+			{
+				heredoc_node = curr;
+				heredoc_position = pos;
+				break;
+			}
+			redir = redir->next;
+		}
+		node_count++;
+		pos++;
+		curr = curr->next;
+	}
+
+	if (!heredoc_node)
+		return;
+
+	// Check command count in heredoc node
+	int cmd_args = 0;
+	if (heredoc_node->cmd)
+	{
+		while (heredoc_node->cmd[cmd_args])
+			cmd_args++;
+	}
+
+	// The key insight: regardless of pipeline position, we need to check
+	// the heredoc position relative to commands in its own node
+	
+	if (cmd_args == 0)
+	{
+		// Only heredoc, no commands in this node
+		// Need to check pipeline context
+		if (node_count == 1)
+		{
+			heredoc->after_hered = 1; // "<< EOF" alone
+		}
+		else if (heredoc_position == 0)
+		{
+			heredoc->after_hered = 1; // "<< EOF | ..." - heredoc before pipeline
+		}
+		else if (heredoc_position == node_count - 1)
+		{
+			heredoc->before_hered = 1; // "... | << EOF" - heredoc after pipeline
+		}
+		else
+		{
+			heredoc->middle_hered = 1; // "... | << EOF | ..." - heredoc in middle
+		}
+	}
+	else if (cmd_args == 1)
+	{
+		// Single command with heredoc in same node
+		char *heredoc_pos = strstr(original_input, "<<");
+		char *cmd_pos = NULL;
+		
+		if (heredoc_node->cmd[0])
+			cmd_pos = strstr(original_input, heredoc_node->cmd[0]);
+		
+		if (heredoc_pos && cmd_pos)
+		{
+			if (cmd_pos < heredoc_pos)
+			{
+				// Command before heredoc: "ls << EOF" or "ls | cat << EOF"
+				heredoc->before_hered = 1;
+			}
+			else
+			{
+				// Command after heredoc: "<< EOF ls" or "<< EOF ls | cat"
+				heredoc->after_hered = 1;
+			}
+		}
+		else
+		{
+			heredoc->before_hered = 1;
+		}
+	}
+	else if (cmd_args >= 2)
+	{
+		// Multiple commands with heredoc: always middle
+		// "ls << EOF ls" or "ls | cat << EOF ls | cat"
+		heredoc->middle_hered = 1;
+	}
+}
+
 int main(int argc, char **argv, char **env)
 {
 	char *input;
 	t_data *parsed_data;
-
-
+	t_heredoc *heredoc;
 
 	while (1)
 	{
@@ -361,13 +463,24 @@ int main(int argc, char **argv, char **env)
 			continue;
 		}
 		parsed_data = parse_input(input);
-
 		if (parsed_data)
 		{
-			ft_exec(parsed_data, env);
+			heredoc = malloc(sizeof(t_heredoc));
+			if (!heredoc)
+			{
+				perror("malloc");
+				free_data_structure(parsed_data);
+				free(input);
+				continue;
+			}
+			detect_heredoc_position(parsed_data, heredoc, input);
+
+			ft_exec(parsed_data, env, heredoc);
+			free(heredoc);
 			free_data_structure(parsed_data);
 		}
 		free(input);
 	}
 	return (0);
 }
+

@@ -23,6 +23,14 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+
+typedef struct s_heredoc
+{
+	int before_hered; // example : cmd << EOF
+	int after_hered;  // example : << EOF cmd
+	int middle_hered; // example : cmd << EOF cmd
+} t_heredoc;
+
 typedef enum s_type_node
 {
 	PIPE_NODE,
@@ -67,7 +75,7 @@ typedef struct s_data
 }	t_data;
 
 // prin funcl
-void ft_exec(t_data *data, char **env);
+void ft_exec(t_data *data, char **env, t_heredoc *heredoc);
 void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
 
 // builtins func :
@@ -83,7 +91,7 @@ void ft_exit(char **str);
 
 
 // redirections func :
-void ft_is_redir(t_data *data, char **env);
+void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc);
 void ft_tran_app(t_data *data, t_data *curr, int flag, char **env);
 void ft_read_f(t_data *data, t_data *curr, int flag, char **env);
 int ft_handle_heredoc(char *del);
