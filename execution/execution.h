@@ -70,43 +70,48 @@ typedef struct s_data
 	t_type_node type; // if i have a pipe you need to give me type->PIPE_NODE else if he is a builtin or just a cmd = type->CMD_NOED
 	t_redir *redir;           // redirection list
 	t_type_buil builtin_type; // store the builtin directly (not in a substruct)
-	char **cmd;               // {"cd", "cat", "-e",  "Documents", "builtins" NULL}
+	char **cmd;               // {"cd", "cat", "-e",  "Documents", "builtins", NULL}
 	struct s_data *next;
 }	t_data;
 
-// prin funcl
+// *****************prin funcl*****************
 void ft_exec(t_data *data, char **env, t_heredoc *heredoc);
 void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
 
-// builtins func :
+// *****************builtins func**************
 void ft_is_builtins(t_data *data, char **env);
 void ft_echo(char **str);
 void ft_cd(char **str);
 void ft_pwd(char **str);
-
 //export
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
 void ft_exit(char **str);
 
 
-// redirections func :
+// **************redirections func*************
 void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc);
 void ft_tran_app(t_data *data, t_data *curr, int flag, char **env);
 void ft_read_f(t_data *data, t_data *curr, int flag, char **env);
+// -> heredoc :
 int ft_handle_heredoc(char *del);
+		// -> heredoc before:
+void    ft_heredoc_before(t_data *data, char **env);
+void	ft_child_hered_bef(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
+		// -> heredoc after :
 
-// func execution :
+
+// **************func execution*****************
 char	**ft_get_path(char *cmd, char **env);
 int ft_flag_redir(t_data *data);
 
-// utils execution : 
+// ***************utils execution****************** 
 void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
 void	free_split(char **split);
 char *ft_check_built_redir(t_data *data, char **env);
 
-// Libft func :
+// ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
 char	**ft_split(const char *s, char c);
 char	*ft_strchr(const char *s, int c);

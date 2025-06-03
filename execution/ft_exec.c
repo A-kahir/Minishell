@@ -63,7 +63,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc)
 			while (wait(NULL) > 0);
 			free(pipes);
 		}
-		if (ft_strcmp(command, "built") == 0)
+		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
 			ft_is_builtins(data, env);
 		}
