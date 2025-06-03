@@ -438,9 +438,45 @@ void detect_heredoc_position(t_data *data, t_heredoc *heredoc, char *original_in
 	}
 	else if (cmd_args >= 2)
 	{
-		// Multiple commands with heredoc: always middle
-		// "ls << EOF ls" or "ls | cat << EOF ls | cat"
-		heredoc->middle_hered = 1;
+		// Multiple commands with heredoc: need to check if heredoc is truly in middle
+		// We need to determine if there are commands both before AND after heredoc
+		char *heredoc_pos = strstr(original_input, "<<");
+		int commands_before = 0;
+		int commands_after = 0;
+		
+		if (heredoc_pos && heredoc_node->cmd)
+		{
+			// Count commands before and after heredoc position
+			for (int i = 0; i < cmd_args; i++)
+			{
+				char *cmd_pos = strstr(original_input, heredoc_node->cmd[i]);
+				if (cmd_pos && cmd_pos < heredoc_pos)
+					commands_before++;
+				else if (cmd_pos && cmd_pos > heredoc_pos)
+					commands_after++;
+			}
+		}
+		
+		if (commands_before > 0 && commands_after > 0)
+		{
+			// Commands both before and after: "ls << EOF cat"
+			heredoc->middle_hered = 1;
+		}
+		else if (commands_before > 0)
+		{
+			// All commands before heredoc: "ls -l << EOF"
+			heredoc->before_hered = 1;
+		}
+		else if (commands_after > 0)
+		{
+			// All commands after heredoc: "<< EOF ls -l"
+			heredoc->after_hered = 1;
+		}
+		else
+		{
+			// Fallback
+			heredoc->before_hered = 1;
+		}
 	}
 }
 
