@@ -26,9 +26,9 @@
 
 typedef struct s_heredoc
 {
-	int before_hered; // example : cmd << EOF
-	int after_hered;  // example : << EOF cmd
-	int middle_hered; // example : cmd << EOF cmd
+	int before_hered; // example : (cmd << EOF) or (cmd1 | cmd2 << EOF)
+	int after_hered;  // example : (<< EOF cmd) or (<< EOF cmd1 | cmd2)
+	int middle_hered; // example : (cmd << EOF cmd) or (cmd1 | cmd2 << EOF cmd1 | cmd2)
 } t_heredoc;
 
 typedef enum s_type_node
