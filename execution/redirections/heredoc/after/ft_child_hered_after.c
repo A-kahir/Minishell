@@ -32,4 +32,3 @@ void ft_child_hered_aft(t_data *curr, int pipes[][2], int i, int n_cmds, int *he
     if (execve(cmd_args[0], curr->cmd, env) == -1)
         (perror("execve failed"), exit(1));
 }
-
