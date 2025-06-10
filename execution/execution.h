@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/01 19:09:50 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/10 18:12:09 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ void	ft_child_hered_bef(t_data *curr, int pipes[][2], int i, int n_cmds, int *he
 		// -> heredoc after :
 void ft_heredoc_after(t_data *data, char **env);
 void ft_child_hered_aft(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
+		// -> heredoc middle :
+void ft_handle_middle(t_data *data, char **env);
+void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
 
 
 // **************func execution*****************
