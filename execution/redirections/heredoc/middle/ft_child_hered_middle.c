@@ -12,9 +12,16 @@
 
 #include "../../../execution.h"
 
+
 void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env)
 {
-    if (i > 0)
+    // 1. Setup input redirection
+    if (hered_fd[i] != -1)
+    {
+        // This command has a heredoc, use heredoc input
+        dup2(hered_fd[i], STDIN_FILENO);
+    }
+    else if (i > 0)
     {
         // Not first command and no heredoc, use pipe input
         dup2(pipes[i - 1][0], STDIN_FILENO);
@@ -36,11 +43,61 @@ void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, int *h
         close(pipes[j][1]);
     }
 
-    // 4. Execute the command
+    // 4. Close all heredoc file descriptors
+    for (int j = 0; j < n_cmds; ++j)
+    {
+        if (hered_fd[j] != -1)
+            close(hered_fd[j]);
+    }
+
+    // 5. Handle other redirections (>, >>, <)
+    t_redir *redir = curr->redir;
+    while (redir)
+    {
+        if (redir->type == TRUNCATE)
+        {
+            int fd = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd == -1)
+            {
+                perror("open");
+                exit(1);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redir->type == APPEND)
+        {
+            int fd = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd == -1)
+            {
+                perror("open");
+                exit(1);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redir->type == READ_F)
+        {
+            int fd = open(redir->target, O_RDONLY);
+            if (fd == -1)
+            {
+                perror("open");
+                exit(1);
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        // HEREDOC is already handled above
+        redir = redir->next;
+    }
+
+    // 6. Execute the command
     char **cmd_args = ft_get_path(curr->cmd[0], env);
     if (!cmd_args)
     {
-        fprintf(stderr, "minishell: %s: command not found\n", curr->cmd[0]);
+        write(STDERR_FILENO, "minishell: ", 11);
+        write(STDERR_FILENO, curr->cmd[0], strlen(curr->cmd[0]));
+        write(STDERR_FILENO, ": command not found\n", 20);
         exit(127);
     }
 
