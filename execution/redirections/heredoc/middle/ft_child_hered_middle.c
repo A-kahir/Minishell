@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/10 18:12:20 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/13 16:12:40 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 
 void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env)
 {
-    // 1. Setup input redirection
+   
+}
+
+
+/*
+     // 1. Setup input redirection
     if (hered_fd[i] != -1)
     {
         // This command has a heredoc, use heredoc input
@@ -104,4 +109,4 @@ void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, int *h
     execve(cmd_args[0], curr->cmd, env);
     perror("execve failed");
     exit(126);
-}
+*/

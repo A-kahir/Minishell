@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/10 18:15:15 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/13 16:12:54 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 void ft_handle_middle(t_data *data, char **env)
 {
+    
+}
+
+/*
     int n_cmds = ft_count_cmds(data);
     int *hered_fd = malloc(sizeof(int) * n_cmds);
     if (!hered_fd)
@@ -134,4 +138,4 @@ void ft_handle_middle(t_data *data, char **env)
     // Clean up
     free(pipes);
     free(hered_fd);
-}
+*/
