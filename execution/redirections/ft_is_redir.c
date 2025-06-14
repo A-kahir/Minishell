@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:28:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/10 18:08:19 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/14 18:07:08 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,20 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
     }
     else if (curr->redir->type == 3)
     {
-        if (heredoc->after_hered == 1 && heredoc->before_hered == 0)
-        {
-            ft_heredoc_after(data, env);
-        }
-        else if (heredoc->before_hered == 1 && heredoc->after_hered == 0)
-        {
-           ft_heredoc_before(data, env);
-        }
-        else if (heredoc->middle_hered == 1)
-        {
+        // printf("is heredoc\n");
+        // if (heredoc->after_hered == 1 && heredoc->before_hered == 0)
+        // {
+        //     printf("is after\n");
+        //     ft_heredoc_after(data, env);
+        // }
+        // else if (heredoc->before_hered == 1 && heredoc->after_hered == 0 && heredoc->middle_hered == 0)
+        // {
+        //     printf("is before\n");
+        //    ft_heredoc_before(data, env);
+        // }
+        // if (heredoc->middle_hered == 1)
+        // {
             ft_handle_middle(data, env);
-        }
+        // }
     }
 }
