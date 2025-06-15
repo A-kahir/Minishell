@@ -38,20 +38,20 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
     }
     else if (curr->redir->type == 3)
     {
-        // printf("is heredoc\n");
-        // if (heredoc->after_hered == 1 && heredoc->before_hered == 0)
-        // {
-        //     printf("is after\n");
-        //     ft_heredoc_after(data, env);
-        // }
-        // else if (heredoc->before_hered == 1 && heredoc->after_hered == 0 && heredoc->middle_hered == 0)
-        // {
-        //     printf("is before\n");
-        //    ft_heredoc_before(data, env);
-        // }
-        // if (heredoc->middle_hered == 1)
-        // {
+        if (heredoc->after_hered == 1)
+        {
+            printf("is after\n");
+            ft_heredoc_after(data, env);
+        }
+        if (heredoc->before_hered == 1)
+        {
+            printf("is before\n");
+           ft_heredoc_before(data, env);
+        }
+        if (heredoc->middle_hered == 1)
+        {
+            printf("is middle\n");
             ft_handle_middle(data, env);
-        // }
+        }
     }
 }
