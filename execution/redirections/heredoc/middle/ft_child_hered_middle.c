@@ -16,16 +16,22 @@ void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, char *
 {
     char **cmd_args;
     int hered_fd;
+    int have_hered;
     
     if (!curr || !curr->cmd || !curr->cmd[0])
         exit(1);
-    hered_fd = ft_handle_heredoc(curr->redir->target);
-    if (hered_fd == -1)
-        (write(2, "heredoc failed\n", 15), exit(1));
-    if (dup2(hered_fd, 0) == -1)
-        (perror("dup2 heredoc failed"), exit(1));
-    close(hered_fd);    
-    if (i > 0)
+    have_hered = 0;
+    if (curr->redir && curr->redir->type == HEREDOC)
+    {
+        have_hered = 1;
+        hered_fd = ft_handle_heredoc(curr->redir->target);
+        if (hered_fd == -1)
+            (write(2, "heredoc failed\n", 15), exit(1));
+        if (dup2(hered_fd, 0) == -1)
+            (perror("dup2 heredoc failed"), exit(1));
+        close(hered_fd);
+    }
+    if (!have_hered && i > 0)
     {
         if (dup2(pipes[i - 1][0], 0) == -1)
             (perror("dup2 input failed"), exit(1));
