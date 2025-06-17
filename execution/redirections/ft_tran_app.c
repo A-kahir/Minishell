@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/01 14:31:23 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/17 14:58:41 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
         if (dup2(pp[i][1], 1) == -1)
             (perror("dup2 pipe output failed"), exit(1));
     }
-    else if (data->redir && data->redir->target)
+    if (data->redir && data->redir->target)
     {
         fd = ft_open_outfile(data);
         if (fd == -1)
