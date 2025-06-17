@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/13 16:50:38 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/17 15:17:10 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+
+// this working just for builtins.
+typedef struct s_built
+{
+	char *var;
+	char *value;
+	struct s_built *next;
+} t_built;
 
 
 typedef struct s_heredoc

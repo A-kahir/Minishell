@@ -6,10 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:30:36 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/22 16:31:22 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/17 15:05:21 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-//i need to fix more problems
+void ft_export()
+{
+    
+}
