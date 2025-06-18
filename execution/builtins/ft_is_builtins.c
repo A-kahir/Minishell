@@ -12,23 +12,35 @@
 
 #include "../execution.h"
 
-void ft_take_var(t_built *line_env, int i, char **env)
+void ft_take_value(t_built *line_env, char *env_line, int start)
 {
-    char *line;
-    int j = 0;
+    int len;
     int k;
 
-    line = malloc(ft_strlen(env[i]) + 1);
-    if (!line)
+    len = 0;
+    k = 0;
+    if (env_line[start] == '=')
+        start++;
+    len = ft_strlen(&env_line[start]);
+    line_env->value = malloc(len + 1);
+    if (!line_env->value)
         return;
-    while (env[i][j])
+    while (env_line[start])
     {
-        line[j] = env[i][j];
-        j++;
+        line_env->value[k] = env_line[start];
+        k++;
+        start++;
     }
-    line[j] = '\0';
+    line_env->value[k] = '\0';
+}
+
+void ft_take_var(t_built *line_env, int i, char **env)
+{
+    int j;
+    int k;
+
     j = 0;
-    while (line[j] != '=' && line[j] != '\0')
+    while (env[i][j] != '=' && env[i][j] != '\0')
         j++;
     line_env->var = malloc(j + 1);
     if (!line_env->var)
@@ -36,24 +48,11 @@ void ft_take_var(t_built *line_env, int i, char **env)
     k = 0;
     while (k < j)
     {
-        line_env->var[k] = line[k];
+        line_env->var[k] = env[i][k];
         k++;
     }
     line_env->var[k] = '\0';
-    if (line[j] == '=')
-        j++;
-    line_env->value = malloc(ft_strlen(&line[j]) + 1);
-    if (!line_env->value)
-        return;
-    k = 0;
-    while (line[j])
-    {
-        line_env->value[k] = line[j];
-        j++;
-        k++;
-    }
-    line_env->value[k] = '\0';
-    free(line);
+    ft_take_value(line_env, env[i], j);
 }
 
 void ft_fill_struct(char **env)
