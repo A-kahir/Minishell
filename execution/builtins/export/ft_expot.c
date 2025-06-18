@@ -10,9 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../execution.h"
+#include "../../execution.h"
 
-void ft_export()
+static void ft_only_print(t_built *line)
 {
-    
+    while (line->next)
+    {
+        write(1, "declare -x ", 12);
+        printf("%s", line->var);
+        printf("=");
+        printf("\"%s\"\n", line->value);
+        line = line->next;
+    }
+}
+
+t_built *ft_export(t_built *line_env, char **cmd, char **env)
+{
+    t_built *line = line_env;
+    if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
+        ft_only_print(line);
+    else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
+    {
+        if (cmd[2] != NULL && cmd[3] == NULL)
+        {
+            *line_env = ft_sort_by_order(*line_env, cmd);
+        }
+        else if (cmd[2] == NULL)
+        {
+            char *tmp_cmd[] = {"export", cmd[1], "", NULL};
+            *line_env = ft_sort_by_order(*line_env, tmp_cmd);
+        }
+    }
+    return (line_env);
 }

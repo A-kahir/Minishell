@@ -55,29 +55,41 @@ void ft_take_var(t_built *line_env, int i, char **env)
     ft_take_value(line_env, env[i], j);
 }
 
-void ft_fill_struct(char **env)
+t_built *ft_fill_struct(char **env)
 {
-    t_built *line_env;
+    t_built *head;
+    t_built *new_node;
+    t_built *last;
     int i;
 
-    line_env = malloc(sizeof(t_built));
-    if (!line_env)
-        return;
+    head = NULL;
     i = 0;
-    while (env[i] != NULL)
+    while (env[i])
     {
-        ft_take_var(line_env, i, env);
-        free(line_env->var);
-        free(line_env->value);
+        new_node = malloc(sizeof(t_built));
+        if (!new_node)
+            return (head);
+        ft_take_var(new_node, i, env);
+        new_node->next = NULL;
+        if (!head)
+            head = new_node;
+        else
+        {
+            last = head;
+            while (last->next)
+                last = last->next;
+            last->next = new_node;
+        }
         i++;
     }
-    free(line_env);
+    return head;
 }
 
 void ft_is_builtins(t_data *data, char **env)
 {
-    
-    ft_fill_struct(env);
+    t_built *line_env;
+
+    line_env = ft_fill_struct(env);
     if (data->builtin_type == 0)
     {
         ft_echo(data->cmd);
@@ -92,7 +104,7 @@ void ft_is_builtins(t_data *data, char **env)
     }
     else if (data->builtin_type == 3)
     {
-        //soon
+        line_env = ft_export(line_env, data->cmd, env);
     }
     else if (data->builtin_type == 4)
     {

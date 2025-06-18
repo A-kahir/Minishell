@@ -23,7 +23,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-
 // this working just for builtins.
 typedef struct s_built
 {
@@ -31,7 +30,6 @@ typedef struct s_built
 	char *value;
 	struct s_built *next;
 } t_built;
-
 
 typedef struct s_heredoc
 {
@@ -92,7 +90,10 @@ void ft_is_builtins(t_data *data, char **env);
 void ft_echo(char **str);
 void ft_cd(char **str);
 void ft_pwd(char **str);
-//export
+t_built *ft_export(t_built *line_env, char **cmd, char **env);
+	// -> func export :
+t_built *ft_sort_by_order(t_built *line, char **cmd);
+
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
 void ft_exit(char **str);
