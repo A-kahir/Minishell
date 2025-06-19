@@ -1,25 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_add_var.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 12:31:04 by akahir            #+#    #+#             */
+/*   Updated: 2025/06/19 12:31:04 by akahir           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../execution.h"
 
 static t_built *create_and_insert_node(t_built *line, char **cmd, t_built *prev, t_built *current)
 {
     t_built *new_node = malloc(sizeof(t_built));
     if (!new_node)
-        return line;
-    new_node->var = strdup(cmd[1]);
-    new_node->value = strdup(cmd[2]);
+        return (line);
+    new_node->var = ft_strdup(cmd[1]);
+    new_node->value = ft_strdup(cmd[2]);
     if (!new_node->var || !new_node->value)
     {
         free(new_node->var);
         free(new_node->value);
         free(new_node);
-        return line;
+        return (line);
     }
     new_node->next = current;
     if (prev)
         prev->next = new_node;
     else
         line = new_node;
-    return line;
+    return (line);
 }
 
 t_built *ft_sort_by_order(t_built *line, char **cmd)
@@ -31,10 +43,10 @@ t_built *ft_sort_by_order(t_built *line, char **cmd)
         if (ft_strcmp(cmd[1], current->var) == 0)
         {
             free(current->value);
-            current->value = strdup(cmd[2]);
+            current->value = ft_strdup(cmd[2]);
             if (!current->value)
-                return line;
-            return line;
+                return (line);
+            return (line);
         }
         if (ft_strcmp(cmd[1], current->var) < 0)
             break;

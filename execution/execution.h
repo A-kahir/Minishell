@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/17 15:17:10 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/19 13:30:46 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
 void	free_split(char **split);
 char *ft_check_built_redir(t_data *data, char **env);
+t_built *ft_rm_a_out(t_built *line);
+t_built *ft_sort_vars(t_built *head);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
@@ -134,5 +136,6 @@ int ft_strlen(char *str);
 char	*ft_strdup(char *s1);
 int	ft_strncmp(char *s1, char *s2, size_t n);
 int	ft_atoi(const char *str);
+void ft_rm_list(t_built **head, t_built *target);
 
 #endif
