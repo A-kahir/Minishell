@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/19 19:32:10 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/19 19:35:55 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void ft_is_builtins(t_data *data, char **env);
 void ft_echo(char **str);
 void ft_cd(char **str);
 void ft_pwd(char **str);
-t_built *ft_export(t_built *line_env, char **cmd, char **env);
+t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd);
 	// -> func export :
 t_built *ft_sort_by_order(t_built *line, char **cmd);
 
@@ -124,7 +124,7 @@ void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
 void	free_split(char **split);
 char *ft_check_built_redir(t_data *data, char **env);
-t_built *ft_update_exp(t_built *line, int flag);
+t_built *ft_update_exp(t_built *line, int flag_cd);
 t_built *ft_sort_vars(t_built *head);
 
 // ******************Libft func******************

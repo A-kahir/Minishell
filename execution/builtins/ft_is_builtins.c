@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/19 19:32:21 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/19 21:41:47 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ t_built *ft_fill_struct(char **env)
 
 void ft_is_builtins(t_data *data, char **env)
 {
+    static int flag_cd;
     t_built *line_env;
 
     line_env = ft_fill_struct(env);
@@ -97,6 +98,7 @@ void ft_is_builtins(t_data *data, char **env)
     else if (data->builtin_type == 1)
     {
         ft_cd(data->cmd);
+        flag_cd = 1;
     }
     else if (data->builtin_type == 2)
     {
@@ -104,7 +106,7 @@ void ft_is_builtins(t_data *data, char **env)
     }
     else if (data->builtin_type == 3)
     {
-        line_env = ft_export(line_env, data->cmd, env);
+        line_env = ft_export(line_env, data->cmd, env, flag_cd);
     }
     else if (data->builtin_type == 4)
     {
