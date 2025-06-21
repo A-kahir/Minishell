@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/19 21:41:47 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/21 19:56:51 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void ft_take_value(t_built *line_env, char *env_line, int start)
     int len;
     int k;
 
-    len = 0;
     k = 0;
     if (env_line[start] == '=')
         start++;
@@ -52,7 +51,10 @@ void ft_take_var(t_built *line_env, int i, char **env)
         k++;
     }
     line_env->var[k] = '\0';
-    ft_take_value(line_env, env[i], j);
+    if (ft_strcmp(line_env->var, "OLDPWD") == 0)
+        line_env->value = NULL;
+    else
+        ft_take_value(line_env, env[i], j);
 }
 
 t_built *ft_fill_struct(char **env)
@@ -70,6 +72,7 @@ t_built *ft_fill_struct(char **env)
         if (!new_node)
             return (head);
         ft_take_var(new_node, i, env);
+        new_node->old_pwd = NULL;
         new_node->next = NULL;
         if (!head)
             head = new_node;
@@ -88,37 +91,47 @@ t_built *ft_fill_struct(char **env)
 void ft_is_builtins(t_data *data, char **env)
 {
     static int flag_cd;
-    t_built *line_env;
+    static t_built *line_env;
+    t_built *temp;
 
-    line_env = ft_fill_struct(env);
-    if (data->builtin_type == 0)
+    if (!line_env)
+        line_env = ft_fill_struct(env);
+    if (data->builtin_type == 3)
     {
-        ft_echo(data->cmd);
+        temp = line_env;
+        while (temp)
+        {
+            if (ft_strcmp(temp->var, "PWD") == 0)
+            {
+                if (line_env->old_pwd)
+                {
+                    free(line_env->old_pwd);
+                    line_env->old_pwd = NULL;
+                }
+                if (temp->value)
+                    line_env->old_pwd = ft_strdup(temp->value);
+                break;
+            }
+            temp = temp->next;
+        }
     }
+    if (data->builtin_type == 0)
+        ft_echo(data->cmd);
     else if (data->builtin_type == 1)
     {
         ft_cd(data->cmd);
         flag_cd = 1;
     }
     else if (data->builtin_type == 2)
-    {
         ft_pwd(data->cmd);
-    }
     else if (data->builtin_type == 3)
-    {
         line_env = ft_export(line_env, data->cmd, env, flag_cd);
-    }
     else if (data->builtin_type == 4)
-    {
-        //need fix allocation
         ft_unset(data->cmd, &env);
-    }
     else if (data->builtin_type == 5)
-    {
         ft_env(data->cmd, env);
-    }
     else if (data->builtin_type == 6)
-    {
         ft_exit(data->cmd);
-    }
+    line_env = ft_update_exp(line_env, flag_cd);
+    flag_cd = 0;
 }

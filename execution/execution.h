@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/19 19:35:55 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/21 19:47:26 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_built
 {
 	char *var;
 	char *value;
+	char *old_pwd;
 	struct s_built *next;
 } t_built;
 
@@ -137,5 +138,6 @@ char	*ft_strdup(char *s1);
 int	ft_strncmp(char *s1, char *s2, size_t n);
 int	ft_atoi(const char *str);
 void ft_rm_list(t_built **head, t_built *target);
+t_built *ft_add_front(t_built *head, char *var, char *value);
 
 #endif
