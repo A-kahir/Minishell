@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/21 19:56:51 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/21 20:17:27 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_built *ft_fill_struct(char **env)
     t_built *head;
     t_built *new_node;
     t_built *last;
+    t_built *temp;
     int i;
 
     head = NULL;
@@ -72,18 +73,35 @@ t_built *ft_fill_struct(char **env)
         if (!new_node)
             return (head);
         ft_take_var(new_node, i, env);
-        new_node->old_pwd = NULL;
-        new_node->next = NULL;
-        if (!head)
-            head = new_node;
+        if (new_node->value && ft_strcmp(new_node->value, "./a.out") == 0)
+        {
+            free(new_node->var);
+            free(new_node->value);
+            free(new_node);
+        }
         else
         {
-            last = head;
-            while (last->next)
-                last = last->next;
-            last->next = new_node;
+            new_node->old_pwd = NULL;
+            new_node->next = NULL;
+            if (!head)
+                head = new_node;
+            else
+            {
+                last = head;
+                while (last->next)
+                    last = last->next;
+                last->next = new_node;
+            }
         }
         i++;
+    }
+    temp = head;
+    while (temp)
+    {
+        t_built *next = temp->next;
+        if (temp->value && ft_strcmp(temp->value, "./a.out") == 0)
+            ft_rm_list(&head, temp);
+        temp = next;
     }
     return head;
 }
