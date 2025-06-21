@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/21 20:17:27 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/21 20:20:21 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void ft_take_value(t_built *line_env, char *env_line, int start)
     len = ft_strlen(&env_line[start]);
     line_env->value = malloc(len + 1);
     if (!line_env->value)
-        return;
+        return ;
     while (env_line[start])
     {
         line_env->value[k] = env_line[start];
@@ -43,7 +43,7 @@ void ft_take_var(t_built *line_env, int i, char **env)
         j++;
     line_env->var = malloc(j + 1);
     if (!line_env->var)
-        return;
+        return ;
     k = 0;
     while (k < j)
     {
@@ -128,7 +128,7 @@ void ft_is_builtins(t_data *data, char **env)
                 }
                 if (temp->value)
                     line_env->old_pwd = ft_strdup(temp->value);
-                break;
+                break ;
             }
             temp = temp->next;
         }
