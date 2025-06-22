@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/22 19:21:34 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/22 19:35:25 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void ft_cd(char **str);
 void ft_pwd(char **str);
 t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd);
 	// -> func export :
+void ft_add_vars(t_built *line_env, char **cmd);
 
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
