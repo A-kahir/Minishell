@@ -12,7 +12,7 @@
 
 #include "../../execution.h"
 
-static t_built *create_and_insert_node(t_built *line, char **cmd, t_built *prev, t_built *current)
+static t_built *create_node(t_built *line, char **cmd, t_built *prev, t_built *current)
 {
     t_built *new_node = malloc(sizeof(t_built));
     if (!new_node)
@@ -53,5 +53,5 @@ t_built *ft_sort_by_order(t_built *line, char **cmd)
         prev = current;
         current = current->next;
     }
-    return create_and_insert_node(line, cmd, prev, current);
+    return create_node(line, cmd, prev, current);
 }

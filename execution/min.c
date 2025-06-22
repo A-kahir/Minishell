@@ -89,28 +89,8 @@ char **tokenize_input(char *input)
     }
     tokens[i] = NULL;
 
-    // Split var=value if export and second token contains '='
-    if (i >= 2 && strcmp(tokens[0], "export") == 0)
-    {
-        char *equal_sign = strchr(tokens[1], '=');
-        if (equal_sign)
-        {
-            int key_len = equal_sign - tokens[1];
-            char *key = strndup(tokens[1], key_len);
-            char *value = strdup(equal_sign + 1);
-
-            free(tokens[1]);
-            tokens[1] = key;
-
-            // Shift tokens after 1 to right by 1
-            for (int j = i; j >= 2; j--)
-                tokens[j + 1] = tokens[j];
-
-            tokens[2] = value;
-            tokens[i + 1] = NULL; // Terminate new array
-        }
-    }
-
+    // No special processing needed - keep var=value intact
+    
     free(cpy);
     return tokens;
 }

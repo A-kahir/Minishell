@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/21 19:46:08 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/22 16:33:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,33 @@ static void ft_only_print(t_built *line)
 
 t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
 {
+    char *vars_values;
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
         ft_only_print(line_env);
+    else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
+    {
+        int i = 1;
+        while (cmd[i] != NULL)
+        {
+            if (ft_strchr(cmd[i], '=') != NULL)
+            {
+                char **words;
+                words = ft_split(cmd[i], '=');
+                int j = 1;
+                int k = 0;
+                while (words[j] != NULL)
+                {
+                    line_env = ft_add_back(line_env, words[k], words[j]);
+                    k++;
+                    j = j * 2;
+                }
+            }
+            else
+            {  
+                line_env = ft_add_back(line_env, cmd[i], NULL);
+            }
+            i++;
+        }
+    }
     return (line_env);
 }
