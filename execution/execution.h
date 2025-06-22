@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/22 16:20:23 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/22 19:21:34 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void ft_cd(char **str);
 void ft_pwd(char **str);
 t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd);
 	// -> func export :
-t_built *ft_sort_by_order(t_built *line, char **cmd);
 
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
@@ -141,5 +140,7 @@ int	ft_atoi(const char *str);
 void ft_rm_list(t_built **head, t_built *target);
 t_built *ft_add_front(t_built *head, char *var, char *value);
 t_built *ft_add_back(t_built *line, char *var, char *value);
+char	*ft_substr(char *s, unsigned int start, size_t len);
+void	*ft_memcpy(void *dst, void *src, size_t n);
 
 #endif
