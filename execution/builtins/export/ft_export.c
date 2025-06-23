@@ -81,9 +81,7 @@ t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
             i++;
         }
         if (flag_already == 0 && flag_dollar == 0)
-        {
             ft_add_vars(line_env, cmd);
-        }
     }
     return (line_env);
 }
