@@ -12,7 +12,7 @@
 
 #include "execution.h"
 
-void ft_exec(t_data *data, char **env, t_heredoc *heredoc)
+void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 {
 	int		n_cmds;
 	int		i;
@@ -65,7 +65,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc)
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
-			ft_is_builtins(data, env);
+			ft_is_builtins(data, env, line_env);
 		}
 		if (flag_redir == 1)
 		{

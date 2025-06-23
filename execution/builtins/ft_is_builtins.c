@@ -6,20 +6,17 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/22 16:22:17 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:42:37 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void ft_is_builtins(t_data *data, char **env)
+void ft_is_builtins(t_data *data, char **env, t_built *line_env)
 {
     static int flag_cd;
-    static t_built *line_env;
     t_built *temp;
 
-    if (!line_env)
-        line_env = ft_fill_struct(env);
     if (data->builtin_type == 3)
     {
         temp = line_env;

@@ -259,23 +259,64 @@ void merge_middle_heredoc_cmd(t_data *data)
     }
 }
 
-// Main function
-int main(int ac, char **av, char **env)
+void replace_export_dollar_vars(t_data *data, t_built *env)
+{
+    while (data)
+    {
+        if (data->cmd && ft_strcmp(data->cmd[0], "export") == 0)
+        {
+            for (int i = 1; data->cmd[i]; i++)
+            {
+                if (data->cmd[i][0] == '$')
+                {
+                    char *varname = data->cmd[i] + 1;
+                    t_built *cur = env;
+                    while (cur)
+                    {
+                        if (ft_strcmp(cur->var, varname) == 0)
+                        {
+                            if (cur->value && *(char *)cur->value)
+                            {
+                                free(data->cmd[i]);
+                                data->cmd[i] = strdup((char *)cur->value);
+                            }
+                            break;
+                        }
+                        cur = cur->next;
+                    }
+                }
+            }
+        }
+        data = data->next;
+    }
+}
+
+
+int main(int ac, char **av, char **envp)
 {
     char *input;
     t_data *parsed;
     t_heredoc *heredoc;
+    static t_built *line_env;
+
+    line_env = ft_fill_struct(envp);
 
     while ((input = readline("minishell-3.2$~ ")))
     {
-        if (*input) add_history(input);
+        if (*input)
+            add_history(input);
         parsed = parse_input(input);
         if (parsed)
         {
             heredoc = malloc(sizeof(t_heredoc));
             detect_heredoc_position(parsed, heredoc, input);
-            if (heredoc->middle_hered) merge_middle_heredoc_cmd(parsed);
-            ft_exec(parsed, env, heredoc);
+            if (heredoc->middle_hered)
+                merge_middle_heredoc_cmd(parsed);
+
+            replace_export_dollar_vars(parsed, line_env);
+
+            ft_exec(parsed, envp, heredoc, line_env);
+
             free(heredoc);
             free_data_structure(parsed);
         }
