@@ -18,35 +18,29 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	int		i;
 	pid_t	pid;
 	int		(*pipes)[2];
+	t_built *curr;
+	int flag_path;
 
-	i = 0;
-	int flag_redir = ft_flag_redir(data);
-	n_cmds = ft_count_cmds(data);
-	pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
-	while (i < n_cmds - 1)
-		if (pipe(pipes[i++]) == -1)
-			(perror("Pipe creation failed"), exit(1));
-	if (data->type == 0 && flag_redir == 0)
+	curr = line_env;
+	flag_path = 0;
+	while (curr)
+	{
+		if (ft_strcmp(curr->var, "PATH") == 0)
+			flag_path = 1;
+		else if (curr->next == NULL && ft_strcmp(curr->var, "PATH") == 0)
+			flag_path = 0;
+		curr = curr->next;
+	}
+	if (flag_path == 1)
 	{
 		i = 0;
-		while (i < n_cmds)
-		{
-			pid = fork();
-			if (pid == -1)
-				(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
-			else if (pid == 0)
-				ft_child_pro(data, pipes, i, n_cmds, env);
-			data = data->next;
-			i++;
-		}
-		ft_close_pipes(pipes, n_cmds);
-		while (wait(NULL) > 0);
-		free(pipes);
-	}
-	else if (data->type == 1 || flag_redir == 1)
-	{
-		char *command = ft_check_built_redir(data, env);
-		if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
+		int flag_redir = ft_flag_redir(data);
+		n_cmds = ft_count_cmds(data);
+		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+		while (i < n_cmds - 1)
+			if (pipe(pipes[i++]) == -1)
+				(perror("Pipe creation failed"), exit(1));
+		if (data->type == 0 && flag_redir == 0)
 		{
 			i = 0;
 			while (i < n_cmds)
@@ -63,13 +57,41 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 			while (wait(NULL) > 0);
 			free(pipes);
 		}
-		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
+		else if (data->type == 1 || flag_redir == 1)
 		{
+			char *command = ft_check_built_redir(data, env);
+			if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
+			{
+				i = 0;
+				while (i < n_cmds)
+				{
+					pid = fork();
+					if (pid == -1)
+						(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+					else if (pid == 0)
+						ft_child_pro(data, pipes, i, n_cmds, env);
+					data = data->next;
+					i++;
+				}
+				ft_close_pipes(pipes, n_cmds);
+				while (wait(NULL) > 0);
+				free(pipes);
+			}
+			if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
+			{
+				ft_is_builtins(data, line_env);
+			}
+			if (flag_redir == 1)
+			{
+				ft_is_redir(data, env, heredoc);
+			}
+		}
+	}
+	else
+	{
+		if (data->builtin_type != -1)
 			ft_is_builtins(data, line_env);
-		}
-		if (flag_redir == 1)
-		{
-			ft_is_redir(data, env, heredoc);
-		}
+		else
+			printf("minishell: %s: No such file or directory\n", data->cmd[0]);
 	}
 }

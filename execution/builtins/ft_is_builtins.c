@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 18:42:53 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 20:15:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void ft_is_builtins(t_data *data, t_built *line_env)
     static int flag_cd;
     t_built *temp;
 
-    if (data->builtin_type == 3)
+    if (data->builtin_type == 3 || data->builtin_type == 5)
     {
         temp = line_env;
         while (temp)
@@ -40,7 +40,7 @@ void ft_is_builtins(t_data *data, t_built *line_env)
         ft_echo(data->cmd);
     else if (data->builtin_type == 1)
     {
-        ft_cd(data->cmd);
+        line_env = ft_cd(data->cmd, line_env);
         flag_cd = 1;
     }
     else if (data->builtin_type == 2)
