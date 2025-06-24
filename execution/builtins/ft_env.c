@@ -6,36 +6,27 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:25 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/22 16:29:47 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:32:52 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void	ft_env(char **str, char **env)
+t_built	*ft_env(t_built *line_env)
 {
+	t_built *curr;
 	int	i;
-	int j;
-
-	i = 1;
-	if (str[i] && strcmp(str[i], "env") == 0)
-		i++;
-	if (!str[i])
+	
+	curr = line_env;
+	while (curr)
 	{
-		j = 0;
-		while (env[j])
+		if (curr->value != NULL && curr->value[0] != '\0')
 		{
-			printf("%s\n", env[j]);
-			j++;
+			printf("%s=", curr->var);
+			printf("%s\n", curr->value);
 		}
-		return;
+		curr = curr->next;
 	}
-	if (access(str[i], F_OK) != 0)
-	{
-		printf("env: %s: No such file or directory\n", str[i]);
-	}
-	else if (access(str[i], X_OK) != 0)
-	{
-		printf("env: %s: Permission denied\n", str[i]);
-	}
+	printf("_=/usr/bin/env\n");
+	return (line_env);
 }

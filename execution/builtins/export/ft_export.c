@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 17:59:40 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:02:57 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int ft_cantinue(t_built *line_env, char **cmd, int i)
     return (1);
 }
 
-t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
+t_built *ft_export(t_built *line_env, char **cmd, int flag_cd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
         ft_only_print(line_env);

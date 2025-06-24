@@ -6,13 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/23 21:42:37 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:33:15 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void ft_is_builtins(t_data *data, char **env, t_built *line_env)
+void ft_is_builtins(t_data *data, t_built *line_env)
 {
     static int flag_cd;
     t_built *temp;
@@ -46,11 +46,12 @@ void ft_is_builtins(t_data *data, char **env, t_built *line_env)
     else if (data->builtin_type == 2)
         ft_pwd(data->cmd);
     else if (data->builtin_type == 3)
-        line_env = ft_export(line_env, data->cmd, env, flag_cd);
+        line_env = ft_export(line_env, data->cmd, flag_cd);
     else if (data->builtin_type == 4)
-        ft_unset(data->cmd, &env);
+        printf("soon\n");
+        // ft_unset(data->cmd);
     else if (data->builtin_type == 5)
-        ft_env(data->cmd, env);
+        line_env = ft_env(line_env);
     else if (data->builtin_type == 6)
         ft_exit(data->cmd);
     line_env = ft_update_exp(line_env, flag_cd);

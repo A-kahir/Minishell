@@ -65,7 +65,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
-			ft_is_builtins(data, env, line_env);
+			ft_is_builtins(data, line_env);
 		}
 		if (flag_redir == 1)
 		{
