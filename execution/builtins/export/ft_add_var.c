@@ -16,7 +16,7 @@
 void ft_add_vars(t_built *line_env, char **cmd)
 {
     char *equal;
-    char* var;
+    char *var;
     char *value;
     int i;
     

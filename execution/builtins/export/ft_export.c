@@ -35,31 +35,31 @@ t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
         ft_only_print(line_env);
     else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
     {
-        printf("cmd[0] ==> %s\n", cmd[0]);
-        printf("cmd[1] ==> %s\n", cmd[1]);
         int i;
-        int flag_already = 0;
-        int flag_dollar = 0;
+        int j;
 
         i = 1;
+        j = 0;
         while (cmd[i])
         {
             if (cmd[i][0] == '$')
+                ft_only_print(line_env);
+            else if (ft_pos_neg(cmd[i]) == 0)
             {
-                flag_dollar = 1;
-                t_built *curr;
-
-                curr = line_env;
-                while (curr)
+                if (ft_strchr(cmd[i], '+') != NULL && ft_strchr(cmd[i], '=') != NULL)
                 {
-                    
-                    curr = curr->next;
+                    printf("IS POSITIF\n");
+                }
+                else if (ft_strchr(cmd[i], '-') != NULL && ft_strchr(cmd[i], '=') != NULL)
+                {
+                    printf("IS NEGATIF\n");
                 }
             }
+            else
+               ft_add_vars(line_env, cmd);
+            j++;
             i++;
         }
-        if (flag_already == 0 && flag_dollar == 0)
-            ft_add_vars(line_env, cmd);
     }
     return (line_env);
 }
