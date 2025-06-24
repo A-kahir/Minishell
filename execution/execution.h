@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 20:33:37 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 20:50:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ typedef struct s_redir
 typedef enum s_type_buil
 {
 	NOT_BUILTIN = -1,
-	IS_ECHO, //katb9a
-	IS_CD, //katb9a
-	IS_PWD, //katb9a
-	IS_EXPORT, // katb9a
+	IS_ECHO,
+	IS_CD,
+	IS_PWD,
+	IS_EXPORT,
 	IS_UNSET,
 	IS_ENV,
 	IS_EXIT
