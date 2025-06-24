@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 17:38:57 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 17:59:40 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,26 @@ static void ft_only_print(t_built *line)
     }
 }
 
+int ft_cantinue(t_built *line_env, char **cmd, int i)
+{
+    char *plus;
+    char *equal;
+    
+    plus = ft_strchr(cmd[i], '+');
+    equal = ft_strchr(cmd[i], '=');
+    if (plus && equal && (plus + 1 == equal))
+    {
+        ft_is_positif(line_env, cmd[i]);
+        return (1);
+    }
+    else if (((ft_strchr(cmd[i], '-') || ft_strchr(cmd[i], '*') || plus + 1 != equal)) && equal)
+    {
+        printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+        return (0);
+    }
+    return (1);
+}
+
 t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
@@ -44,17 +64,8 @@ t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
                 ft_only_print(line_env);
             else if (ft_pos_neg(cmd[i]) == 0)
             {
-                char *plus = ft_strchr(cmd[i], '+');
-                char *equal = ft_strchr(cmd[i], '=');
-                if (plus && equal && (plus + 1 == equal))
-                {
-                    ft_is_positif(line_env, cmd[i]);
-                }
-                else if (((ft_strchr(cmd[i], '-') || ft_strchr(cmd[i], '*') || plus + 1 != equal)) && equal)
-                {
-                    printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+                if (ft_cantinue(line_env, cmd, i) == 0)
                     break ;
-                }
             }
             else
             {
