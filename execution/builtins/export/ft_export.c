@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/23 21:24:31 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 17:38:57 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,30 @@ t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd)
     else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
     {
         int i;
-        int j;
 
         i = 1;
-        j = 0;
         while (cmd[i])
         {
             if (cmd[i][0] == '$')
                 ft_only_print(line_env);
             else if (ft_pos_neg(cmd[i]) == 0)
             {
-                if (ft_strchr(cmd[i], '+') != NULL && ft_strchr(cmd[i], '=') != NULL)
+                char *plus = ft_strchr(cmd[i], '+');
+                char *equal = ft_strchr(cmd[i], '=');
+                if (plus && equal && (plus + 1 == equal))
                 {
-                    printf("IS POSITIF\n");
+                    ft_is_positif(line_env, cmd[i]);
                 }
-                else if (ft_strchr(cmd[i], '-') != NULL && ft_strchr(cmd[i], '=') != NULL)
+                else if (((ft_strchr(cmd[i], '-') || ft_strchr(cmd[i], '*') || plus + 1 != equal)) && equal)
                 {
-                    printf("IS NEGATIF\n");
+                    printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+                    break ;
                 }
             }
             else
+            {
                ft_add_vars(line_env, cmd);
-            j++;
+            }
             i++;
         }
     }

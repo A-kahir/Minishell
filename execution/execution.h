@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/23 21:43:02 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 15:51:53 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void ft_pwd(char **str);
 t_built *ft_export(t_built *line_env, char **cmd, char **env, int flag_cd);
 	// -> func export :
 void ft_add_vars(t_built *line_env, char **cmd);
+void ft_is_positif(t_built *line_env, char *cmd);
 
 void	ft_unset(char **args, char ***env);
 void	ft_env(char **str, char **env);
@@ -123,11 +124,11 @@ int ft_flag_redir(t_data *data);
 // ***************utils execution****************** 
 void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
-void	free_split(char **split);
 char *ft_check_built_redir(t_data *data, char **env);
 t_built *ft_fill_struct(char **env);
 t_built *ft_update_exp(t_built *line, int flag_cd);
 t_built *ft_sort_vars(t_built *head);
+int ft_pos_neg(char *str);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
@@ -143,5 +144,6 @@ t_built *ft_add_front(t_built *head, char *var, char *value);
 t_built *ft_add_back(t_built *line, char *var, char *value);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 void	*ft_memcpy(void *dst, void *src, size_t n);
+void	ft_free_split(char **split);
 
 #endif

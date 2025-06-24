@@ -41,13 +41,13 @@ static char **search_in_path(char **cmd_args, char **env)
         i++;
     if (!env[i])
     {
-        free_split(cmd_args);
+        ft_free_split(cmd_args);
         return (NULL);
     }
     paths = ft_split(env[i] + 5, ':');
     if (!paths)
     {
-        free_split(cmd_args);
+        ft_free_split(cmd_args);
         return (NULL);
     }
     i = -1;
@@ -60,13 +60,13 @@ static char **search_in_path(char **cmd_args, char **env)
         {
             free(cmd_args[0]);
             cmd_args[0] = full_path;
-            free_split(paths);
+            ft_free_split(paths);
             return (cmd_args);
         }
         free(full_path);
     }
-    free_split(paths);
-    free_split(cmd_args);
+    ft_free_split(paths);
+    ft_free_split(cmd_args);
     return (NULL);
 }
 
@@ -85,7 +85,7 @@ char **ft_get_path(char *cmd, char **env)
             return (cmd_args);
         else
         {
-            free_split(cmd_args);
+            ft_free_split(cmd_args);
             return (NULL);
         }
     }

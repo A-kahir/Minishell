@@ -267,22 +267,68 @@ void replace_export_dollar_vars(t_data *data, t_built *env)
         {
             for (int i = 1; data->cmd[i]; i++)
             {
-                if (data->cmd[i][0] == '$')
+                char *arg = data->cmd[i];
+                if (arg[0] == '$')
                 {
-                    char *varname = data->cmd[i] + 1;
-                    t_built *cur = env;
-                    while (cur)
+                    char *equal_sign = ft_strchr(arg, '=');
+                    if (equal_sign)
                     {
-                        if (ft_strcmp(cur->var, varname) == 0)
+                        // Case: export $VAR=xxx
+                        int var_len = equal_sign - (arg + 1); // exclude '$'
+                        char *var_name = ft_substr(arg + 1, 0, var_len);
+                        char *rest_value = strdup(equal_sign); // includes '=' and value
+
+                        t_built *cur = env;
+                        int found = 0;
+                        while (cur)
                         {
-                            if (cur->value && *(char *)cur->value)
+                            if (ft_strcmp(cur->var, var_name) == 0)
                             {
-                                free(data->cmd[i]);
-                                data->cmd[i] = strdup((char *)cur->value);
+                                found = 1;
+                                if (cur->value && *(char *)cur->value)
+                                {
+                                    char *new_str = ft_strjoin((char *)cur->value, rest_value);
+                                    free(data->cmd[i]);
+                                    data->cmd[i] = new_str;
+                                }
+                                // else do nothing (keep original $var=value)
+                                break;
                             }
-                            break;
+                            cur = cur->next;
                         }
-                        cur = cur->next;
+                        if (!found || !cur->value || !*(char *)cur->value)
+                        {
+                            // keep original unchanged if var not found or has no value
+                        }
+
+                        free(var_name);
+                        free(rest_value);
+                    }
+                    else
+                    {
+                        // Case: export $VAR
+                        char *var_name = arg + 1;
+                        t_built *cur = env;
+                        int found = 0;
+                        while (cur)
+                        {
+                            if (ft_strcmp(cur->var, var_name) == 0)
+                            {
+                                found = 1;
+                                if (cur->value && *(char *)cur->value)
+                                {
+                                    free(data->cmd[i]);
+                                    data->cmd[i] = strdup((char *)cur->value);
+                                }
+                                // else: var exists but has no value → keep $var
+                                break;
+                            }
+                            cur = cur->next;
+                        }
+                        if (!found || !cur->value || !*(char *)cur->value)
+                        {
+                            // keep $VAR as-is, do nothing
+                        }
                     }
                 }
             }
@@ -290,6 +336,9 @@ void replace_export_dollar_vars(t_data *data, t_built *env)
         data = data->next;
     }
 }
+
+
+
 
 
 int main(int ac, char **av, char **envp)
