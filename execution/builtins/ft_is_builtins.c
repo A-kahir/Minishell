@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 18:33:15 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:42:53 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ void ft_is_builtins(t_data *data, t_built *line_env)
     else if (data->builtin_type == 3)
         line_env = ft_export(line_env, data->cmd, flag_cd);
     else if (data->builtin_type == 4)
-        printf("soon\n");
-        // ft_unset(data->cmd);
+        line_env = ft_unset(line_env, data->cmd);
     else if (data->builtin_type == 5)
         line_env = ft_env(line_env);
     else if (data->builtin_type == 6)
