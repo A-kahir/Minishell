@@ -259,75 +259,84 @@ void merge_middle_heredoc_cmd(t_data *data)
     }
 }
 
+#include "execution.h"
+
+// ... your other functions here ...
+
 void replace_export_dollar_vars(t_data *data, t_built *env)
 {
     while (data)
     {
-        if (data->cmd && ft_strcmp(data->cmd[0], "export") == 0)
+        if (data->cmd && data->cmd[0] && ft_strcmp(data->cmd[0], "export") == 0)
         {
             for (int i = 1; data->cmd[i]; i++)
             {
                 char *arg = data->cmd[i];
-                if (arg[0] == '$')
+                if (arg && arg[0] == '$')
                 {
                     char *equal_sign = ft_strchr(arg, '=');
                     if (equal_sign)
                     {
-                        // Case: export $VAR=xxx
-                        int var_len = equal_sign - (arg + 1); // exclude '$'
+                        int var_len = equal_sign - (arg + 1);
                         char *var_name = ft_substr(arg + 1, 0, var_len);
-                        char *rest_value = strdup(equal_sign); // includes '=' and value
+                        if (!var_name)
+                        {
+                            i++;
+                            continue;
+                        }
+                        char *rest_value = strdup(equal_sign);
+                        if (!rest_value)
+                        {
+                            free(var_name);
+                            i++;
+                            continue;
+                        }
 
                         t_built *cur = env;
                         int found = 0;
                         while (cur)
                         {
-                            if (ft_strcmp(cur->var, var_name) == 0)
+                            if (cur->var && ft_strcmp(cur->var, var_name) == 0)
                             {
                                 found = 1;
-                                if (cur->value && *(char *)cur->value)
+                                if (cur->value && cur->value[0] != '\0')
                                 {
-                                    char *new_str = ft_strjoin((char *)cur->value, rest_value);
-                                    free(data->cmd[i]);
-                                    data->cmd[i] = new_str;
+                                    char *new_str = ft_strjoin(cur->value, rest_value);
+                                    if (new_str)
+                                    {
+                                        free(data->cmd[i]);
+                                        data->cmd[i] = new_str;
+                                    }
                                 }
-                                // else do nothing (keep original $var=value)
                                 break;
                             }
                             cur = cur->next;
                         }
-                        if (!found || !cur->value || !*(char *)cur->value)
-                        {
-                            // keep original unchanged if var not found or has no value
-                        }
-
                         free(var_name);
                         free(rest_value);
                     }
                     else
                     {
-                        // Case: export $VAR
                         char *var_name = arg + 1;
                         t_built *cur = env;
                         int found = 0;
                         while (cur)
                         {
-                            if (ft_strcmp(cur->var, var_name) == 0)
+                            if (cur->var && ft_strcmp(cur->var, var_name) == 0)
                             {
                                 found = 1;
-                                if (cur->value && *(char *)cur->value)
+                                if (cur->value && cur->value[0] != '\0')
                                 {
-                                    free(data->cmd[i]);
-                                    data->cmd[i] = strdup((char *)cur->value);
+                                    char *dup_val = strdup(cur->value);
+                                    if (dup_val)
+                                    {
+                                        free(data->cmd[i]);
+                                        data->cmd[i] = dup_val;
+                                    }
                                 }
-                                // else: var exists but has no value → keep $var
                                 break;
                             }
                             cur = cur->next;
-                        }
-                        if (!found || !cur->value || !*(char *)cur->value)
-                        {
-                            // keep $VAR as-is, do nothing
                         }
                     }
                 }
@@ -336,10 +345,6 @@ void replace_export_dollar_vars(t_data *data, t_built *env)
         data = data->next;
     }
 }
-
-
-
-
 
 int main(int ac, char **av, char **envp)
 {

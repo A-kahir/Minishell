@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 18:25:48 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/01 14:27:39 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 13:04:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,11 @@ void ft_child_read_f(t_data *data, int pipes[][2], int i, int n_cmds, int fd, ch
     if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
         (perror("dup2 output pipe failed"), exit(1));
     ft_close_pipes(pipes, n_cmds);
+    if (!data->cmd || !data->cmd[0])
+        exit(0);
     cmd_args = ft_get_path(data->cmd[0], env);
     if (!cmd_args)
-        (printf("minishell: %s: command not found\n", data->cmd[0]), exit(1));
+        (printf("minishell: %s: \n", data->cmd[0]), exit(1));
     if (execve(cmd_args[0], data->cmd, env) == -1)
         (perror("execve failed"), exit(1));
 }

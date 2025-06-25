@@ -6,13 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:32:17 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 18:54:19 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 12:28:43 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-t_built	*ft_unset(t_built *line_env, char **cmd)
+t_built	*ft_unset(t_built *line_env, char **cmd, char **env)
 {
     t_built *curr;
     int i;
@@ -32,5 +32,13 @@ t_built	*ft_unset(t_built *line_env, char **cmd)
         }
         i++;
     }
+    if (access(cmd[i], F_OK) != 0)
+	{
+		return (line_env);
+	}
+	else if (access(cmd[i], X_OK) != 0)
+	{
+		return (line_env);
+	}
     return (line_env);
 }

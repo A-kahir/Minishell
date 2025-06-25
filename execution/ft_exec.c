@@ -20,6 +20,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	int		(*pipes)[2];
 	t_built *curr;
 	int flag_path;
+	int flag_redir;
 
 	curr = line_env;
 	flag_path = 0;
@@ -34,7 +35,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	if (flag_path == 1)
 	{
 		i = 0;
-		int flag_redir = ft_flag_redir(data);
+		flag_redir = ft_flag_redir(data);
 		n_cmds = ft_count_cmds(data);
 		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
 		while (i < n_cmds - 1)
@@ -79,7 +80,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 			}
 			if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			{
-				ft_is_builtins(data, line_env);
+				ft_is_builtins(data, line_env, env);
 			}
 			if (flag_redir == 1)
 			{
@@ -89,9 +90,14 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	}
 	else
 	{
+		int flag_redir = ft_flag_redir(data);
 		char *command = ft_check_built_redir_f(data, env);
-		if (ft_strcmp(command, "built") == 0)
-			ft_is_builtins_f(data, line_env);
+		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
+			ft_is_builtins_f(data, line_env, env);
+		if (flag_redir == 1)
+		{
+			ft_is_redir(data, env, heredoc);
+		}
 		else
 			printf("minishell: %s: No such file or directory\n", data->cmd[0]);
 	}

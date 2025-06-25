@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/17 14:58:41 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 13:01:58 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ static void	ft_child_redir(t_data *curr, int pipes[][2], int i, int n_cmds, char
             (perror("dup2 output failed"), exit(1));
     }
 	ft_close_pipes(pipes, n_cmds);
+    if (!curr->cmd || !curr->cmd[0])
+        exit(0);
 	cmd_args = ft_get_path(curr->cmd[0], env);
 	if (!cmd_args[0])
 		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
@@ -86,6 +88,8 @@ void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
         close(fd);
     }
     ft_close_pipes(pp, n_cmds);
+    if (!data->cmd || !data->cmd[0])
+        exit(0);
     cmd = ft_get_path(data->cmd[0], env);
     if (!cmd || !cmd[0])
     {
