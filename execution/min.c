@@ -372,7 +372,7 @@ int main(int ac, char **av, char **envp)
 
             replace_export_dollar_vars(parsed, line_env);
 
-            ft_exec(parsed, envp, heredoc, line_env);
+            ft_exec(parsed, heredoc, line_env);
 
             free(heredoc);
             free_data_structure(parsed);

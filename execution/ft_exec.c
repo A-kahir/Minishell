@@ -15,6 +15,7 @@
 void ft_child_pro_f(t_data *data, int (*pipes)[2], int i, int n_cmds, char **env, t_built *line_env, t_heredoc *heredoc)
 {
     char *command;
+	char **cmd_args;
 
     if (i < n_cmds - 1)
         dup2(pipes[i][1], 1);
@@ -31,19 +32,62 @@ void ft_child_pro_f(t_data *data, int (*pipes)[2], int i, int n_cmds, char **env
         ft_is_builtins_f(data, line_env, env);
         exit(0);
     }
-    if (data->cmd && data->cmd[0])
-    {
-        if (access(data->cmd[0], X_OK) == 0)
-            execve(data->cmd[0], data->cmd, env);
-        else
-            printf("minishell: %s: No such file or directory\n", data->cmd[0]);
-    }
-    else
-        printf("minishell: command not found\n");
+	cmd_args = ft_get_path(data->cmd[0], env);
+	if (!cmd_args)
+		(printf("minishell: %s: No such file or directory\n", data->cmd[0]), exit(1));
+	if (execve(cmd_args[0], data->cmd, env) == -1)
+	{
+		(perror("execve failed"), exit(1));
+	}
     exit(127);
 }
 
-void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
+int	ft_len_struct(t_built *line_env)
+{
+	t_built *curr;
+	int count;
+
+	curr = line_env;
+	count = 0;
+	while (curr)
+	{
+		count++;
+		curr = curr->next;
+	}
+	return (count);
+}
+
+char **ft_fill_envp(t_built *line_env)
+{
+	t_built *curr;
+	char **envp;
+	char *temp;
+	int i;
+
+	envp = malloc(sizeof(char *) * ft_len_struct(line_env) + 1);
+	if (!envp[0])
+	{
+		ft_free_split(envp);
+		free(envp);
+	}
+	curr = line_env;
+	i = 0;
+	while (curr)
+	{
+		if (curr->value)
+		{
+			temp = ft_strjoin(curr->var, "=");
+			envp[i] = ft_strjoin(temp, curr->value);
+			free(temp);
+			i++;
+		}
+		curr = curr->next;
+	}
+	envp[i] = NULL;
+	return (envp);
+}
+
+void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
 	int		n_cmds;
 	int		i;
@@ -52,7 +96,9 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	t_built *curr;
 	int flag_path;
 	int flag_redir;
+	char **envp;
 
+	envp = ft_fill_envp(line_env);
 	curr = line_env;
 	flag_path = 0;
 	while (curr)
@@ -83,7 +129,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 				if (pid == -1)
 					(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
-					ft_child_pro(data, pipes, i, n_cmds, env);
+					ft_child_pro(data, pipes, i, n_cmds, envp);
 				data = data->next;
 				i++;
 			}
@@ -93,7 +139,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 		}
 		else if (data->type == 1 || flag_redir == 1)
 		{
-			char *command = ft_check_built_redir(data, env);
+			char *command = ft_check_built_redir(data, envp);
 			if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 			{
 				i = 0;
@@ -103,7 +149,7 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 					if (pid == -1)
 						(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
 					else if (pid == 0)
-						ft_child_pro(data, pipes, i, n_cmds, env);
+						ft_child_pro(data, pipes, i, n_cmds, envp);
 					data = data->next;
 					i++;
 				}
@@ -113,26 +159,26 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 			}
 			if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			{
-				ft_is_builtins(data, line_env, env);
+				ft_is_builtins(data, line_env, envp);
 			}
 			if (flag_redir == 1)
 			{
-				ft_is_redir(data, env, heredoc);
+				ft_is_redir(data, envp, heredoc);
 			}
 		}
 	}
 	else
 	{
+		n_cmds = ft_count_cmds(data);
 		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
 		while (i < n_cmds - 1)
 			pipe(pipes[i++]);
-
 		i = 0;
 		while (i < n_cmds)
 		{
 			pid = fork();
 			if (pid == 0)
-				ft_child_pro_f(data, pipes, i, n_cmds, env, line_env, heredoc);
+				ft_child_pro_f(data, pipes, i, n_cmds, envp, line_env, heredoc);
 			data = data->next;
 			i++;
 		}

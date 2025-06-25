@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:23:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/21 20:31:16 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 22:47:52 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_built *ft_fill_struct(char **env)
         new_node = malloc(sizeof(t_built));
         if (!new_node)
             return (head);
+        memset(new_node, 0, sizeof(t_built));
         ft_take_var(new_node, i, env);
         if (new_node->value && ft_strcmp(new_node->value, "./a.out") == 0)
             (free(new_node->var), free(new_node->value), free(new_node));
