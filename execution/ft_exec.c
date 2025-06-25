@@ -12,6 +12,37 @@
 
 #include "execution.h"
 
+void ft_child_pro_f(t_data *data, int (*pipes)[2], int i, int n_cmds, char **env, t_built *line_env, t_heredoc *heredoc)
+{
+    char *command;
+
+    if (i < n_cmds - 1)
+        dup2(pipes[i][1], 1);
+    if (i > 0)
+        dup2(pipes[i - 1][0], 0);
+    ft_close_pipes(pipes, n_cmds);
+    command = ft_check_built_redir_f(data, env);
+    if (command == NULL)
+        command = "cmd";
+    if (ft_flag_redir(data) == 1)
+        ft_is_redir(data, env, heredoc);
+    if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1)
+    {
+        ft_is_builtins_f(data, line_env, env);
+        exit(0);
+    }
+    if (data->cmd && data->cmd[0])
+    {
+        if (access(data->cmd[0], X_OK) == 0)
+            execve(data->cmd[0], data->cmd, env);
+        else
+            printf("minishell: %s: No such file or directory\n", data->cmd[0]);
+    }
+    else
+        printf("minishell: command not found\n");
+    exit(127);
+}
+
 void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 {
 	int		n_cmds;
@@ -38,6 +69,8 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 		flag_redir = ft_flag_redir(data);
 		n_cmds = ft_count_cmds(data);
 		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+		if (!pipes)
+			return ;
 		while (i < n_cmds - 1)
 			if (pipe(pipes[i++]) == -1)
 				(perror("Pipe creation failed"), exit(1));
@@ -90,15 +123,21 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	}
 	else
 	{
-		int flag_redir = ft_flag_redir(data);
-		char *command = ft_check_built_redir_f(data, env);
-		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-			ft_is_builtins_f(data, line_env, env);
-		if (flag_redir == 1)
+		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
+		while (i < n_cmds - 1)
+			pipe(pipes[i++]);
+
+		i = 0;
+		while (i < n_cmds)
 		{
-			ft_is_redir(data, env, heredoc);
+			pid = fork();
+			if (pid == 0)
+				ft_child_pro_f(data, pipes, i, n_cmds, env, line_env, heredoc);
+			data = data->next;
+			i++;
 		}
-		else
-			printf("minishell: %s: No such file or directory\n", data->cmd[0]);
+		ft_close_pipes(pipes, n_cmds);
+		while (wait(NULL) > 0);
+		free(pipes);
 	}
 }

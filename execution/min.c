@@ -353,8 +353,11 @@ int main(int ac, char **av, char **envp)
     t_heredoc *heredoc;
     static t_built *line_env;
 
-    line_env = ft_fill_struct(envp);
-
+    if (!line_env)
+    {
+        line_env = ft_fill_struct(envp);
+        line_env = ft_update_exp(line_env, 0); 
+    }
     while ((input = readline("minishell-3.2$~ ")))
     {
         if (*input)

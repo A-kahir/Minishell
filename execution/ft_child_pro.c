@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 19:09:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 12:58:03 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 18:16:34 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
 	ft_close_pipes(pipes, n_cmds);
 	cmd_args = ft_get_path(curr->cmd[0], env);
 	if (!cmd_args)
-		(printf("minishell: %s: \n", curr->cmd[0]), exit(1));
+		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
 	if (execve(cmd_args[0], curr->cmd, env) == -1)
 	{
 		(perror("execve failed"), exit(1));
