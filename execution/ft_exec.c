@@ -89,8 +89,9 @@ void ft_exec(t_data *data, char **env, t_heredoc *heredoc, t_built *line_env)
 	}
 	else
 	{
-		if (data->builtin_type != -1)
-			ft_is_builtins(data, line_env);
+		char *command = ft_check_built_redir_f(data, env);
+		if (ft_strcmp(command, "built") == 0)
+			ft_is_builtins_f(data, line_env);
 		else
 			printf("minishell: %s: No such file or directory\n", data->cmd[0]);
 	}

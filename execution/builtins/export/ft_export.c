@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 18:02:57 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/25 12:02:28 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,6 @@ static void ft_only_print(t_built *line)
     }
 }
 
-int ft_cantinue(t_built *line_env, char **cmd, int i)
-{
-    char *plus;
-    char *equal;
-    
-    plus = ft_strchr(cmd[i], '+');
-    equal = ft_strchr(cmd[i], '=');
-    if (plus && equal && (plus + 1 == equal))
-    {
-        ft_is_positif(line_env, cmd[i]);
-        return (1);
-    }
-    else if (((ft_strchr(cmd[i], '-') || ft_strchr(cmd[i], '*') || plus + 1 != equal)) && equal)
-    {
-        printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
-        return (0);
-    }
-    return (1);
-}
-
 t_built *ft_export(t_built *line_env, char **cmd, int flag_cd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
@@ -60,17 +40,18 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_cd)
         i = 1;
         while (cmd[i])
         {
+            int check = ft_specify_var(cmd[i]);
             if (cmd[i][0] == '$')
                 ft_only_print(line_env);
-            else if (ft_pos_neg(cmd[i]) == 0)
+            else if (check == 1)
+                ft_is_positif(line_env, cmd[i]);
+            else if (check == -1)
             {
-                if (ft_cantinue(line_env, cmd, i) == 0)
-                    break ;
+                printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+                return (line_env);
             }
-            else
-            {
+            else if (check == 0)
                ft_add_vars(line_env, cmd);
-            }
             i++;
         }
     }
