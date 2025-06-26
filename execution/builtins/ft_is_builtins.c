@@ -42,7 +42,7 @@ void ft_is_builtins(t_data *data, t_built *line_env, char **env)
 				if (temp->value)
 					free(temp->value);
 				temp->value = before_cd;
-				break;
+				break ;
 			}
 			temp = temp->next;
 		}
