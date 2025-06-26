@@ -6,18 +6,20 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 22:43:38 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/26 15:26:07 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
+
 void ft_is_builtins(t_data *data, t_built *line_env, char **env)
 {
 	static int flag_cd;
 	t_built *temp;
-	char *pwd_before_cd = NULL;
+	char *before_cd;
 
-	if (data->builtin_type == 1) // cd
+    before_cd = NULL;
+	if (data->builtin_type == 1)
 	{
 		temp = line_env;
 		while (temp)
@@ -25,14 +27,13 @@ void ft_is_builtins(t_data *data, t_built *line_env, char **env)
 			if (ft_strcmp(temp->var, "PWD") == 0)
 			{
 				if (temp->value)
-					pwd_before_cd = ft_strdup(temp->value);
+					before_cd = ft_strdup(temp->value);
 				break;
 			}
 			temp = temp->next;
 		}
 		line_env = ft_cd(data->cmd, line_env);
 		flag_cd = 1;
-		// Now update old_pwd inside line_env with pwd_before_cd safely
 		temp = line_env;
 		while (temp)
 		{
@@ -40,16 +41,13 @@ void ft_is_builtins(t_data *data, t_built *line_env, char **env)
 			{
 				if (temp->value)
 					free(temp->value);
-				temp->value = pwd_before_cd;
+				temp->value = before_cd;
 				break;
 			}
 			temp = temp->next;
 		}
-		if (!temp && pwd_before_cd)
-		{
-			// OLDPWD not found, add it front (using your ft_add_front function)
-			line_env = ft_add_front(line_env, "OLDPWD", pwd_before_cd);
-		}
+		if (!temp && before_cd)
+			line_env = ft_add_front(line_env, "OLDPWD", before_cd);
 	}
 	else if (data->builtin_type == 0)
 		ft_echo(data->cmd);
@@ -63,7 +61,6 @@ void ft_is_builtins(t_data *data, t_built *line_env, char **env)
 		line_env = ft_env(line_env);
 	else if (data->builtin_type == 6)
 		ft_exit(data->cmd);
-
 	line_env = ft_update_exp(line_env, flag_cd);
 	flag_cd = 0;
 }

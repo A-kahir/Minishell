@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 10:57:59 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 12:26:33 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/26 15:35:51 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,51 @@
 
 void ft_is_builtins_f(t_data *data, t_built *line_env, char **env)
 {
-    static int flag_cd;
-    t_built *temp;
+	static int flag_cd;
+	t_built *temp;
+	char *before_cd;
 
-    if (data->builtin_type == 3)
-    {
-        temp = line_env;
-        while (temp)
-        {
-            if (ft_strcmp(temp->var, "PWD") == 0)
-            {
-                if (line_env->old_pwd)
-                {
-                    free(line_env->old_pwd);
-                    line_env->old_pwd = NULL;
-                }
-                if (temp->value)
-                    line_env->old_pwd = ft_strdup(temp->value);
-                break ;
-            }
-            temp = temp->next;
-        }
-    }
-    if (data->builtin_type == 0)
-        ft_echo(data->cmd);
-    else if (data->builtin_type == 1)
-    {
-        line_env = ft_cd(data->cmd, line_env);
-        flag_cd = 1;
-    }
-    else if (data->builtin_type == 2)
-        ft_pwd(data->cmd);
-    else if (data->builtin_type == 3)
-        line_env = ft_export(line_env, data->cmd, flag_cd);
-    else if (data->builtin_type == 4)
-        line_env = ft_unset(line_env, data->cmd, env);
-    else if (data->builtin_type == 6)
-        ft_exit(data->cmd);
-    line_env = ft_update_exp(line_env, flag_cd);
-    flag_cd = 0;
+    before_cd = NULL;
+	if (data->builtin_type == 1)
+	{
+		temp = line_env;
+		while (temp)
+		{
+			if (ft_strcmp(temp->var, "PWD") == 0)
+			{
+				if (temp->value)
+					before_cd = ft_strdup(temp->value);
+				break;
+			}
+			temp = temp->next;
+		}
+		line_env = ft_cd(data->cmd, line_env);
+		flag_cd = 1;
+		temp = line_env;
+		while (temp)
+		{
+			if (ft_strcmp(temp->var, "OLDPWD") == 0)
+			{
+				if (temp->value)
+					free(temp->value);
+				temp->value = before_cd;
+				break;
+			}
+			temp = temp->next;
+		}
+		if (!temp && before_cd)
+			line_env = ft_add_front(line_env, "OLDPWD", before_cd);
+	}
+	else if (data->builtin_type == 0)
+		ft_echo(data->cmd);
+	else if (data->builtin_type == 2)
+		ft_pwd(data->cmd);
+	else if (data->builtin_type == 3)
+		line_env = ft_export(line_env, data->cmd, flag_cd);
+	else if (data->builtin_type == 4)
+		line_env = ft_unset(line_env, data->cmd, env);
+	else if (data->builtin_type == 6)
+		ft_exit(data->cmd);
+	line_env = ft_update_exp(line_env, flag_cd);
+	flag_cd = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 12:02:28 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/26 14:59:13 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,23 @@
 
 static void ft_only_print(t_built *line)
 {
-    line = ft_sort_vars(line);
-    while (line)
+    t_built *curr;
+
+    curr = line;
+    curr = ft_sort_vars(curr);
+    while (curr)
     {
+        if (ft_strcmp(curr->var, "_") == 0 && ft_strcmp(curr->value, "/usr/bin/env") == 0)
+            curr = curr->next;
         write(1, "declare -x ", 12);
-        printf("%s", line->var);
-        if (line->value != NULL)
+        printf("%s", curr->var);
+        if (curr->value != NULL)
         {
             printf("=");
-            printf("\"%s\"", line->value);
+            printf("\"%s\"", curr->value);
         }
         printf("\n");
-        line = line->next;
+        curr = curr->next;
     }
 }
 
