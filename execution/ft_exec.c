@@ -63,13 +63,12 @@ char **ft_fill_envp(t_built *line_env)
 	char **envp;
 	char *temp;
 	int i;
+	int len;
 
-	envp = malloc(sizeof(char *) * ft_len_struct(line_env) + 1);
-	if (!envp[0])
-	{
-		ft_free_split(envp);
-		free(envp);
-	}
+	len = ft_len_struct(line_env);
+	envp = malloc(sizeof(char *) * (len + 1));
+	if (!envp)
+		return (NULL);
 	curr = line_env;
 	i = 0;
 	while (curr)
@@ -77,8 +76,18 @@ char **ft_fill_envp(t_built *line_env)
 		if (curr->value)
 		{
 			temp = ft_strjoin(curr->var, "=");
+			if (!temp)
+			{
+				ft_free_split(envp);
+				return (NULL);
+			}
 			envp[i] = ft_strjoin(temp, curr->value);
 			free(temp);
+			if (!envp[i])
+			{
+				ft_free_split(envp);
+				return (NULL);
+			}
 			i++;
 		}
 		curr = curr->next;
@@ -98,7 +107,8 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	int flag_redir;
 	char **envp;
 
-	envp = ft_fill_envp(line_env);
+	if (envp)
+		envp = ft_fill_envp(line_env);
 	curr = line_env;
 	flag_path = 0;
 	while (curr)

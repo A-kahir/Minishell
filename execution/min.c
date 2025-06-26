@@ -356,7 +356,7 @@ int main(int ac, char **av, char **envp)
     if (!line_env)
     {
         line_env = ft_fill_struct(envp);
-        line_env = ft_update_exp(line_env, 0); 
+        line_env = ft_update_exp(line_env, 0);
     }
     while ((input = readline("minishell-3.2$~ ")))
     {
