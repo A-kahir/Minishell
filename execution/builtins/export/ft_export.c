@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/26 14:59:13 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 16:30:01 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,24 @@ static void ft_only_print(t_built *line)
     curr = ft_sort_vars(curr);
     while (curr)
     {
-        if (ft_strcmp(curr->var, "_") == 0 && ft_strcmp(curr->value, "/usr/bin/env") == 0)
-            curr = curr->next;
-        write(1, "declare -x ", 12);
-        printf("%s", curr->var);
-        if (curr->value != NULL)
+        if (ft_strcmp(curr->var, "PATH") == 0 && ft_strcmp(curr->next->var, "PWD") == 0 && ft_strcmp(curr->next->next->var, "SHLVL") == 0)
         {
-            printf("=");
-            printf("\"%s\"", curr->value);
+            curr = curr->next;
+            continue ;
         }
-        printf("\n");
+        if (ft_strcmp(curr->var, "_") == 0 && curr->value && ft_strcmp(curr->value, "/usr/bin/env") == 0)
+        {
+            curr = curr->next;
+            continue ;
+        }
+        if (curr->var)
+        {
+            write(1, "declare -x ", 12);
+            printf("%s", curr->var);
+            if (curr->value)
+                printf("=\"%s\"", curr->value);
+            printf("\n");
+        }
         curr = curr->next;
     }
 }

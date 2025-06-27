@@ -12,34 +12,28 @@
 
 #include "execution.h"
 
-void ft_child_pro_f(t_data *data, int (*pipes)[2], int i, int n_cmds, char **env, t_built *line_env, t_heredoc *heredoc)
+int ft_already_exists(t_built *line_env, char *var)
 {
-    char *command;
-	char **cmd_args;
-
-    if (i < n_cmds - 1)
-        dup2(pipes[i][1], 1);
-    if (i > 0)
-        dup2(pipes[i - 1][0], 0);
-    ft_close_pipes(pipes, n_cmds);
-    command = ft_check_built_redir_f(data, env);
-    if (command == NULL)
-        command = "cmd";
-    if (ft_flag_redir(data) == 1)
-        ft_is_redir(data, env, heredoc);
-    if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1)
-    {
-        ft_is_builtins_f(data, line_env, env);
-        exit(0);
-    }
-	cmd_args = ft_get_path(data->cmd[0], env);
-	if (!cmd_args)
-		(printf("minishell: %s: No such file or directory\n", data->cmd[0]), exit(127));
-	if (execve(cmd_args[0], data->cmd, env) == -1)
+	t_built *curr = line_env;
+	while (curr)
 	{
-		(perror("execve failed"), exit(1));
+		if (ft_strcmp(curr->var, var) == 0)
+			return (1);
+		curr = curr->next;
 	}
-    exit(127);
+	return (0);
+}
+
+void ft_no_full_env(t_built *line_env)
+{
+	if (!ft_already_exists(line_env, "PATH"))
+		ft_add_back(line_env, "PATH", PATH_ENV);
+	if (!ft_already_exists(line_env, "PWD"))
+		ft_add_back(line_env, "PWD", getcwd(NULL, 0));
+	if (!ft_already_exists(line_env, "SHLVL"))
+		ft_add_back(line_env, "SHLVL", "1");
+	if (!ft_already_exists(line_env, "OLDPWD"))
+		ft_add_back(line_env, "OLDPWD", NULL);
 }
 
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
@@ -53,10 +47,10 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	int flag_redir;
 	char **envp;
 
-	if (line_env->next == NULL && ft_strcmp(line_env->var, "OLDPWD") == 0)
+	if (i == 0 && ft_strcmp(line_env->var, "OLDPWD") == 0)
 	{
-		printf("========> ENV NOT FOUND <========\n");
-		envp = ft_strdup("put the path gheddaaa");
+		ft_no_full_env(line_env);
+		envp = ft_fill_envp(line_env);
 		i = 0;
 		char *command = ft_check_built_redir(data, envp);
 		flag_redir = ft_flag_redir(data);
@@ -69,7 +63,6 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				(perror("Pipe creation failed"), exit(1));
 		if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 		{
-			printf("cmd\n");
 			i = 0;
 			while (i < n_cmds)
 			{
@@ -89,19 +82,17 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
-			printf("built\n");
 			ft_is_builtins(data, line_env, envp);
 		}
 		if (flag_redir == 1)
 		{
-			printf("rediiir\n");
 			ft_is_redir(data, envp, heredoc);
 		}
+		return ;
 	}
 	else
 	{
-		if (envp)
-			envp = ft_fill_envp(line_env);
+		envp = ft_fill_envp(line_env);
 		curr = line_env;
 		flag_path = 0;
 		while (curr)
@@ -114,12 +105,12 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 		}
 		if (flag_path == 1)
 		{
-			i = 0;
 			flag_redir = ft_flag_redir(data);
 			n_cmds = ft_count_cmds(data);
 			pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
 			if (!pipes)
 				return ;
+			i = 0;
 			while (i < n_cmds - 1)
 				if (pipe(pipes[i++]) == -1)
 					(perror("Pipe creation failed"), exit(1));
@@ -143,7 +134,6 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 			}
 			else if (data->type == 1 || flag_redir == 1)
 			{
-				printf("========> COMMAND NODE <========\n");
 				char *command = ft_check_built_redir(data, envp);
 				if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 				{
@@ -173,7 +163,6 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 			}
 			else
 			{
-				printf("=======> IS FAILED PATH <=======\n");
 				char *command = ft_check_built_redir(data, envp);
 				if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 					ft_is_builtins_f(data, line_env, envp);

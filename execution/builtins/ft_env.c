@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:25 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/26 14:43:14 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 16:53:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ t_built	*ft_env(t_built *line_env)
 		curr = line_env;
 		while (curr)
 		{
+			if (ft_strcmp(curr->var, "PATH") == 0 && ft_strcmp(curr->next->var, "PWD") == 0 && ft_strcmp(curr->next->next->var, "SHLVL") == 0)
+			{
+				curr = curr->next;
+				continue ;
+			}
 			if (curr->var && curr->value)
 			{
 				printf("%s=", curr->var);

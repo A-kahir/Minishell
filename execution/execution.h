@@ -6,12 +6,14 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/26 15:40:33 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 13:37:59 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTION_H
 # define EXECUTION_H
+
+#define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
 
 # include <stdio.h>
 # include <unistd.h>
