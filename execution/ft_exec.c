@@ -14,57 +14,50 @@
 
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
-	int		n_cmds;
-	int		i;
 	pid_t	pid;
-	int		(*pipes)[2];
+	t_exec	in;
 	t_built *curr;
-	int flag_path;
-	int flag_redir;
+	int		flag_path;
+	int		flag_redir;
 	static int no_env;
-	char **envp;
+	char	**envp;
 
-	i = 0;
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
 		no_env = 1;
 		ft_no_full_env(line_env);
 		envp = ft_fill_envp(line_env);
-		i = 0;
 		char *command = ft_check_built_redir(data);
 		flag_redir = ft_flag_redir(data);
-		n_cmds = ft_count_cmds(data);
-		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
-		if (!pipes)
+		in.n_cmds = ft_count_cmds(data);
+		in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+		if (!in.pipes)
 			return ;
-		while (i < n_cmds - 1)
-			if (pipe(pipes[i++]) == -1)
+		int i = 0;
+		while (i < in.n_cmds - 1)
+			if (pipe(in.pipes[i++]) == -1)
 				(perror("Pipe creation failed"), exit(1));
 		if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 		{
-			i = 0;
-			while (i < n_cmds)
+			in.i = 0;
+			while (in.i < in.n_cmds)
 			{
 				pid = fork();
 				if (pid == -1)
-					(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
-					ft_child_pro(data, pipes, i, n_cmds, envp);
+					ft_child_pro(data, envp, in);
 				data = data->next;
-				i++;
+				in.i++;
 			}
-			ft_close_pipes(pipes, n_cmds);
+			ft_close_pipes(in.pipes, in.n_cmds);
 			while (wait(NULL) > 0);
-			free(pipes);
+			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-		{
 			ft_is_builtins(data, line_env);
-		}
 		if (flag_redir == 1)
-		{
 			ft_is_redir(data, envp, heredoc);
-		}
 	}
 	else if (no_env == 0)
 	{
@@ -82,59 +75,55 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 		if (flag_path == 1)
 		{
 			flag_redir = ft_flag_redir(data);
-			n_cmds = ft_count_cmds(data);
-			pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
-			if (!pipes)
+			in.n_cmds = ft_count_cmds(data);
+			in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+			if (!in.pipes)
 				return ;
-			i = 0;
-			while (i < n_cmds - 1)
-				if (pipe(pipes[i++]) == -1)
+			int i = 0;
+			while (i < in.n_cmds - 1)
+				if (pipe(in.pipes[i++]) == -1)
 					(perror("Pipe creation failed"), exit(1));
 			if (data->type == 0 && flag_redir == 0)
 			{
-				i = 0;
-				while (i < n_cmds)
+				in.i = 0;
+				while (in.i < in.n_cmds)
 				{
 					pid = fork();
 					if (pid == -1)
-						(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+						(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 					else if (pid == 0)
-						ft_child_pro(data, pipes, i, n_cmds, envp);
+						ft_child_prop(data, line_env, envp, in);
 					data = data->next;
-					i++;
+					in.i++;
 				}
-				ft_close_pipes(pipes, n_cmds);
+				ft_close_pipes(in.pipes, in.n_cmds);
 				while (wait(NULL) > 0);
-				free(pipes);
+				free(in.pipes);
 			}
 			else if (data->type == 1 || flag_redir == 1)
 			{
 				char *command = ft_check_built_redir(data);
 				if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 				{
-					i = 0;
-					while (i < n_cmds)
+					in.i = 0;
+					while (in.i < in.n_cmds)
 					{
 						pid = fork();
 						if (pid == -1)
-							(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
+							(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 						else if (pid == 0)
-							ft_child_pro(data, pipes, i, n_cmds, envp);
+							ft_child_pro(data, envp, in);
 						data = data->next;
-						i++;
+						in.i++;
 					}
-					ft_close_pipes(pipes, n_cmds);
+					ft_close_pipes(in.pipes, in.n_cmds);
 					while (wait(NULL) > 0);
-					free(pipes);
+					free(in.pipes);
 				}
 				if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-				{
 					ft_is_builtins(data, line_env);
-				}
 				if (flag_redir == 1)
-				{
 					ft_is_redir(data, envp, heredoc);
-				}
 			}
 		}
 		else if (flag_path == 0)

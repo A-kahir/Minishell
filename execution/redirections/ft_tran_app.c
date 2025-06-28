@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/27 17:29:31 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 19:48:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void ft_tran_app(t_data *data, t_data *curr, int flag, char **env)
         else
         {
             cmds = ft_get_path(curr->cmd[0], env);
-            if (cmds[0] != NULL)
+            if (cmds[0])
             {
                 pipe(pipes[0]);
                 fd = ft_open_outfile(curr);
