@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:37:50 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/28 17:38:26 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 20:29:01 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void ft_is_builtins(t_data *data, t_built *line_env)
 	t_built *temp;
 	char *before_cd;
 
+	if (!data)
+		return;
     before_cd = NULL;
 	if (data->builtin_type == 1)
 	{

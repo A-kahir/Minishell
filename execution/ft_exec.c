@@ -46,7 +46,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				if (pid == -1)
 					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
-					ft_child_pro(data, envp, in);
+					ft_child_pro(data, line_env, envp, in);
 				data = data->next;
 				in.i++;
 			}
@@ -92,7 +92,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 					if (pid == -1)
 						(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 					else if (pid == 0)
-						ft_child_prop(data, line_env, envp, in);
+						ft_child_pro(data, line_env, envp, in);
 					data = data->next;
 					in.i++;
 				}
@@ -112,7 +112,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 						if (pid == -1)
 							(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 						else if (pid == 0)
-							ft_child_pro(data, envp, in);
+							ft_child_pro(data, line_env, envp, in);
 						data = data->next;
 						in.i++;
 					}

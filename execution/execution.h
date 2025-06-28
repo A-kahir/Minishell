@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/28 19:51:38 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 20:54:52 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,7 @@ typedef struct s_data
 
 // *****************prin funcl*****************
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
-void	ft_child_pro(t_data *curr, char **env, t_exec in);
-void	ft_child_prop(t_data *curr, t_built *line_env, char **env, t_exec in);
+void	ft_child_pro(t_data *curr,t_built *line_env, char **env, t_exec in);
 
 // *****************builtins func**************
 void ft_is_builtins(t_data *data, t_built *line_env);
