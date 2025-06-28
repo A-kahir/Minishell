@@ -25,6 +25,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+
 typedef struct s_exec
 {
 	int i;
@@ -47,6 +48,12 @@ typedef struct s_heredoc
 	int after_hered;  // example : (<< EOF cmd) or (<< EOF cmd1 | cmd2)
 	int middle_hered; // example : (cmd << EOF cmd) or (cmd1 | cmd2 << EOF cmd1 | cmd2)
 } t_heredoc;
+
+typedef struct s_ex_othr
+{
+	char **env;
+	t_heredoc *heredoc;
+} t_ex_othr;
 
 typedef enum s_type_node
 {
@@ -93,7 +100,7 @@ typedef struct s_data
 
 // *****************prin funcl*****************
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
-void	ft_child_pro(t_data *curr,t_built *line_env, char **env, t_exec in);
+void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 
 // *****************builtins func**************
 void ft_is_builtins(t_data *data, t_built *line_env);

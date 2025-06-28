@@ -16,17 +16,18 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
 	pid_t	pid;
 	t_exec	in;
+	t_ex_othr env_here;
 	t_built *curr;
 	int		flag_path;
 	int		flag_redir;
 	static int no_env;
-	char	**envp;
 
+	env_here.heredoc = heredoc;
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
 		no_env = 1;
 		ft_no_full_env(line_env);
-		envp = ft_fill_envp(line_env);
+		env_here.env = ft_fill_envp(line_env);
 		char *command = ft_check_built_redir(data);
 		flag_redir = ft_flag_redir(data);
 		in.n_cmds = ft_count_cmds(data);
@@ -46,7 +47,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				if (pid == -1)
 					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
-					ft_child_pro(data, line_env, envp, in);
+					ft_child_pro(data, line_env, env_here, in);
 				data = data->next;
 				in.i++;
 			}
@@ -57,11 +58,11 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			ft_is_builtins(data, line_env);
 		if (flag_redir == 1)
-			ft_is_redir(data, envp, heredoc);
+			ft_is_redir(data, env_here.env, env_here.heredoc);
 	}
 	else if (no_env == 0)
 	{
-		envp = ft_fill_envp(line_env);
+		env_here.env = ft_fill_envp(line_env);
 		curr = line_env;
 		flag_path = 0;
 		while (curr)
@@ -92,7 +93,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 					if (pid == -1)
 						(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 					else if (pid == 0)
-						ft_child_pro(data, line_env, envp, in);
+						ft_child_pro(data, line_env, env_here, in);
 					data = data->next;
 					in.i++;
 				}
@@ -112,7 +113,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 						if (pid == -1)
 							(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 						else if (pid == 0)
-							ft_child_pro(data, line_env, envp, in);
+							ft_child_pro(data, line_env, env_here, in);
 						data = data->next;
 						in.i++;
 					}
@@ -123,7 +124,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 					ft_is_builtins(data, line_env);
 				if (flag_redir == 1)
-					ft_is_redir(data, envp, heredoc);
+					ft_is_redir(data, env_here.env, env_here.heredoc);
 			}
 		}
 		else if (flag_path == 0)
@@ -135,7 +136,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 			if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 				ft_is_builtins_f(data, line_env);
 			if (ft_flag_redir(data) == 1)
-				ft_is_redir(data, envp, heredoc);
+				ft_is_redir(data, env_here.env, env_here.heredoc);
 		}
 	}
 }
