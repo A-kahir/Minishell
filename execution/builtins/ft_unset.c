@@ -6,21 +6,21 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:32:17 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 12:28:43 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:37:37 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-t_built	*ft_unset(t_built *line_env, char **cmd, char **env)
+t_built	*ft_unset(t_built *line_env, char **cmd)
 {
     t_built *curr;
     int i;
  
-    curr = line_env;
     i = 1;
     while (cmd[i])
     {
+        curr = line_env;
         while (curr)
         {
             if (ft_strcmp(curr->var, cmd[i]) == 0)
@@ -32,13 +32,5 @@ t_built	*ft_unset(t_built *line_env, char **cmd, char **env)
         }
         i++;
     }
-    if (access(cmd[i], F_OK) != 0)
-	{
-		return (line_env);
-	}
-	else if (access(cmd[i], X_OK) != 0)
-	{
-		return (line_env);
-	}
     return (line_env);
 }

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 18:25:48 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 18:15:51 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:27:49 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void ft_child_read_f(t_data *data, int pipes[][2], int i, int n_cmds, int fd, ch
         (perror("execve failed"), exit(1));
 }
 
-void ft_read_f(t_data *data, t_data *curr, int flag, char **env)
+void ft_read_f(t_data *data, t_data *curr, char **env)
 {
     int fd;
     int i;
@@ -95,7 +95,6 @@ void ft_read_f(t_data *data, t_data *curr, int flag, char **env)
         i = 0;
         while (i < n_cmds)
         {
-            int flag_exit = 0;
             int fd = ft_open_infile(temp);
             if (fd == -1)
                 return;

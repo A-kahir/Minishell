@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/27 13:37:59 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 16:55:27 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,16 +89,16 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
 void	ft_child_pro(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
 
 // *****************builtins func**************
-void ft_is_builtins(t_data *data, t_built *line_env, char **env);
+void ft_is_builtins(t_data *data, t_built *line_env);
 void ft_echo(char **str);
 t_built *ft_cd(char **str, t_built *line_env);
-void ft_pwd(char **str);
-t_built *ft_export(t_built *line_env, char **cmd, int flag_cd);
+void ft_pwd(void);
+t_built *ft_export(t_built *line_env, char **cmd);
 	// -> func export :
-void ft_add_vars(t_built *line_env, char **cmd);
+void ft_add_var(t_built *line_env, char *cmd);
 void ft_is_positif(t_built *line_env, char *cmd);
 
-t_built	*ft_unset(t_built *line_env, char **cmd, char **env);
+t_built	*ft_unset(t_built *line_env, char **cmd);
 t_built	*ft_env(t_built *line_env);
 void ft_exit(char **str);
 
@@ -106,7 +106,7 @@ void ft_exit(char **str);
 // **************redirections func*************
 void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc);
 void ft_tran_app(t_data *data, t_data *curr, int flag, char **env);
-void ft_read_f(t_data *data, t_data *curr, int flag, char **env);
+void ft_read_f(t_data *data, t_data *curr, char **env);
 // -> heredoc :
 int ft_handle_heredoc(char *del);
 		// -> heredoc before:
@@ -126,13 +126,13 @@ int ft_flag_redir(t_data *data);
 // ***************utils execution****************** 
 void ft_close_pipes(int pipes[][2], int n_cmds);
 int ft_count_cmds(t_data *cmd);
-char *ft_check_built_redir(t_data *data, char **env);
+char *ft_check_built_redir(t_data *data);
 t_built *ft_fill_struct(char **env);
 t_built *ft_update_exp(t_built *line, int flag_cd);
 t_built *ft_sort_vars(t_built *head);
 int ft_specify_var(char *str);
-void ft_is_builtins_f(t_data *data, t_built *line_env, char **env);
-char *ft_check_built_redir_f(t_data *data, char **env);
+void ft_is_builtins_f(t_data *data, t_built *line_env);
+char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 
 // ******************Libft func******************
@@ -147,8 +147,9 @@ int	ft_atoi(const char *str);
 void ft_rm_list(t_built **head, t_built *target);
 t_built *ft_add_front(t_built *head, char *var, char *value);
 t_built *ft_add_back(t_built *line, char *var, char *value);
-char	*ft_substr(char *s, unsigned int start, size_t len);
+char	*ft_substr(char *s, int start, size_t len);
 void	*ft_memcpy(void *dst, void *src, size_t n);
 void	ft_free_split(char **split);
+char	*ft_strnstr(char *haystack, char *needle, int len);
 
 #endif

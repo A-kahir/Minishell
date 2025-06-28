@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:28:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/27 17:05:22 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:28:48 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
                 }
                 if (redir->type == 2)
                 {
-                    ft_read_f(data, curr, flag, env);
+                    ft_read_f(data, curr, env);
                 }
                 if (redir->type == 3)
                 {

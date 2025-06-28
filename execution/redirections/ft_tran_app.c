@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:19:18 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 13:01:58 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:29:31 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int ft_open_outfile(t_data *data)
 {
     int outf_fd;
 
+    outf_fd = -1;
     if (data->redir->target && data->redir->type == 0)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);

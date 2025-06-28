@@ -6,13 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 13:11:40 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/25 12:54:10 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:26:33 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-char *ft_check_built_redir(t_data *data, char **env)
+char *ft_check_built_redir(t_data *data)
 {
     char *str;
 

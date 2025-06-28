@@ -8,8 +8,10 @@ char	*ft_strdup(char *s1)
 	int		len;
 	int		i;
 
+	if (s1 == NULL)
+		return (NULL);
 	len = ft_strlen(s1);
-	ptr = malloc((len + 1 ) * sizeof(char));
+	ptr = malloc((len + 1) * sizeof(char));
 	if (ptr == NULL)
 	{
 		return (NULL);

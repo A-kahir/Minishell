@@ -45,14 +45,17 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	t_built *curr;
 	int flag_path;
 	int flag_redir;
+	static int no_env;
 	char **envp;
 
-	if (i == 0 && ft_strcmp(line_env->var, "OLDPWD") == 0)
+	i = 0;
+	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
+		no_env = 1;
 		ft_no_full_env(line_env);
 		envp = ft_fill_envp(line_env);
 		i = 0;
-		char *command = ft_check_built_redir(data, envp);
+		char *command = ft_check_built_redir(data);
 		flag_redir = ft_flag_redir(data);
 		n_cmds = ft_count_cmds(data);
 		pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
@@ -70,9 +73,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				if (pid == -1)
 					(ft_close_pipes(pipes, n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
-				{
 					ft_child_pro(data, pipes, i, n_cmds, envp);
-				}
 				data = data->next;
 				i++;
 			}
@@ -82,15 +83,14 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
-			ft_is_builtins(data, line_env, envp);
+			ft_is_builtins(data, line_env);
 		}
 		if (flag_redir == 1)
 		{
 			ft_is_redir(data, envp, heredoc);
 		}
-		return ;
 	}
-	else
+	else if (no_env == 0)
 	{
 		envp = ft_fill_envp(line_env);
 		curr = line_env;
@@ -116,7 +116,6 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 					(perror("Pipe creation failed"), exit(1));
 			if (data->type == 0 && flag_redir == 0)
 			{
-				printf("========> PIPE NODE <========\n");
 				i = 0;
 				while (i < n_cmds)
 				{
@@ -134,7 +133,7 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 			}
 			else if (data->type == 1 || flag_redir == 1)
 			{
-				char *command = ft_check_built_redir(data, envp);
+				char *command = ft_check_built_redir(data);
 				if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
 				{
 					i = 0;
@@ -154,23 +153,24 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 				}
 				if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 				{
-					ft_is_builtins(data, line_env, envp);
+					ft_is_builtins(data, line_env);
 				}
 				if (flag_redir == 1)
 				{
 					ft_is_redir(data, envp, heredoc);
 				}
 			}
-			else
-			{
-				char *command = ft_check_built_redir(data, envp);
-				if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
-					ft_is_builtins_f(data, line_env, envp);
-				else if (ft_flag_redir(data) == 1)
-					ft_is_redir(data, envp, heredoc);
-				else
-					printf("minishell: %s: No such file or directory\n", data->cmd[0]);
-			}
+		}
+		else if (flag_path == 0)
+		{
+			flag_redir = ft_flag_redir(data);
+			char *command = ft_check_built_redir(data);
+			if (ft_strcmp(command, "cmd") == 0 && flag_redir == 0)
+				printf("minishell: %s: No such file or directory\n", data->cmd[0]);
+			if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
+				ft_is_builtins_f(data, line_env);
+			if (ft_flag_redir(data) == 1)
+				ft_is_redir(data, envp, heredoc);
 		}
 	}
 }

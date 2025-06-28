@@ -200,7 +200,7 @@ void free_data_structure(t_data *data)
 }
 
 // Function to detect heredoc position
-void detect_heredoc_position(t_data *data, t_heredoc *heredoc, char *original_input)
+void detect_heredoc_position(t_data *data, t_heredoc *heredoc)
 {
     t_data *cur = data;
     int i = 0, pos = -1, has_before = 0, has_after = 0;
@@ -218,7 +218,6 @@ void detect_heredoc_position(t_data *data, t_heredoc *heredoc, char *original_in
     cur = data;
     for (int j = 0; j < pos; j++, cur = cur->next)
         if (cur->cmd && cur->cmd[0]) has_before = 1;
-    for (int j = 0; j <= pos; j++, cur = cur->next);
     while (cur)
     {
         if (cur->cmd && cur->cmd[0]) has_after = 1;
@@ -353,6 +352,10 @@ int main(int ac, char **av, char **envp)
     t_heredoc *heredoc;
     static t_built *line_env;
 
+    if (av[0] == NULL)
+        return (1);
+    if (ac == -1)
+        return (1);
     if (!line_env)
     {
         line_env = ft_fill_struct(envp);
@@ -366,7 +369,7 @@ int main(int ac, char **av, char **envp)
         if (parsed)
         {
             heredoc = malloc(sizeof(t_heredoc));
-            detect_heredoc_position(parsed, heredoc, input);
+            detect_heredoc_position(parsed, heredoc);
             if (heredoc->middle_hered)
                 merge_middle_heredoc_cmd(parsed);
             replace_export_dollar_vars(parsed, line_env);

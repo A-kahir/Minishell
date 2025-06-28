@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:25 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/27 16:53:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 16:54:25 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ t_built	*ft_env(t_built *line_env)
 {
 	t_built *curr;
 	static int flag_path_env;
-	int	i;
 	
 	if (line_env)
 	{

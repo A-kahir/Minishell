@@ -6,13 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 19:19:26 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/22 19:21:27 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:28:10 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, int start, size_t len)
 {
 	char	*ptr;
 	size_t	alloc_size;

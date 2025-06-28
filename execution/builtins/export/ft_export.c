@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 12:31:38 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/27 16:30:01 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 16:25:17 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void ft_only_print(t_built *line)
     }
 }
 
-t_built *ft_export(t_built *line_env, char **cmd, int flag_cd)
+t_built *ft_export(t_built *line_env, char **cmd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
         ft_only_print(line_env);
@@ -57,14 +57,15 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_cd)
             if (cmd[i][0] == '$')
                 ft_only_print(line_env);
             else if (check == 1)
-                ft_is_positif(line_env, cmd[i]);
-            else if (check == -1)
             {
-                printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
-                return (line_env);
+                ft_is_positif(line_env, cmd[i]);
+                i++;
+                continue ;
             }
+            else if (check == -1)
+                return (printf("minishell: export: `%s': not a valid identifier\n", cmd[i]), line_env);
             else if (check == 0)
-               ft_add_vars(line_env, cmd);
+                ft_add_var(line_env, cmd[i]);
             i++;
         }
     }
