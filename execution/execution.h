@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:34:27 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/28 16:55:27 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/28 18:29:55 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ int ft_specify_var(char *str);
 void ft_is_builtins_f(t_data *data, t_built *line_env);
 char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
+void ft_no_full_env(t_built *line_env);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

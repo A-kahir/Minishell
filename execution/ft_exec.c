@@ -12,30 +12,6 @@
 
 #include "execution.h"
 
-int ft_already_exists(t_built *line_env, char *var)
-{
-	t_built *curr = line_env;
-	while (curr)
-	{
-		if (ft_strcmp(curr->var, var) == 0)
-			return (1);
-		curr = curr->next;
-	}
-	return (0);
-}
-
-void ft_no_full_env(t_built *line_env)
-{
-	if (!ft_already_exists(line_env, "PATH"))
-		ft_add_back(line_env, "PATH", PATH_ENV);
-	if (!ft_already_exists(line_env, "PWD"))
-		ft_add_back(line_env, "PWD", getcwd(NULL, 0));
-	if (!ft_already_exists(line_env, "SHLVL"))
-		ft_add_back(line_env, "SHLVL", "1");
-	if (!ft_already_exists(line_env, "OLDPWD"))
-		ft_add_back(line_env, "OLDPWD", NULL);
-}
-
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
 	int		n_cmds;
