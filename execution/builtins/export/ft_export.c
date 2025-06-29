@@ -12,24 +12,51 @@
 
 #include "../../execution.h"
 
-static	void	ft_we_have_var(t_built *line_env, char **cmd)
+static void	cantinue(t_built *line_env, char **cmd, int flag)
 {
 	int	i;
 	int	check;
-	int print;
-	int flag;
-	t_built *curr;
+	int	print;
+
+	i = 1;
+	print = 0;
+	if (flag == 0)
+	{
+		while (cmd[i])
+		{
+			if (cmd[i][0] == '$' && print++ == 0)
+				ft_only_print(line_env);
+			i++;
+		}
+	}
+	else
+	{
+		while (cmd[i])
+		{
+			check = ft_specify_var(cmd[i]);
+			if (check == 1)
+				ft_is_positif(line_env, cmd[i]);
+			else if (check == 0)
+				ft_add_var(line_env, cmd[i]);
+			i++;
+		}
+	}
+}
+
+
+static void	ft_we_have_var(t_built *line_env, char **cmd)
+{
+	int	i;
+	int	check;
+	int	flag;
 
 	i = 1;
 	flag = 0;
-	curr = line_env;
 	while (cmd[i])
 	{
 		check = ft_specify_var(cmd[i]);
 		if (ft_strchr(cmd[i], '='))
-		{
 			flag = 1;
-		}
 		else if (ft_strchr(cmd[i], '$') || check == 4)
 			flag = 0;
 		if (check == -1)
@@ -39,32 +66,7 @@ static	void	ft_we_have_var(t_built *line_env, char **cmd)
 		}
 		i++;
 	}
-	print = 0;
-	i = 1;
-	while (cmd[i] && flag == 0)
-	{
-		if (cmd[i][0] == '$')
-		{
-			if (print == 0)
-				ft_only_print(line_env);
-			print = 1;
-		}
-		i++;
-	}
-	i = 1;
-	while (cmd[i] && flag == 1)
-	{
-		check = ft_specify_var(cmd[i]);
-		if (check == 1)
-		{
-			ft_is_positif(line_env, cmd[i]);
-			i++;
-			continue ;
-		}
-		else if (check == 0)
-			ft_add_var(line_env, cmd[i]);
-		i++;
-	}
+	cantinue(line_env, cmd, flag);
 }
 
 t_built	*ft_export(t_built *line_env, char **cmd)
