@@ -12,31 +12,14 @@
 
 #include "../../execution.h"
 
-int ft_check_alr_have(char *var, t_built *curr)
-{
-	t_built *tmp;
-
-	tmp = curr;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->var, var) == 0)
-		{
-			return (0);
-		}
-		tmp = tmp->next;
-	}
-	return (1);
-}
-
 static	void	ft_we_have_var(t_built *line_env, char **cmd)
 {
 	int	i;
-	int	j;
 	int	check;
-	int	flag;
-	t_built *curr;
+	int print;
 
 	i = 1;
+	print = 0;
 	while (cmd[i])
 	{
 		check = ft_specify_var(cmd[i]);
@@ -48,24 +31,9 @@ static	void	ft_we_have_var(t_built *line_env, char **cmd)
 		}
 		if (cmd[i][0] == '$')
 		{
-			curr = line_env;
-			j = 0;
-			while (cmd[j])
-			{
-				if (ft_check_alr_have(cmd[j], curr) == 0)
-				{
-					flag = 1;
-				}
-				else 
-					flag = 0;
-				curr = curr->next;
-				j++;
-			}
-			if (flag == 0)
-			{
+			if (print == 0)
 				ft_only_print(line_env);
-				return ;
-			}
+			print = 1;
 		}
 		else if (check == -1)
 		{
