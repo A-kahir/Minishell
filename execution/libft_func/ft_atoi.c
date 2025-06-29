@@ -6,12 +6,11 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:20:17 by akahir            #+#    #+#             */
-/*   Updated: 2025/05/24 12:20:30 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:59:32 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
-
 
 static	int	over_flow(int signe)
 {

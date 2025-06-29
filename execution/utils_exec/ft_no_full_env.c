@@ -12,9 +12,11 @@
 
 #include "../execution.h"
 
-static int ft_already_exists(t_built *line_env, char *var)
+static int	ft_already_exists(t_built *line_env, char *var)
 {
-	t_built *curr = line_env;
+	t_built	*curr;
+
+	curr = line_env;
 	while (curr)
 	{
 		if (ft_strcmp(curr->var, var) == 0)
@@ -24,7 +26,7 @@ static int ft_already_exists(t_built *line_env, char *var)
 	return (0);
 }
 
-void ft_no_full_env(t_built *line_env)
+void	ft_no_full_env(t_built *line_env)
 {
 	if (!ft_already_exists(line_env, "PATH"))
 		ft_add_back(line_env, "PATH", PATH_ENV);

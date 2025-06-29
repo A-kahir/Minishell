@@ -6,16 +6,16 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:28:26 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/24 20:46:54 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:47:13 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-t_built *ft_cd(char **str, t_built *line_env)
+t_built	*ft_cd(char **str, t_built *line_env)
 {
-	t_built *curr;
-	char *home;
+	t_built	*curr;
+	char	*home;
 
 	curr = line_env;
 	if (ft_strcmp(str[0], "cd") == 0 && !str[1])

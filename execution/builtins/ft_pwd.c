@@ -12,16 +12,18 @@
 
 #include "../execution.h"
 
-void ft_pwd(void)
+void	ft_pwd(void)
 {
-	char *buff;
+	char	*path;
 
-	buff = getcwd(NULL, 0);
-	if (buff)
+	path = getcwd(NULL, 0);
+	if (path)
 	{
-		printf("%s\n", buff);
-		free(buff);
+		printf("%s\n", path);
+		free(path);
 	}
 	else
+	{
 		perror("pwd");
+	}
 }

@@ -12,30 +12,39 @@
 
 #include "../execution.h"
 
+static void	ft_print_env_vars(t_built *curr)
+{
+	while (curr)
+	{
+		if (ft_strcmp(curr->var, "PATH") == 0
+			&& curr->next
+			&& curr->next->next
+			&& ft_strcmp(curr->next->var, "PWD") == 0
+			&& ft_strcmp(curr->next->next->var, "SHLVL") == 0)
+		{
+			curr = curr->next;
+			continue ;
+		}
+		if (curr->var && curr->value)
+		{
+			printf("%s=", curr->var);
+			printf("%s\n", curr->value);
+		}
+		curr = curr->next;
+	}
+}
+
 t_built	*ft_env(t_built *line_env)
 {
-	t_built *curr;
-	static int flag_path_env;
-	
+	t_built		*curr;
+	static int	flag_path_env;
+
 	if (line_env)
 	{
 		if (flag_path_env == 0)
 			line_env = ft_add_back(line_env, "_", "/usr/bin/env");
 		curr = line_env;
-		while (curr)
-		{
-			if (ft_strcmp(curr->var, "PATH") == 0 && ft_strcmp(curr->next->var, "PWD") == 0 && ft_strcmp(curr->next->next->var, "SHLVL") == 0)
-			{
-				curr = curr->next;
-				continue ;
-			}
-			if (curr->var && curr->value)
-			{
-				printf("%s=", curr->var);
-				printf("%s\n", curr->value);
-			}
-			curr = curr->next;
-		}
+		ft_print_env_vars(curr);
 		flag_path_env = 1;
 	}
 	return (line_env);

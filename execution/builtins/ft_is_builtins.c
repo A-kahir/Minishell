@@ -12,45 +12,55 @@
 
 #include "../execution.h"
 
-void ft_is_builtins(t_data *data, t_built *line_env)
+static void	ft_save_oldpwd(t_built *temp, char *before_cd)
 {
-	static int flag_cd;
-	t_built *temp;
-	char *before_cd;
+	while (temp)
+	{
+		if (ft_strcmp(temp->var, "OLDPWD") == 0)
+		{
+			if (temp->value)
+				free(temp->value);
+			temp->value = before_cd;
+			return ;
+		}
+		temp = temp->next;
+	}
+}
+
+static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
+{
+	t_built	*temp;
+	char	*before_cd;
+
+	before_cd = NULL;
+	temp = line_env;
+	while (temp)
+	{
+		if (ft_strcmp(temp->var, "PWD") == 0)
+		{
+			if (temp->value)
+				before_cd = ft_strdup(temp->value);
+			break ;
+		}
+		temp = temp->next;
+	}
+	line_env = ft_cd(data->cmd, line_env);
+	*flag_cd = 1;
+	temp = line_env;
+	ft_save_oldpwd(temp, before_cd);
+	if (before_cd)
+		line_env = ft_add_front(line_env, "OLDPWD", before_cd);
+	return (line_env);
+}
+
+void	ft_is_builtins(t_data *data, t_built *line_env)
+{
+	static int	flag_cd;
 
 	if (!data)
-		return;
-    before_cd = NULL;
+		return ;
 	if (data->builtin_type == 1)
-	{
-		temp = line_env;
-		while (temp)
-		{
-			if (ft_strcmp(temp->var, "PWD") == 0)
-			{
-				if (temp->value)
-					before_cd = ft_strdup(temp->value);
-				break;
-			}
-			temp = temp->next;
-		}
-		line_env = ft_cd(data->cmd, line_env);
-		flag_cd = 1;
-		temp = line_env;
-		while (temp)
-		{
-			if (ft_strcmp(temp->var, "OLDPWD") == 0)
-			{
-				if (temp->value)
-					free(temp->value);
-				temp->value = before_cd;
-				break ;
-			}
-			temp = temp->next;
-		}
-		if (!temp && before_cd)
-			line_env = ft_add_front(line_env, "OLDPWD", before_cd);
-	}
+		line_env = ft_handle_cd(data, line_env, &flag_cd);
 	else if (data->builtin_type == 0)
 		ft_echo(data->cmd);
 	else if (data->builtin_type == 2)

@@ -36,7 +36,6 @@ void ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
 
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
-	t_exec	in;
 	t_ex_othr env_here;
 	static int no_env;
 

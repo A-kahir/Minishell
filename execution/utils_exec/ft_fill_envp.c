@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:39:36 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/26 15:40:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/06/29 16:06:10 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int	ft_len_struct(t_built *line_env)
 {
-	t_built *curr;
-	int count;
+	t_built	*curr;
+	int		count;
 
 	curr = line_env;
 	count = 0;
@@ -27,13 +27,27 @@ static int	ft_len_struct(t_built *line_env)
 	return (count);
 }
 
-char **ft_fill_envp(t_built *line_env)
+static char	*ft_build_env(t_built *curr)
 {
-	t_built *curr;
-	char **envp;
-	char *temp;
-	int i;
-	int len;
+	char	*temp;
+	char	*env_str;
+
+	temp = ft_strjoin(curr->var, "=");
+	if (!temp)
+		return (NULL);
+	env_str = ft_strjoin(temp, curr->value);
+	free(temp);
+	if (!env_str)
+		return (NULL);
+	return (env_str);
+}
+
+char	**ft_fill_envp(t_built *line_env)
+{
+	t_built	*curr;
+	char	**envp;
+	int		i;
+	int		len;
 
 	len = ft_len_struct(line_env);
 	envp = malloc(sizeof(char *) * (len + 1));
@@ -45,19 +59,9 @@ char **ft_fill_envp(t_built *line_env)
 	{
 		if (curr->value)
 		{
-			temp = ft_strjoin(curr->var, "=");
-			if (!temp)
-			{
-				ft_free_split(envp);
-				return (NULL);
-			}
-			envp[i] = ft_strjoin(temp, curr->value);
-			free(temp);
+			envp[i] = ft_build_env(curr);
 			if (!envp[i])
-			{
-				ft_free_split(envp);
-				return (NULL);
-			}
+				return (ft_free_split(envp), NULL);
 			i++;
 		}
 		curr = curr->next;

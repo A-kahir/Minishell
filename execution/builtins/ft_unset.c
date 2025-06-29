@@ -14,23 +14,23 @@
 
 t_built	*ft_unset(t_built *line_env, char **cmd)
 {
-    t_built *curr;
-    int i;
- 
-    i = 1;
-    while (cmd[i])
-    {
-        curr = line_env;
-        while (curr)
-        {
-            if (ft_strcmp(curr->var, cmd[i]) == 0)
-            {
-                ft_rm_list(&line_env, curr);
-                break ;
-            }
-            curr = curr->next;
-        }
-        i++;
-    }
-    return (line_env);
+	t_built	*curr;
+	int		i;
+
+	i = 1;
+	while (cmd[i])
+	{
+		curr = line_env;
+		while (curr)
+		{
+			if (ft_strcmp(curr->var, cmd[i]) == 0)
+			{
+				ft_rm_list(&line_env, curr);
+				break ;
+			}
+			curr = curr->next;
+		}
+		i++;
+	}
+	return (line_env);
 }

@@ -111,7 +111,7 @@ void ft_echo(char **str);
 t_built *ft_cd(char **str, t_built *line_env);
 void ft_pwd(void);
 t_built *ft_export(t_built *line_env, char **cmd);
-	// -> func export :
+// -> func export :
 void ft_add_var(t_built *line_env, char *cmd);
 void ft_is_positif(t_built *line_env, char *cmd);
 
@@ -152,6 +152,7 @@ void ft_is_builtins_f(t_data *data, t_built *line_env);
 char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 void ft_no_full_env(t_built *line_env);
+void ft_only_print(t_built *line);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
