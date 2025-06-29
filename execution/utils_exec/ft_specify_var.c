@@ -21,6 +21,8 @@ int	ft_specify_var(char *str)
 		return (-1);
 	if (str[0] >= '0' && str[0] <= '9')
 		return (-1);
+	if (str[0] == '$')
+		return (4);
 	while (str[i])
 	{
 		if (str[i] == '=')

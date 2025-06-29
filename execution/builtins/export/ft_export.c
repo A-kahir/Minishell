@@ -17,10 +17,42 @@ static	void	ft_we_have_var(t_built *line_env, char **cmd)
 	int	i;
 	int	check;
 	int print;
+	int flag;
+	t_built *curr;
 
 	i = 1;
-	print = 0;
+	flag = 0;
+	curr = line_env;
 	while (cmd[i])
+	{
+		check = ft_specify_var(cmd[i]);
+		if (ft_strchr(cmd[i], '='))
+		{
+			flag = 1;
+		}
+		else if (ft_strchr(cmd[i], '$') || check == 4)
+			flag = 0;
+		if (check == -1)
+		{
+			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			return ;
+		}
+		i++;
+	}
+	print = 0;
+	i = 1;
+	while (cmd[i] && flag == 0)
+	{
+		if (cmd[i][0] == '$')
+		{
+			if (print == 0)
+				ft_only_print(line_env);
+			print = 1;
+		}
+		i++;
+	}
+	i = 1;
+	while (cmd[i] && flag == 1)
 	{
 		check = ft_specify_var(cmd[i]);
 		if (check == 1)
@@ -28,17 +60,6 @@ static	void	ft_we_have_var(t_built *line_env, char **cmd)
 			ft_is_positif(line_env, cmd[i]);
 			i++;
 			continue ;
-		}
-		if (cmd[i][0] == '$')
-		{
-			if (print == 0)
-				ft_only_print(line_env);
-			print = 1;
-		}
-		else if (check == -1)
-		{
-			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
-			return ;
 		}
 		else if (check == 0)
 			ft_add_var(line_env, cmd[i]);
