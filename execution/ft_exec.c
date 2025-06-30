@@ -53,5 +53,5 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	{
 		status = ft_have_env(data, line_env, env_here);
 	}
-	printf("$?) status ===> %d\n", status);
+	printf("minishell: %d: command not found\n", status);
 }
