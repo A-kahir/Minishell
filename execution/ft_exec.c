@@ -12,11 +12,13 @@
 
 #include "execution.h"
 
-void ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
+int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
 	int		flag_path;
+	int		status;
 	t_built *curr;
 
+	status = 0;
 	env_here.env = ft_fill_envp(line_env);
 	flag_path = 0;
 	curr = line_env;
@@ -29,24 +31,27 @@ void ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
 		curr = curr->next;
 	}
 	if (flag_path == 1)
-		ft_exec_normal(data, env_here, line_env);
+		status = ft_exec_normal(data, env_here, line_env);
 	else if (flag_path == 0)
-		ft_if_un_path(data, env_here, line_env);
+		status = ft_if_un_path(data, env_here, line_env);
+	return (status);
 }
 
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
 	t_ex_othr env_here;
 	static int no_env;
+	static int status;
 
 	env_here.heredoc = heredoc;
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
 		no_env = 1;
-		ft_no_env(data, env_here, line_env);
+		status = ft_no_env(data, env_here, line_env);
 	}
 	else if (no_env == 0)
 	{
-		ft_have_env(data, line_env, env_here);
+		status = ft_have_env(data, line_env, env_here);
 	}
+	printf("$?) status ===> %d\n", status);
 }

@@ -12,21 +12,23 @@
 
 #include "execution.h"
 
-void ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env)
+int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env)
 {
 	pid_t pid;
 	t_exec in;
 	int		flag_redir;
+	int		status;
 	char *command;
 	int i;
 
+	status = 0;
 	flag_redir = ft_flag_redir(data);
 	command = ft_check_built_redir(data);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
 	if (!in.pipes)
-		return ;
+		return (0);
 	i = 0;
 	while (i < in.n_cmds - 1)
 		if (pipe(in.pipes[i++]) == -1)
@@ -45,13 +47,15 @@ void ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env)
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		while (wait(NULL) > 0);
+		waitpid(pid, &status, 0);
+		status = status / 256;
 		free(in.pipes);
 	}
-	if ((ft_strcmp(command, "cmd") == 0 && flag_redir == 0) || data->builtin_type == 5)
+	if (data && ((ft_strcmp(command, "cmd") == 0 && flag_redir == 0) || data->builtin_type == 5))
 		printf("minishell: %s: No such file or directory\n", data->cmd[0]);
 	if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 		ft_is_builtins_f(data, line_env);
 	if (ft_flag_redir(data) == 1)
 		ft_is_redir(data, env_here.env, env_here.heredoc);
+	return (status);
 }

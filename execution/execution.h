@@ -101,9 +101,9 @@ typedef struct s_data
 // *****************prin funcl*****************
 void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
 void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
-void ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env);
-void ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env);
-void ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env);
+int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env);
+int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env);
+int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env);
 
 // *****************builtins func**************
 void ft_is_builtins(t_data *data, t_built *line_env);
