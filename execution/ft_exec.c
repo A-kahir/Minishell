@@ -37,13 +37,15 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
 	return (status);
 }
 
-void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
+int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 {
 	t_ex_othr env_here;
+	t_data *curr;
 	static int no_env;
-	static int status;
+	int status;
 
 	env_here.heredoc = heredoc;
+	status = 0;
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
 		no_env = 1;
@@ -53,5 +55,5 @@ void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	{
 		status = ft_have_env(data, line_env, env_here);
 	}
-	printf("minishell: %d: command not found\n", status);
+	return (status);
 }

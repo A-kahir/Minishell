@@ -29,30 +29,37 @@ static	int	ft_check(char **str, int *i)
 	return (0);
 }
 
-void	ft_echo(char **str)
+void	ft_echo(char **str, t_built *line_env)
 {
-	int	i;
-	int	flag;
-	int	j;
+	int		i;
+	int		flag_n;
+	t_built	*curr;
 
 	i = 1;
-	flag = 0;
-	if (str[i] && ft_strcmp(str[i], "echo") == 0)
-		i++;
+	flag_n = 0;
 	while (str[i] && ft_check(str, &i))
-		flag = 1;
-	while (str[i] && str[i][0] != '$')
+		flag_n = 1;
+	while (str[i])
 	{
-		j = 0;
-		while (str[i][j])
+		if (str[i][0] != '$')
+			write(1, str[i], ft_strlen(str[i]));
+		else if (str[i][0] == '$')
 		{
-			write(1, &str[i][j], 1);
-			j++;
+			curr = line_env;
+			while (curr)
+			{
+				if (ft_strcmp(curr->var, str[i] + 1) == 0)
+				{
+					write(1, curr->value, ft_strlen(curr->value));
+					break;
+				}
+				curr = curr->next;
+			}
 		}
 		if (str[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
-	if (!flag)
+	if (!flag_n)
 		write(1, "\n", 1);
 }

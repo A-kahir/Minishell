@@ -60,7 +60,7 @@ void	ft_is_builtins_f(t_data *data, t_built *line_env)
 	if (data->builtin_type == 1)
 		line_env = ft_handle_cd(data, line_env, &flag_cd);
 	else if (data->builtin_type == 0)
-		ft_echo(data->cmd);
+		ft_echo(data->cmd, line_env);
 	else if (data->builtin_type == 2)
 		ft_pwd();
 	else if (data->builtin_type == 3)

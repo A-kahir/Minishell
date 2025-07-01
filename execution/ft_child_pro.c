@@ -31,7 +31,12 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 		(ft_is_redir(curr, env_here.env, env_here.heredoc), exit(0));
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env);
 	if (!cmd_args)
-		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+	{
+		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
+			(printf("%s: command not found\n", curr->cmd[0]), exit(127));
+		else
+			(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+	}
 	if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
 		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
 }

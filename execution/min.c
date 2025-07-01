@@ -345,12 +345,122 @@ void replace_export_dollar_vars(t_data *data, t_built *env)
     }
 }
 
+
+static int	count_len_number(long long n)
+{
+	int	count;
+
+	count = 1;
+	while (n / 10)
+	{
+		count++;
+		n = n / 10;
+	}
+	return (count);
+}
+
+static void	reverse_number(char *stock)
+{
+	int		start;
+	int		end;
+	int		i;
+	char	temp;
+
+	start = 0;
+	end = ft_strlen(stock) - 1;
+	i = 0;
+	if (stock[i] == '-')
+	{
+		start++;
+		i++;
+	}
+	while (start < end)
+	{
+		temp = stock[start];
+		stock[start] = stock[end];
+		stock[end] = temp;
+		start++;
+		end--;
+	}
+}
+
+static void	if_negative(int n, int len_number, char *stock)
+{
+	int	digit;
+	int	i;
+
+	digit = 0;
+	i = 0;
+	if (n < 0)
+	{
+		while (len_number > 0)
+		{
+			if (i == 0)
+			{
+				stock[i] = '-';
+				i++;
+			}
+			digit = (n % 10) * -1;
+			stock[i] = (digit + '0');
+			n = n / 10;
+			i++;
+			len_number--;
+		}
+	}
+	stock[i] = '\0';
+}
+
+static void	if_positive(long long n, int len_number, char *stock)
+{
+	int	digit;
+	int	i;
+
+	digit = 0;
+	i = 0;
+	while (len_number > 0)
+	{
+		digit = n % 10;
+		stock[i] = digit + '0';
+		n = n / 10;
+		i++;
+		len_number--;
+	}
+	stock[i] = '\0';
+}
+
+char	*ft_itoa(int n)
+{
+	char		*stock;
+	int			len_number;
+
+	if (n == 0)
+		return (ft_strdup("0"));
+	len_number = count_len_number(n);
+	if (n < 0)
+	{
+		stock = (char *)malloc((len_number + 2) * sizeof(char));
+	}
+	else
+	{
+		stock = (char *)malloc((len_number + 1) * sizeof(char));
+	}
+	if (stock == NULL)
+		return (NULL);
+	if (n < 0)
+		if_negative(n, len_number, stock);
+	else
+		if_positive(n, len_number, stock);
+	reverse_number(stock);
+	return (stock);
+}
+
 int main(int ac, char **av, char **envp)
 {
     char *input;
-    t_data *parsed;
+    t_data *data;
     t_heredoc *heredoc;
     static t_built *line_env;
+    static int status;
 
     if (av[0] == NULL)
         return (1);
@@ -365,17 +475,36 @@ int main(int ac, char **av, char **envp)
     {
         if (*input)
             add_history(input);
-        parsed = parse_input(input);
-        if (parsed)
+        data = parse_input(input);
+        t_data *curr = data;
+        static int flag;
+        while (curr)
+        {
+            if (curr->cmd && curr->cmd[0] && ft_strcmp(curr->cmd[0], "$?") == 0)
+            {
+                free(curr->cmd[0]);
+                if (flag == 0)
+                {
+                    curr->cmd[0] = ft_strdup("0");
+                    flag = 1;
+                }
+                else if (flag == 1)
+                {
+                    curr->cmd[0] = ft_strdup(ft_itoa(status));
+                }
+            }
+            curr = curr->next;
+        }
+        if (data)
         {
             heredoc = malloc(sizeof(t_heredoc));
-            detect_heredoc_position(parsed, heredoc);
+            detect_heredoc_position(data, heredoc);
             if (heredoc->middle_hered)
-                merge_middle_heredoc_cmd(parsed);
-            replace_export_dollar_vars(parsed, line_env);
-            ft_exec(parsed, heredoc, line_env);
+                merge_middle_heredoc_cmd(data);
+            replace_export_dollar_vars(data, line_env);
+            status = ft_exec(data, heredoc, line_env);
             free(heredoc);
-            free_data_structure(parsed);
+            free_data_structure(data);
         }
         free(input);
     }

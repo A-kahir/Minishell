@@ -99,7 +99,7 @@ typedef struct s_data
 }	t_data;
 
 // *****************prin funcl*****************
-void ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
+int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
 void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env);
 int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env);
@@ -107,7 +107,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env);
 
 // *****************builtins func**************
 void ft_is_builtins(t_data *data, t_built *line_env);
-void ft_echo(char **str);
+void ft_echo(char **str, t_built *line_env);
 t_built *ft_cd(char **str, t_built *line_env);
 void ft_pwd(void);
 t_built *ft_export(t_built *line_env, char **cmd);
