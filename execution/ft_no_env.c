@@ -22,7 +22,8 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 
 	status = 0;
 	ft_no_full_env(line_env);
-	in.status = ft_strdup(stat.status);
+	if (in.status)
+		in.status = ft_strdup(stat.status);
 	env_here.env = ft_fill_envp(line_env);
 	command = ft_check_built_redir(data);
 	flag_redir = ft_flag_redir(data);

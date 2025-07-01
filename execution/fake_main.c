@@ -460,6 +460,7 @@ int main(int ac, char **av, char **envp)
     t_data *data;
     t_heredoc *heredoc;
     static t_built *line_env;
+    t_exec in;
     static int status;
 
     if (av[0] == NULL)
@@ -491,7 +492,6 @@ int main(int ac, char **av, char **envp)
                 else if (flag == 1)
                 {
                     curr->cmd[0] = ft_strdup(ft_itoa(status));
-                    t_exec in;
                     char *tmp = ft_itoa(status);
                     in.status = ft_strdup(tmp);
                     free(tmp);

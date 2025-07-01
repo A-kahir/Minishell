@@ -171,5 +171,6 @@ char	*ft_substr(char *s, int start, size_t len);
 void	*ft_memcpy(void *dst, void *src, size_t n);
 void	ft_free_split(char **split);
 char	*ft_strnstr(char *haystack, char *needle, int len);
+char	*ft_itoa(int n);
 
 #endif

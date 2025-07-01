@@ -22,27 +22,24 @@ static void	cantinue(t_built *line_env, char **cmd, int flag)
 	print = 0;
 	if (flag == 0)
 	{
-		while (cmd[i])
+		while (cmd[i++])
 		{
 			if (cmd[i][0] == '$' && print++ == 0)
 				ft_only_print(line_env);
-			i++;
 		}
 	}
 	else
 	{
-		while (cmd[i])
+		while (cmd[i++])
 		{
 			check = ft_specify_var(cmd[i]);
 			if (check == 1)
 				ft_is_positif(line_env, cmd[i]);
 			else if (check == 0)
 				ft_add_var(line_env, cmd[i]);
-			i++;
 		}
 	}
 }
-
 
 static void	ft_we_have_var(t_built *line_env, char **cmd)
 {
@@ -61,7 +58,7 @@ static void	ft_we_have_var(t_built *line_env, char **cmd)
 			flag = 0;
 		if (check == -1)
 		{
-			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			printf("minishell: export: '%s': not a valid identifier\n", cmd[i]);
 			return ;
 		}
 		i++;
