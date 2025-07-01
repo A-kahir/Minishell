@@ -12,14 +12,14 @@
 
 #include "execution.h"
 
-int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
+int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
 	int		flag_path;
 	int		status;
 	t_built *curr;
 
-	status = 0;
 	env_here.env = ft_fill_envp(line_env);
+	status = 0;
 	flag_path = 0;
 	curr = line_env;
 	while (curr)
@@ -31,16 +31,15 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here)
 		curr = curr->next;
 	}
 	if (flag_path == 1)
-		status = ft_exec_normal(data, env_here, line_env);
+		status = ft_exec_normal(data, env_here, line_env, stat);
 	else if (flag_path == 0)
-		status = ft_if_un_path(data, env_here, line_env);
+		status = ft_if_un_path(data, env_here, line_env, stat);
 	return (status);
 }
 
-int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
+int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 {
 	t_ex_othr env_here;
-	t_data *curr;
 	static int no_env;
 	int status;
 
@@ -49,11 +48,11 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env)
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)
 	{
 		no_env = 1;
-		status = ft_no_env(data, env_here, line_env);
+		status = ft_no_env(data, env_here, line_env, stat);
 	}
 	else if (no_env == 0)
 	{
-		status = ft_have_env(data, line_env, env_here);
+		status = ft_have_env(data, line_env, env_here, stat);
 	}
 	return (status);
 }

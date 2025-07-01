@@ -31,6 +31,7 @@ typedef struct s_exec
 	int i;
 	int n_cmds;
 	int (*pipes)[2];
+	char *status;
 } t_exec;
 
 // this working just for builtins.
@@ -99,15 +100,15 @@ typedef struct s_data
 }	t_data;
 
 // *****************prin funcl*****************
-int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env);
+int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat);
 void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
-int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env);
-int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env);
-int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env);
+int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat);
+int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat);
+int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat);
 
 // *****************builtins func**************
-void ft_is_builtins(t_data *data, t_built *line_env);
-void ft_echo(char **str, t_built *line_env);
+void ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
+void ft_echo(char **str, t_built *line_env, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env);
 void ft_pwd(void);
 t_built *ft_export(t_built *line_env, char **cmd);
@@ -148,7 +149,7 @@ t_built *ft_fill_struct(char **env);
 t_built *ft_update_exp(t_built *line, int flag_cd);
 t_built *ft_sort_vars(t_built *head);
 int ft_specify_var(char *str);
-void ft_is_builtins_f(t_data *data, t_built *line_env);
+void ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in);
 char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 void ft_no_full_env(t_built *line_env);

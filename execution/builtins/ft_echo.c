@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:02 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 15:48:09 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/01 13:04:58 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static	int	ft_check(char **str, int *i)
 	return (0);
 }
 
-void	ft_echo(char **str, t_built *line_env)
+void	ft_echo(char **str, t_built *line_env, t_exec in)
 {
 	int		i;
 	int		flag_n;
@@ -41,6 +41,10 @@ void	ft_echo(char **str, t_built *line_env)
 		flag_n = 1;
 	while (str[i])
 	{
+		if (ft_strcmp(str[i], "$?") == 0 && in.status)
+		{
+			write(1, in.status, ft_strlen(in.status));
+		}
 		if (str[i][0] != '$')
 			write(1, str[i], ft_strlen(str[i]));
 		else if (str[i][0] == '$')

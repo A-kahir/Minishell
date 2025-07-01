@@ -12,7 +12,7 @@
 
 #include "execution.h"
 
-int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env)
+int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 {
 	pid_t	pid;
 	t_exec	in;
@@ -20,6 +20,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env)
 	int		status;
 
 	status = 0;
+	in.status = ft_strdup(stat.status);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
@@ -69,9 +70,10 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env)
 			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-			ft_is_builtins(data, line_env);
+			ft_is_builtins(data, line_env, in);
 		if (flag_redir == 1)
 			ft_is_redir(data, env_here.env, env_here.heredoc);
 	}
+	free(in.status);
 	return (status);
 }

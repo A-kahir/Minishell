@@ -53,14 +53,14 @@ static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
 	return (line_env);
 }
 
-void	ft_is_builtins_f(t_data *data, t_built *line_env)
+void	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 {
 	static int	flag_cd;
 
 	if (data->builtin_type == 1)
 		line_env = ft_handle_cd(data, line_env, &flag_cd);
 	else if (data->builtin_type == 0)
-		ft_echo(data->cmd, line_env);
+		ft_echo(data->cmd, line_env, in);
 	else if (data->builtin_type == 2)
 		ft_pwd();
 	else if (data->builtin_type == 3)

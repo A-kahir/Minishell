@@ -491,6 +491,10 @@ int main(int ac, char **av, char **envp)
                 else if (flag == 1)
                 {
                     curr->cmd[0] = ft_strdup(ft_itoa(status));
+                    t_exec in;
+                    char *tmp = ft_itoa(status);
+                    in.status = ft_strdup(tmp);
+                    free(tmp);
                 }
             }
             curr = curr->next;
@@ -502,9 +506,10 @@ int main(int ac, char **av, char **envp)
             if (heredoc->middle_hered)
                 merge_middle_heredoc_cmd(data);
             replace_export_dollar_vars(data, line_env);
-            status = ft_exec(data, heredoc, line_env);
+            status = ft_exec(data, heredoc, line_env, in);
             free(heredoc);
             free_data_structure(data);
+            free(in.status);
         }
         free(input);
     }
