@@ -24,7 +24,7 @@ static void	cantinue(t_built *line_env, char **cmd, int flag)
 	{
 		while (cmd[i++])
 		{
-			if (cmd[i][0] == '$' && print++ == 0)
+			if (cmd[i] &&cmd[i][0] == '$' && print++ == 0)
 				ft_only_print(line_env);
 		}
 	}

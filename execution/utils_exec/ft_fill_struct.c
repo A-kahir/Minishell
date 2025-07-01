@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:23:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 16:10:11 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/01 20:04:35 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	ft_add_new_node(t_built **head, char *env_line)
 		return (0);
 	memset(new_node, 0, sizeof(t_built));
 	ft_take_var(new_node, 0, &env_line);
-	if (new_node->value && ft_strcmp(new_node->value, "./a.out") == 0)
+	if (new_node->value && ft_strcmp(new_node->value, "./minishell") == 0)
 		return (free(new_node->var), free(new_node->value), free(new_node), 1);
 	new_node->old_pwd = NULL;
 	new_node->next = NULL;
@@ -101,7 +101,7 @@ t_built	*ft_fill_struct(char **env)
 	while (temp)
 	{
 		next = temp->next;
-		if (temp->value && ft_strcmp(temp->value, "./a.out") == 0)
+		if (temp->value && ft_strcmp(temp->value, "./minishell") == 0)
 			ft_rm_list(&head, temp);
 		temp = next;
 	}
