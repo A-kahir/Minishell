@@ -57,7 +57,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 	if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 		ft_is_builtins_f(data, line_env, in);
 	if (ft_flag_redir(data) == 1)
-		ft_is_redir(data, line_env, env_here, stat);
+		status = ft_is_redir(data, line_env, env_here);
 	free(in.status);
 	return (status);
 }

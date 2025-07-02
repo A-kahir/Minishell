@@ -12,11 +12,13 @@
 
 #include "../execution.h"
 
-void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
+int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
     t_data *curr;
+    int status;
     int flag;
 
+    status = 0;
     curr = data;
     while (curr)
     {
@@ -27,25 +29,28 @@ void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec sta
             {
                 if (redir->type == 0 || redir->type == 1)
                 {
-                    ft_tran_app(data, line_env, env_here, stat);
+                    status = ft_tran_app(data, line_env, env_here);
                 }
                 if (redir->type == 2)
                 {
-                    ft_read_f(data, curr, env_here.env);
+                    status = ft_read_f(data, line_env, env_here);
                 }
                 if (redir->type == 3)
                 {
                     if (env_here.heredoc->after_hered == 1)
                     {
-                        ft_heredoc_after(data, env_here.env);
+                        printf("is after\n");
+                        status = ft_heredoc_after(data, line_env, env_here);
                     }
                     else if (env_here.heredoc->before_hered == 1)
                     {
-                        ft_heredoc_before(data, env_here.env);
+                        printf("is before\n");
+                        status = ft_heredoc_before(data, line_env, env_here);
                     }
                     else if (env_here.heredoc->middle_hered == 1)
                     {
-                        ft_handle_middle(data, env_here.env);
+                        printf("is middle\n");
+                        status = ft_handle_middle(data, line_env, env_here);
                     }
                 }
                 redir = redir->next;
@@ -53,4 +58,5 @@ void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec sta
         }
         curr = curr->next;
     }
+    return (status);
 }

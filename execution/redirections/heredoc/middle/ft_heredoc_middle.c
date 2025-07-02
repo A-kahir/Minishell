@@ -6,53 +6,55 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/30 18:00:09 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/02 18:35:47 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../execution.h"
 
-void ft_handle_middle(t_data *data, char **env)
+int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
-    int n_cmds;
-    int i;
-    pid_t pid;
-    int (*pipes)[2];
+    t_exec in;
     t_data *curr;
+    pid_t pid;
+    int status;
 
-    n_cmds = ft_count_cmds(data);
-    if (n_cmds <= 0)
-        return;
-    pipes = malloc(sizeof(int[2]) * (n_cmds - 1));
-    if (!pipes)
-        (perror("malloc failed"), exit(1));
-    i = 0;
-    while (i < n_cmds - 1)
+    in.n_cmds = ft_count_cmds(data);
+    if (in.n_cmds <= 0)
+        return (0);
+    in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+    if (!in.pipes)
+        return (perror("malloc failed"), 1);
+    in.i = 0;
+    while (in.i < in.n_cmds - 1)
     {
-        if (pipe(pipes[i]) == -1)
+        if (pipe(in.pipes[in.i]) == -1)
         {
-            ft_close_pipes(pipes, i);
-            free(pipes);
-            (perror("pipe creation failed"), exit(1));
+            ft_close_pipes(in.pipes, in.i);
+            free(in.pipes);
+            return (perror("pipe creation failed"), 1);
         }
-        i++;
+        in.i++;
     }
     curr = data;
-    i = 0;
-    while (i < n_cmds && curr)
+    in.i = 0;
+    while (in.i < in.n_cmds && curr)
     {
         pid = fork();
         if (pid == -1)
         {
-            ft_close_pipes(pipes, n_cmds);
-            (free(pipes), perror("Fork failed"), exit(1));
+            ft_close_pipes(in.pipes, in.n_cmds);
+            free(in.pipes);
+            return (perror("Fork failed"), 1);
         }
         else if (pid == 0)
-            ft_child_hered_midd(curr, pipes, i, n_cmds, env);
+            ft_child_hered_midd(curr, line_env, env_here, in);
         curr = curr->next;
-        i++;
+        in.i++;
     }
-    ft_close_pipes(pipes, n_cmds);
-    while (wait(NULL) > 0);
-    free(pipes);
+    ft_close_pipes(in.pipes, in.n_cmds);
+    while (wait(&status) > 0);
+    status = status / 256;
+    free(in.pipes);
+    return (status);
 }

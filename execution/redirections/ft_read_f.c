@@ -27,7 +27,7 @@ int ft_open_infile(t_data *data)
     return (inf_fd);
 }
 
-void ft_child_read_f(t_data *data, int pipes[][2], int i, int n_cmds, int fd, char **env)
+void ft_child_read_f(t_data *data, t_exec in, char **env, int fd)
 {
     char **cmd_args;
 
@@ -35,11 +35,11 @@ void ft_child_read_f(t_data *data, int pipes[][2], int i, int n_cmds, int fd, ch
         (perror("dup2 input file failed"), exit(1));
     if (fd != -1)
         close(fd);
-    if (fd == -1 && i > 0 && dup2(pipes[i - 1][0], 0) == -1)
+    if (fd == -1 && in.i > 0 && dup2(in.pipes[in.i - 1][0], 0) == -1)
         (perror("dup2 input pipe failed"), exit(1));
-    if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
+    if (in.i < in.n_cmds - 1 && dup2(in.pipes[in.i][1], 1) == -1)
         (perror("dup2 output pipe failed"), exit(1));
-    ft_close_pipes(pipes, n_cmds);
+    ft_close_pipes(in.pipes, in.n_cmds);
     if (!data->cmd || !data->cmd[0])
         exit(0);
     cmd_args = ft_get_path(data->cmd[0], env);
@@ -49,28 +49,28 @@ void ft_child_read_f(t_data *data, int pipes[][2], int i, int n_cmds, int fd, ch
         (perror("execve failed"), exit(1));
 }
 
-void ft_read_f(t_data *data, t_data *curr, char **env)
+int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
+    t_data *curr;
+    t_exec in;
     int fd;
-    int i;
-    int j;
+    int status;
 
-    if (data->cmd == NULL)
-        return;
-    else if (ft_strcmp(data->cmd[0], "echo") == 0)
+    status = 0;
+    if (data->builtin_type == 0)
     {
         fd = ft_open_infile(data);
         if (fd == -1)
-            return;
-        i = 1;
-        while (curr->cmd[i] != NULL)
+            return (1);
+        int i = 1;
+        while (data->cmd[i] != NULL)
         {
-            j = 0;
-            if (curr->cmd[i][j] != '\0')
+            int j = 0;
+            if (data->cmd[i][j] != '\0')
             {
-                while (curr->cmd[i][j] != '\0')
+                while (data->cmd[i][j] != '\0')
                 {
-                    write(1, &curr->cmd[i][j], 1);
+                    write(1, &data->cmd[i][j], 1);
                     j++;
                 }
                 write(1, " ", 1);
@@ -79,41 +79,49 @@ void ft_read_f(t_data *data, t_data *curr, char **env)
         }
         close(fd);
         write(1, "\n", 1);
-        return ;
+        return (0);
     }
     else
     {
-        int n_cmds = ft_count_cmds(data);
-        int (*pipes)[2] = malloc(sizeof(int[2]) * (n_cmds - 1));
-        int i = 0;
-        t_data *temp = data;
-        while (i < n_cmds - 1)
+        in.n_cmds = ft_count_cmds(data);
+        in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+        if (!in.pipes)
+            (perror("malloc failed"), exit(1));
+        in.i = 0;
+        curr = data;
+        while (in.i < in.n_cmds - 1)
         {
-            if (pipe(pipes[i++]) == -1)
+            if (pipe(in.pipes[in.i++]) == -1)
                 (perror("Pipe creation failed"), exit(1));
         }
-        i = 0;
-        while (i < n_cmds)
+        in.i = 0;
+        while (in.i < in.n_cmds)
         {
-            int fd = ft_open_infile(temp);
+            fd = ft_open_infile(curr);
             if (fd == -1)
-                return;
+            {
+                free(in.pipes);
+                return (1);
+            }
             pid_t pid = fork();
             if (pid == -1)
             {
-                ft_close_pipes(pipes, n_cmds);
+                ft_close_pipes(in.pipes, in.n_cmds);
+                free(in.pipes);
                 perror("Fork failed");
                 exit(1);
             }
             else if (pid == 0)
-                ft_child_read_f(temp, pipes, i, n_cmds, fd, env);
+                ft_child_read_f(curr, in, env_here.env, fd);
             if (fd != -1)
                 close(fd);
-            temp = temp->next;
-            i++;
+            curr = curr->next;
+            in.i++;
         }
-        ft_close_pipes(pipes, n_cmds);
-        while (wait(NULL) > 0);
-        free(pipes);
+        ft_close_pipes(in.pipes, in.n_cmds);
+        while (wait(&status) > 0);
+        status = status / 256;
+        free(in.pipes);
     }
+    return (status);
 }

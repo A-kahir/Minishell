@@ -25,7 +25,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-
 typedef struct s_exec
 {
 	int i;
@@ -122,20 +121,20 @@ void ft_exit(char **str);
 
 
 // **************redirections func*************
-void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
-void ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
-void ft_read_f(t_data *data, t_data *curr, char **env);
+int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here);
 // -> heredoc :
 int ft_handle_heredoc(char *del);
 		// -> heredoc before:
-void    ft_heredoc_before(t_data *data, char **env);
-void	ft_child_hered_bef(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
+int    ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here);
+void	ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 		// -> heredoc after :
-void ft_heredoc_after(t_data *data, char **env);
-void ft_child_hered_aft(t_data *curr, int pipes[][2], int i, int n_cmds, int *hered_fd, char **env);
+int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here);
+void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 		// -> heredoc middle :
-void ft_handle_middle(t_data *data, char **env);
-void ft_child_hered_midd(t_data *curr, int pipes[][2], int i, int n_cmds, char **env);
+int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here);
+void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 
 // **************func execution*****************
 char	**ft_get_path(char *cmd, char **env);
@@ -154,6 +153,8 @@ char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 void ft_no_full_env(t_built *line_env);
 void ft_only_print(t_built *line);
+int ft_open_outfile(t_data *data);
+void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

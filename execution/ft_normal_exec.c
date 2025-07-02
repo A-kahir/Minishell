@@ -44,7 +44,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		waitpid(pid, &status, 0);
+		while (wait(&status) > 0);
 		status = status / 256;
 		free(in.pipes);
 	}
@@ -65,14 +65,14 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
-			waitpid(pid, &status, 0);
+			while (wait(&status) > 0);
 			status = status / 256;
 			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			ft_is_builtins(data, line_env, in);
 		if (flag_redir == 1)
-			ft_is_redir(data, line_env, env_here, stat);
+			status = ft_is_redir(data, line_env, env_here);
 	}
 	free(in.status);
 	return (status);

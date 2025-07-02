@@ -33,6 +33,8 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_get_path.c \
 	execution/utils_exec/ft_no_full_env.c \
 	execution/utils_exec/ft_only_print.c \
+	execution/utils_exec/ft_open_outfile.c \
+	execution/utils_exec/ft_child_redir.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \

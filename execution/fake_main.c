@@ -463,6 +463,9 @@ int main(int ac, char **av, char **envp)
     t_exec in;
     static int status;
 
+    if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
+        exit(1);
+
     if (av[0] == NULL)
         return (1);
     if (ac == -1)
