@@ -12,32 +12,6 @@
 
 #include "../execution.h"
 
-static void	ft_child_redir(t_data *curr, int pipes[][2], int i, int n_cmds, char **env)
-{
-	char	**cmd_args;
-
-	if (n_cmds == 1)
-    {
-        if (dup2(pipes[0][1], 1) == -1)
-            (perror("dup2 output failed"), exit(1));
-    }
-    else
-    {
-        if (i > 0 && dup2(pipes[i - 1][0], 0) == -1)
-            (perror("dup2 input failed"), exit(1));
-        if (i < n_cmds - 1 && dup2(pipes[i][1], 1) == -1)
-            (perror("dup2 output failed"), exit(1));
-    }
-	ft_close_pipes(pipes, n_cmds);
-    if (!curr->cmd || !curr->cmd[0])
-        exit(0);
-	cmd_args = ft_get_path(curr->cmd[0], env);
-	if (!cmd_args[0])
-		(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(1));
-	if (execve(cmd_args[0], curr->cmd, env))
-		(perror("execve failed"), exit(1));
-}
-
 static int ft_open_outfile(t_data *data)
 {
     int outf_fd;
@@ -47,158 +21,138 @@ static int ft_open_outfile(t_data *data)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
         if (outf_fd < 0)
-        {
-            perror("Error opening output file");
-            exit(1);
-        }
+            (perror("Error opening output file"), exit(1));
     }
     else if (data->redir->target && data->redir->type == 1)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
         if (outf_fd < 0)
-        {
-            perror("Error opening output file");
-            exit(1);
-        }
+            (perror("Error opening output file"), exit(1));
     }
     return (outf_fd);
 }
 
-void ft_case_child(t_data *data, int pp[][2], int i, int n_cmds, char **env)
+static void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
 {
     int fd;
-    char **cmd;
+    char **cmds;
 
-    if (i > 0)
+    if (in.n_cmds > 1)
     {
-        if (dup2(pp[i - 1][0], 0) == -1)
-            (perror("dup2 input failed"), exit(1));
+        if (in.i > 0)
+        {
+            if (dup2(in.pipes[in.i - 1][0], 0) == -1)
+                (perror("dup2 input failed"), exit(1));
+        }
+        if (in.i < in.n_cmds - 1)
+        {
+            if (dup2(in.pipes[in.i][1], 1) == -1)
+                (perror("dup2 pipe output failed"), exit(1));
+        }
+        ft_close_pipes(in.pipes, in.n_cmds);
     }
-    if (i < n_cmds - 1)
+    if (curr->redir && curr->redir->target)
     {
-        if (dup2(pp[i][1], 1) == -1)
-            (perror("dup2 pipe output failed"), exit(1));
-    }
-    if (data->redir && data->redir->target)
-    {
-        fd = ft_open_outfile(data);
+        fd = ft_open_outfile(curr);
         if (fd == -1)
             (perror("open outfile failed"), exit(1));
         if (dup2(fd, 1) == -1)
             (perror("dup2 outfile failed"), close(fd), exit(1));
         close(fd);
     }
-    ft_close_pipes(pp, n_cmds);
-    if (!data->cmd || !data->cmd[0])
-        exit(0);
-    cmd = ft_get_path(data->cmd[0], env);
-    if (!cmd || !cmd[0])
+    if (ft_strcmp(ft_check_built_redir(curr), "built") == 0)
     {
-        printf("minishell: %s: command not found\n", data->cmd[0]);
-        exit(1);
+        ft_is_builtins(curr, line_env, in);
+        exit(0);
     }
-    if (execve(cmd[0], data->cmd, env) == -1)
+    cmds = ft_get_path(curr->cmd[0], env_here.env);
+    if (!cmds)
+    {
+        if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
+            (printf("%s: command not found\n", curr->cmd[0]), exit(127));
+        else
+            (printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+    }
+    if (execve(cmds[0], curr->cmd, env_here.env) == -1)
         (perror("execve failed"), exit(1));
 }
 
-
-void ft_tran_app(t_data *data, t_data *curr, int flag, char **env)
+void ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     char **cmds;
     int fd;
-    int i;
-    int j;
-    int		pipes[1][2];
+    t_exec in;
+    t_data *curr;
+    pid_t pid;
 
-    if (flag == 0)
-    {
-        int n_cmds = ft_count_cmds(data);
-        int (*pipes)[2] = malloc(sizeof(int[2]) * (n_cmds - 1));
-        if (!pipes)
-            (perror("malloc"), exit(1));
-        i = 0;
-        while (i < n_cmds - 1)
-        {
-            if (pipe(pipes[i]) == -1)
-                (perror("pipe creation failed"), free(pipes), exit(1));
-            i++;
-        }
-        t_data *tmp = data;
-        i = 0;
-        while (i < n_cmds)
-        {
-            pid_t pid = fork();
-            if (pid == -1)
-            {
-                ft_close_pipes(pipes, n_cmds - 1);
-                (perror("fork failed"), free(pipes), exit(1));
-            }
-            else if (pid == 0)
-            {
-                ft_case_child(tmp, pipes, i, n_cmds, env);
-                exit(1);
-            }
-            tmp = tmp->next;
-            i++;
-        }
-        ft_close_pipes(pipes, n_cmds);
-        free(pipes);
-        while (wait(NULL) > 0);
-        return ;
-    }
-    else
+    curr = data;
+    in.n_cmds = ft_count_cmds(data);
+    if (in.n_cmds == 1)
     {
         if (curr->cmd == NULL)
         {
-            fd = ft_open_outfile(curr);
-            write(fd, "", 0);
-            return ;
+            if (curr->redir && curr->redir->target)
+            {
+                fd = ft_open_outfile(curr);
+                write(fd, "", 0);
+                close(fd);
+            }
+            return;
         }
-        else if (ft_strcmp(curr->cmd[0], "echo") == 0 && ft_strcmp(curr->cmd[1], ">") != 0)
+        if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
         {
             fd = ft_open_outfile(curr);
-            i = 1;
+            int i = 1;
             while (curr->cmd[i] != NULL)
             {
-                j = 0;
-                if (curr->cmd[i][j] != '\0')
+                int j = 0;
+                while (curr->cmd[i][j] != '\0')
                 {
-                    while (curr->cmd[i][j] != '\0')
-                    {
-                        write(fd, &curr->cmd[i][j], 1);
-                        j++;
-                    }
-                    write(fd, " ", 1);
+                    write(fd, &curr->cmd[i][j], 1);
+                    j++;
                 }
+                if (curr->cmd[i + 1] != NULL)
+                    write(fd, " ", 1);
                 i++;
             }
+            write(fd, "\n", 1);
             close(fd);
+            return;
         }
-        else
-        {
-            cmds = ft_get_path(curr->cmd[0], env);
-            if (cmds[0])
-            {
-                pipe(pipes[0]);
-                fd = ft_open_outfile(curr);
-                pid_t pid = fork();
-                if (pid == -1)
-                    (close(fd), exit(1));
-                else if (pid == 0)
-                    ft_child_redir(curr, pipes, 0, 1, env);
-                else
-                {
-                    close(pipes[0][1]);
-                    char c;
-                    while (read(pipes[0][0], &c, 1) > 0)
-                    {
-                        write(fd, &c, 1);
-                    }
-                    close(pipes[0][0]);
-                    wait(NULL);
-                    close(fd);
-                }
-            }
-        }
+        pid = fork();
+        if (pid == -1)
+            (perror("fork failed"), exit(1));
+        if (pid == 0)
+            ft_child_redir(curr, line_env, env_here, in);
+        wait(NULL);
+        return;
     }
+    in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+    if (!in.pipes)
+        (perror("malloc"), exit(1));
+    in.i = 0;
+    while (in.i < in.n_cmds - 1)
+    {
+        if (pipe(in.pipes[in.i]) == -1)
+            (perror("pipe creation failed"), free(in.pipes), exit(1));
+        in.i++;
+    }
+    t_data *tmp = data;
+    in.i = 0;
+    while (in.i < in.n_cmds)
+    {
+        pid = fork();
+        if (pid == -1)
+        {
+            ft_close_pipes(in.pipes, in.n_cmds - 1);
+            (perror("fork failed"), free(in.pipes), exit(1));
+        }
+        if (pid == 0)
+            ft_child_redir(tmp, line_env, env_here, in);
+        tmp = tmp->next;
+        in.i++;
+    }
+    ft_close_pipes(in.pipes, in.n_cmds);
+    free(in.pipes);
+    while (wait(NULL) > 0);
 }

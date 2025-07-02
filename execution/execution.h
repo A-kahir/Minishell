@@ -122,8 +122,8 @@ void ft_exit(char **str);
 
 
 // **************redirections func*************
-void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc);
-void ft_tran_app(t_data *data, t_data *curr, int flag, char **env);
+void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
+void ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 void ft_read_f(t_data *data, t_data *curr, char **env);
 // -> heredoc :
 int ft_handle_heredoc(char *del);

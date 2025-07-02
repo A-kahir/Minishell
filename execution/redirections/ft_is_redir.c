@@ -12,7 +12,7 @@
 
 #include "../execution.h"
 
-void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
+void ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     t_data *curr;
     int flag;
@@ -20,10 +20,6 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
     curr = data;
     while (curr)
     {
-        if (curr == data)
-            flag = 1;
-        else
-            flag = 0;
         if (curr->redir)
         {
             t_redir *redir = curr->redir;
@@ -31,25 +27,25 @@ void ft_is_redir(t_data *data, char **env, t_heredoc *heredoc)
             {
                 if (redir->type == 0 || redir->type == 1)
                 {
-                    ft_tran_app(data, curr, flag, env);
+                    ft_tran_app(data, line_env, env_here, stat);
                 }
                 if (redir->type == 2)
                 {
-                    ft_read_f(data, curr, env);
+                    ft_read_f(data, curr, env_here.env);
                 }
                 if (redir->type == 3)
                 {
-                    if (heredoc->after_hered == 1)
+                    if (env_here.heredoc->after_hered == 1)
                     {
-                        ft_heredoc_after(data, env);
+                        ft_heredoc_after(data, env_here.env);
                     }
-                    else if (heredoc->before_hered == 1)
+                    else if (env_here.heredoc->before_hered == 1)
                     {
-                        ft_heredoc_before(data, env);
+                        ft_heredoc_before(data, env_here.env);
                     }
-                    else if (heredoc->middle_hered == 1)
+                    else if (env_here.heredoc->middle_hered == 1)
                     {
-                        ft_handle_middle(data, env);
+                        ft_handle_middle(data, env_here.env);
                     }
                 }
                 redir = redir->next;
