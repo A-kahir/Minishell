@@ -12,69 +12,48 @@
 
 #include "../../execution.h"
 
-static void	cantinue(t_built *line_env, char **cmd, int flag)
+t_built *ft_export(t_built *line_env, char **cmd)
 {
-	int	i;
-	int	check;
-	int	print;
-
-	i = 1;
-	print = 0;
-	if (flag == 0)
-	{
-		while (cmd[i++])
-		{
-			if (cmd[i] &&cmd[i][0] == '$' && print++ == 0)
-				ft_only_print(line_env);
-		}
-	}
-	else
-	{
-		while (cmd[i++])
-		{
-			check = ft_specify_var(cmd[i]);
-			if (check == 1)
-				ft_is_positif(line_env, cmd[i]);
-			else if (check == 0)
-				ft_add_var(line_env, cmd[i]);
-		}
-	}
-}
-
-static void	ft_we_have_var(t_built *line_env, char **cmd)
-{
-	int	i;
-	int	check;
-	int	flag;
-
-	i = 1;
-	flag = 0;
-	while (cmd[i])
-	{
-		check = ft_specify_var(cmd[i]);
-		if (ft_strchr(cmd[i], '='))
-			flag = 1;
-		else if (ft_strchr(cmd[i], '$') || check == 4)
-			flag = 0;
-		if (check == -1)
-		{
-			printf("minishell: export: '%s': not a valid identifier\n", cmd[i]);
-			return ;
-		}
-		i++;
-	}
-	cantinue(line_env, cmd, flag);
-}
-
-t_built	*ft_export(t_built *line_env, char **cmd)
-{
-	if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
-	{
-		ft_only_print(line_env);
-	}
-	else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
-	{
-		ft_we_have_var(line_env, cmd);
-	}
-	return (line_env);
+    if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
+        ft_only_print(line_env);
+    else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
+    {
+        int i = 1;
+        int print_export = 0;
+        while (cmd[i])
+        {
+            printf("cmd[%d] ===> %s\n", i, cmd[i]);
+            i++;
+        }
+        i = 1;
+        while (cmd[i])
+        {
+            int check = ft_specify_var(cmd[i]);
+            if (cmd[i][0] == '$')
+            {
+                print_export = 1;
+                i++;
+                continue;
+            }
+            if (check == 1)
+			{
+                ft_is_positif(line_env, cmd[i]);
+				print_export = 0;
+			}
+            else if (check == -1)
+            {
+                printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+                return (line_env);
+            }
+            else if (check == 0)
+			{
+                ft_add_var(line_env, cmd[i]);
+				print_export = 0;
+			}
+            i++;
+        }
+        if (print_export)
+            ft_only_print(line_env);
+    }
+    return (line_env);
 }

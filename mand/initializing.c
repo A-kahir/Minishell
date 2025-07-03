@@ -6,12 +6,11 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/01 15:00:58 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/03 10:49:37 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 t_type_buil	get_b(char *s)
 {
@@ -32,6 +31,7 @@ t_type_buil	get_b(char *s)
 	else
 		return (NOT_BUILTIN);
 }
+
 
 int	find_pipe(char **s)
 {
@@ -195,7 +195,7 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	j = check_red(s, i, k);
 	if (j >= 0)
 	{
-		cmd->redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
+		cmd->redir = create_redir_node(check_redirection(s[j]), extract_quoates(s[j + 1], 0));
 		cmd->cmd = ft_subarray(last_fix(s), i, j);
 	}
 	else

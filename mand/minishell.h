@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/06/30 15:46:25 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/03 10:50:03 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
+
 
 #include<stdio.h>
 #include<string.h>
@@ -107,5 +108,6 @@ void	freenod(t_data *n);
 int		token_len(char **tokens);
 char	*extract_token(char *str, int *i);
 char	*ft_strjoin_par(char *s1, char *s2);
+char	**ft_strjoinarray(char **s1, char **s2);
 
 #endif

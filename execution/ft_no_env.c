@@ -49,7 +49,7 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		waitpid(pid, &status, 0);
+		while (wait(&status) > 0);
 		status = status / 256;
 		free(in.pipes);
 	}
