@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/02 18:33:08 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/03 15:07:53 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,9 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
     char **cmd_args;
     int hered_fd;
     int have_hered = 0;
-    int flag_redir;
 	char *command;
 
-	command = ft_check_built_redir(curr);
-	flag_redir = ft_flag_redir(curr);
+	command = ft_check_built_cmd(curr);
     if (!curr || !curr->cmd || !curr->cmd[0])
         exit(1);
     if (curr->redir && curr->redir->type == HEREDOC)
@@ -45,7 +43,7 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
             (perror("dup2 output failed"), exit(1));
     }
     ft_close_pipes(in.pipes, in.n_cmds);
-    if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
+    if (ft_strcmp(command, "built") == 0)
 		(ft_is_builtins(curr, line_env, in), exit(0));
     cmd_args = ft_get_path(curr->cmd[0], env_here.env);
     if (!cmd_args)
