@@ -12,6 +12,29 @@
 
 #include "../execution.h"
 
+int ft_is_heredoc(t_data *data, t_built *line_env, t_ex_othr env_here)
+{
+    int status;
+
+    status = 0;
+    if (env_here.heredoc->after_hered == 1)
+    {
+        printf("is after\n");
+        status = ft_heredoc_after(data, line_env, env_here);
+    }
+    else if (env_here.heredoc->before_hered == 1)
+    {
+        printf("is before\n");
+        status = ft_heredoc_before(data, line_env, env_here);
+    }
+    else if (env_here.heredoc->middle_hered == 1)
+    {
+        printf("is middle\n");
+        status = ft_handle_middle(data, line_env, env_here);
+    }
+    return (status);
+}
+
 int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
     t_data *curr;
@@ -28,31 +51,11 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
             while (redir)
             {
                 if (redir->type == 0 || redir->type == 1)
-                {
                     status = ft_tran_app(data, line_env, env_here);
-                }
                 if (redir->type == 2)
-                {
                     status = ft_read_f(data, line_env, env_here);
-                }
                 if (redir->type == 3)
-                {
-                    if (env_here.heredoc->after_hered == 1)
-                    {
-                        printf("is after\n");
-                        status = ft_heredoc_after(data, line_env, env_here);
-                    }
-                    else if (env_here.heredoc->before_hered == 1)
-                    {
-                        printf("is before\n");
-                        status = ft_heredoc_before(data, line_env, env_here);
-                    }
-                    else if (env_here.heredoc->middle_hered == 1)
-                    {
-                        printf("is middle\n");
-                        status = ft_handle_middle(data, line_env, env_here);
-                    }
-                }
+                    status = ft_is_heredoc(data, line_env, env_here);
                 redir = redir->next;
             }
         }

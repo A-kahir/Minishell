@@ -35,18 +35,18 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     fd = ft_open_infile(curr);
     if (fd != -1)
     {
-        if (dup2(fd, STDIN_FILENO) == -1)
+        if (dup2(fd, 0) == -1)
             (perror("dup2 input file failed"), exit(1));
         close(fd);
     }
     else if (in.i > 0)
     {
-        if (dup2(in.pipes[in.i - 1][0], STDIN_FILENO) == -1)
+        if (dup2(in.pipes[in.i - 1][0], 0) == -1)
             (perror("dup2 input pipe failed"), exit(1));
     }
     if (in.i < in.n_cmds - 1)
     {
-        if (dup2(in.pipes[in.i][1], STDOUT_FILENO) == -1)
+        if (dup2(in.pipes[in.i][1], 1) == -1)
             (perror("dup2 output pipe failed"), exit(1));
     }
     ft_close_pipes(in.pipes, in.n_cmds);
@@ -60,10 +60,12 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
         exit(0);
     cmd_args = ft_get_path(curr->cmd[0], env_here.env);
     if (!cmd_args)
-    {
-        printf("minishell: %s: command not found\n", curr->cmd[0]);
-        exit(127);
-    }
+	{
+		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
+			(printf("%s: command not found\n", curr->cmd[0]), exit(127));
+		else
+			(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+	}
     if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
         (perror("execve failed"), exit(1));
 }
@@ -110,6 +112,7 @@ int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
     }
     ft_close_pipes(in.pipes, in.n_cmds);
     while (wait(&status) > 0);
+    status = status / 256;
     free(in.pipes);
-    return (status / 256);
+    return (status);
 }
