@@ -18,13 +18,13 @@ t_built *ft_export(t_built *line_env, char **cmd)
         ft_only_print(line_env);
     else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
     {
-        int i = 1;
+        int i;
         int print_export = 0;
-        while (cmd[i])
-        {
-            printf("cmd[%d] ===> %s\n", i, cmd[i]);
-            i++;
-        }
+        // while (cmd[i])
+        // {
+        //     printf("cmd[%d] ===> %s\n", i, cmd[i]);
+        //     i++;
+        // }
         i = 1;
         while (cmd[i])
         {

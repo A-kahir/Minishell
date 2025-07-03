@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:03 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/01 20:48:34 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/03 18:05:05 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_only_print(t_built *line)
 		}
 		if (curr->var)
 		{
-			write(1, "declare -x ", 12);
+			write(1, "declare -x ", 11);
 			printf("%s", curr->var);
 			if (curr->value)
 				printf("=\"%s\"", curr->value);
