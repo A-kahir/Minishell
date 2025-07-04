@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   initializing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/03 10:49:37 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/03 21:10:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 
 t_type_buil	get_b(char *s)
 {
@@ -151,19 +152,14 @@ int	semiflag(char *s)
 	return(0);
 }
 
-char **last_fix(char **s)
+char **last_fix(char **s, int i, int k)
 {
-	int	i;
 	char	**t;
 
-	i = 0;
 	t = malloc(sizeof(char *) * (token_len(s) + 1));
-	while (s[i])
+	while (s[i]&& i < k)
 	{
-		if(semiflag(s[i]))
-			t[i] = ft_strdup(extract_quoates(s[i], 0));
-		else
-			t[i]= ft_strdup(s[i]);
+		t[i] = extract_quoates(s[i], 0);
 		i++;
 	}
 	t[i] =  NULL;
@@ -185,6 +181,7 @@ t_data *create_data_node(t_type_node t)
 t_data	*creatn(char **s, int i, int k, t_type_node t)
 {
 	t_data	*cmd;
+	char **last_fixed;
 	int	j;
 
 	j = 0;
@@ -196,11 +193,13 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	if (j >= 0)
 	{
 		cmd->redir = create_redir_node(check_redirection(s[j]), extract_quoates(s[j + 1], 0));
-		cmd->cmd = ft_subarray(last_fix(s), i, j);
+		last_fixed = ft_subarray(last_fix(s, i, j), i, j);
+		cmd->cmd = ft_strjoinarray(last_fixed, ft_subarray(last_fix(s, j + 2, k), j + 2, k));
+		freedp(last_fixed);
 	}
 	else
 	{
-		cmd->cmd = ft_subarray(last_fix(s), i, k);
+		cmd->cmd = ft_subarray(last_fix(s, i, k), i, k);
 		cmd->redir = NULL;
 	}
 	if (cmd->cmd && cmd->cmd[0])

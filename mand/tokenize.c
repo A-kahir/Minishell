@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:46:38 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/06/27 15:05:32 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/03 21:07:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,12 @@ char	*extract_token(char *str, int *i)
 			cha = str[(*i)++];
 			while (str[*i] && str[*i] != cha)
 				(*i)++;
-			(*i)++;
+			if (str[*i] == cha)
+				(*i)++;
 			quote_len = *i - quote_start;
 			in = ft_substr_par(str, quote_start, quote_len);
 			token = ft_strjoin_par(token, in);
 			free(in);
-			if (str[*i] == cha)
-				(*i)++;
 		}
 		else
 		{

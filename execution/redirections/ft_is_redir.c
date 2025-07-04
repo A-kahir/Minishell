@@ -14,9 +14,8 @@
 
 int ft_is_heredoc(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
-    int status;
+    int status = 0;
 
-    status = 0;
     if (env_here.heredoc->after_hered == 1)
     {
         printf("is after\n");
@@ -38,10 +37,8 @@ int ft_is_heredoc(t_data *data, t_built *line_env, t_ex_othr env_here)
 int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
     t_data *curr;
-    int status;
-    int flag;
+    int status = 0;
 
-    status = 0;
     curr = data;
     while (curr)
     {
@@ -52,14 +49,13 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
             {
                 if (redir->type == 0 || redir->type == 1)
                     status = ft_tran_app(data, line_env, env_here);
-                if (redir->type == 2)
+                else if (redir->type == 2)
                     status = ft_read_f(data, line_env, env_here);
-                if (redir->type == 3)
-                    status = ft_is_heredoc(data, line_env, env_here);
                 redir = redir->next;
             }
         }
         curr = curr->next;
     }
+    status = ft_is_heredoc(data, line_env, env_here);
     return (status);
 }

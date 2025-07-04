@@ -35,28 +35,26 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here)
     int *hered_fd = malloc(sizeof(int) * in.n_cmds);
     if (!hered_fd)
         exit(1);
-    tmp = data;
     in.i = 0;
+    tmp = data;
     while (in.i < in.n_cmds)
     {
         hered_fd[in.i] = -1;
         int fd = -1;
         redir = tmp->redir;
-        if (in.i == 0)
+        while (redir)
         {
-            while (redir)
+            if (redir->type == 3)
             {
-                if (redir->type == 3)
-                {
-                    if (fd != -1)
-                        close(fd);
-                    fd = ft_handle_heredoc(redir->target);
-                }
-                redir = redir->next;
+                if (fd != -1)
+                    close(fd);
+                fd = ft_handle_heredoc(redir->target);
             }
-            if (fd != -1)
-                hered_fd[0] = fd;
+            redir = redir->next;
         }
+        if (fd != -1)
+            hered_fd[in.i] = fd;
+
         tmp = tmp->next;
         in.i++;
     }

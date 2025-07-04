@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 
+#include "minishell.h"
 int    has_cmd_before(t_data *d, int pos)
 {
 	int        i;

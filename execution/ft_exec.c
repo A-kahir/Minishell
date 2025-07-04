@@ -45,19 +45,19 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 
 	t_data *tmp = data;
 	int i = 0;
-	while (tmp)
-	{
-		printf("1) type->cmd ---> %d\n", tmp->type);
-		printf("2) data->cmd[%d] ==> %s\n", i, tmp->cmd[i]);
-		printf("3) builtins flag ==> %d\n", tmp->builtin_type);
-		printf("4) redir Type ==> %d\n", tmp->redir->type);
-		printf("heredoc type (before) ===> %d\n", heredoc->before_hered);
-		printf("heredoc type (after) ===> %d\n", heredoc->after_hered);
-		printf("heredoc type (middle) ===> %d\n", heredoc->middle_hered);
-		printf("5) redir TARGET ==> %s\n\n", tmp->redir->target);
-		i++;
-		tmp = tmp->next;
-	}
+	// while (tmp)
+	// {
+	// 	printf("1) type->cmd ---> %d\n", tmp->type);
+	// 	printf("2) data->cmd[%d] ==> %s\n", i, tmp->cmd[i]);
+	// 	printf("3) builtins flag ==> %d\n", tmp->builtin_type);
+	// 	printf("4) redir Type ==> %d\n", tmp->redir->type);
+	// 	printf("heredoc type (before) ===> %d\n", heredoc->before_hered);
+	// 	printf("heredoc type (after) ===> %d\n", heredoc->after_hered);
+	// 	printf("heredoc type (middle) ===> %d\n", heredoc->middle_hered);
+	// 	printf("5) redir TARGET ==> %s\n\n", tmp->redir->target);
+	// 	i++;
+	// 	tmp = tmp->next;
+	// }
 	env_here.heredoc = heredoc;
 	status = 0;
 	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) || no_env == 1)

@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/03 10:50:03 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/03 10:28:24 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
-
 
 #include<stdio.h>
 #include<string.h>
@@ -109,5 +108,6 @@ int		token_len(char **tokens);
 char	*extract_token(char *str, int *i);
 char	*ft_strjoin_par(char *s1, char *s2);
 char	**ft_strjoinarray(char **s1, char **s2);
+
 
 #endif

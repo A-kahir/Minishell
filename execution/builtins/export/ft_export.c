@@ -31,7 +31,10 @@ t_built *ft_export(t_built *line_env, char **cmd)
             int check = ft_specify_var(cmd[i]);
             if (cmd[i][0] == '$')
             {
-                print_export = 1;
+                if (cmd[i + 1] == NULL)
+                    print_export = 0;
+                else
+                    print_export = 1;
                 i++;
                 continue;
             }
