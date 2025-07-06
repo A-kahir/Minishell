@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/04 13:41:06 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/05 18:39:43 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,21 +47,105 @@ char	*getinput(char *s)
 	return(s);
 }
 
-int main(int ac, char **av, char **env)
+int	semifflag(char *s)
 {
-	char	**s;
-	t_data	*end;
-	char *string;
-	static t_built *line_env;
-	int i = 0;
-	t_heredoc *heredoc;
-	t_exec in;
-    static int status;
+	int	i;
 	
+	i = 0;
+	while (s[i])
+	{
+		if(s[i] == '$')
+		return(1);
+		i++;
+	}
+	return(0);
+}
+void re_do(t_data *end, t_built	*env)
+{
+	t_data *tmp = end;
+	while (tmp)
+	{
+		if (tmp->cmd)
+		{
+			int count = 0;
+			while (tmp->cmd[count])
+				count++;
+			int total_tokens = 0;
+			int j = 0;
+			while (j < count)
+			{
+				char *arg = tmp->cmd[j];
+				int has_quotes = (ft_strchr(arg, '\'') || ft_strchr(arg, '\"'));
+				if (has_quotes)
+				{
+					total_tokens++;
+				}
+				else
+				{
+					char **tokens = tokenize(arg, env);
+					int k = 0;
+					while (tokens && tokens[k])
+					{
+						total_tokens++;
+						k++;
+					}
+					freedp(tokens);
+				}
+				j++;
+			}
+			char **new_cmd = malloc((total_tokens + 1) * sizeof(char *));
+			int idx = 0;
+			j = 0;
+			while (j < count)
+			{
+				char *arg = tmp->cmd[j];
+				int has_quotes = (ft_strchr(arg, '\'') || ft_strchr(arg, '\"'));
+				if (has_quotes)
+				{
+					new_cmd[idx++] = ft_strdup(arg);
+				}
+				else
+				{
+					char **tokens = tokenize(arg, env);
+					int k = 0;
+					while (tokens && tokens[k])
+					{
+						new_cmd[idx++] = ft_strdup(tokens[k]);
+						k++;
+					}
+					freedp(tokens);
+				}
+				j++;
+			}
+			new_cmd[idx] = NULL;
+			freedp(tmp->cmd);
+			tmp->cmd = new_cmd;
+		}
+		tmp = tmp->next;
+	}
+}
+	int main(int ac, char **av, char **env)
+	{
+		char	**s;
+		t_data	*end;
+		char *string;
+		static t_built *line_env;
+		// int i = 0;
+		t_heredoc *heredoc;
+		t_exec in;
+    	static int status;
+	
+	(void)ac;
+	(void)av;
 	string = NULL;
 	end = NULL;
 	initsh();
 	// signal(SIGINT, handler);
+	if (!line_env)
+	{
+		line_env = ft_fill_struct(env);
+		line_env = ft_update_exp(line_env, 0); 
+	}
 	while(1)
 	{
 		string = getinput(string);
@@ -72,32 +156,28 @@ int main(int ac, char **av, char **env)
 			string = NULL;
 			continue;
 		}
-		s = tokenize(string);
+		// string = expand_dollar(string, line_env);
+		// printf("%s\n", string);
+		// printf("im here\n");
+		s = tokenize(string, line_env);
 		if(!syntax_error(s))
 		{
 			string = NULL;
 			freedp(s);
 			continue;
 		}
-		
+		// printf("im here2\n");
+		// printf("%s\n", s[0]);
+		// printf("%s\n", s[1]);
 		end = part1(s);
-		// i = 0;
-		// while(s[i])
-		// {
-		// 	printf("smd[%d]--->%s\n", i, s[i]);
-		// 	i++;
-		// }
+		// t_data *tmp = end;
+		// re_do(end, line_env);
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
-		detect_heredoc_position(end, heredoc, string);
+		detect_heredoc_position(end, heredoc);
 		if (heredoc->middle_hered)
 			merge_middle_heredoc_cmd(end);
-		if (!line_env)
-		{
-			line_env = ft_fill_struct(env);
-			line_env = ft_update_exp(line_env, 0); 
-		}
-        t_data *curr = end;
+		t_data *curr = end;
         static int flag;
         while (curr)
         {
@@ -119,8 +199,6 @@ int main(int ac, char **av, char **env)
         char *tmp = ft_itoa(status);
         in.status = ft_strdup(tmp);
         free(tmp);
-		// epxand_tokens();
-		
 		status = ft_exec(end, heredoc, line_env, in);
 		n_clean(end);
 		free(heredoc);

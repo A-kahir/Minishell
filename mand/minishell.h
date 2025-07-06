@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/03 10:28:24 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:39:19 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef struct s_cmd {
 } t_cmd;
 
 int		is_operator(char c);
-char	**tokenize(char *str);
+char	**tokenize(char *str, t_built *env);
 
 int	check_before(char *s);
 int	syntax_error(char **s);
@@ -90,11 +90,11 @@ int	syntax_error(char **s);
 char	*ft_strcpy(char *dest, const char *src);
 // char	*ft_strdup(const char *src);
 char	**ft_subarray(char **tokens, int start, int end);
-char	*ft_substr_par(char *s, unsigned int start, size_t len);
+char	*ft_substr_par(char *s, int start, int len);
 // int		ft_strcmp(const char *s1, const char *s2);
 // int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
-void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input);
+void    detect_heredoc_position(t_data *d, t_heredoc *h);
 void    merge_middle_heredoc_cmd(t_data *d);
 
 t_data	*part1(char **s);
@@ -105,9 +105,19 @@ void	freedp(char **s);
 void	freenod(t_data *n);
 
 int		token_len(char **tokens);
-char	*extract_token(char *str, int *i);
+// char	*extract_token(char *str, int *i);
 char	*ft_strjoin_par(char *s1, char *s2);
-char	**ft_strjoinarray(char **s1, char **s2);
+int	does_it_exist(char *s, t_built *env);
+// char *get_value_from_env(const char *key, t_built *env);
+// char *expand_dollar(char *input, t_built *env);
+char *expanding(char *s, t_built *env);
+
+
+
+int	ft_isdigit(int c);
+int	ft_isalpha(int c);
+int	ft_isalnum(int c);
+size_t	ft_strcspn(const char *s, const char *reject);
 
 
 #endif

@@ -53,8 +53,8 @@ char	**ft_fill_envp(t_built *line_env)
 	envp = malloc(sizeof(char *) * (len + 1));
 	if (!envp)
 		return (NULL);
-	curr = line_env;
 	i = 0;
+	curr = line_env;
 	while (curr)
 	{
 		if (curr->value)

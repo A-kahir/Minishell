@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:46:38 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/03 21:07:05 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/05 13:36:46 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	is_operator(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-char	*extract_token(char *str, int *i)
+char	*extract_token(char *str, int *i, t_built *env)
 {
 	char	*token;
 	char	*in;
@@ -37,7 +37,10 @@ char	*extract_token(char *str, int *i)
 			if (str[*i] == cha)
 				(*i)++;
 			quote_len = *i - quote_start;
-			in = ft_substr_par(str, quote_start, quote_len);
+			if(cha == '\"')
+				in = expanding(ft_substr_par(str, quote_start, quote_len), env);
+			else
+				in = ft_substr_par(str, quote_start, quote_len);
 			token = ft_strjoin_par(token, in);
 			free(in);
 		}
@@ -48,7 +51,7 @@ char	*extract_token(char *str, int *i)
 				&& str[*i] != '\'' && !is_operator(str[*i]))
 				(*i)++;
 			quote_len = *i - quote_start;
-			in = ft_substr_par(str, quote_start, quote_len);
+			in = expanding(ft_substr_par(str, quote_start, quote_len), env);
 			token = ft_strjoin_par(token, in);
 			free(in);
 		}
@@ -56,7 +59,7 @@ char	*extract_token(char *str, int *i)
 	return (token);
 }
 
-char	*get_token(char *str, int *i)
+char	*get_token(char *str, int *i, t_built *env)
 {
 	char	*op;
 
@@ -80,10 +83,10 @@ char	*get_token(char *str, int *i)
 			return (op);
 		}
 	}
-	return (extract_token(str, i));
+	return (extract_token(str, i, env));
 }
 
-int	count_tokens(char *str)
+int	count_tokens(char *str, t_built *env)
 {
 	int	i;
 	int	count;
@@ -96,13 +99,13 @@ int	count_tokens(char *str)
 			i++;
 		if (!str[i])
 			break ;
-		free(get_token(str, &i));
+		free(get_token(str, &i, env));
 		count++;
 	}
 	return (count);
 }
 
-char	**tokenize(char *str)
+char	**tokenize(char *str, t_built *env)
 {
 	int		count;
 	char	**tokens;
@@ -113,7 +116,7 @@ char	**tokenize(char *str)
 		return (NULL);
 	i = 0;
 	j = 0;
-	count = count_tokens(str);
+	count = count_tokens(str, env);
 	tokens = malloc(sizeof(char *) * (count + 1));
 	if (!tokens)
 		f_clean(str);
@@ -123,7 +126,7 @@ char	**tokenize(char *str)
 			i++;
 		if (!str[i])
 			break ;
-		tokens[j++] = get_token(str, &i);
+		tokens[j++] = get_token(str, &i, env);
 	}
 	tokens[j] = NULL;
 	return (tokens);

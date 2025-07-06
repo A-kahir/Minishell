@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/03 10:29:14 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:38:09 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,57 @@
 // 	}
 // 	return (i);
 // }
+
+void	ft_bzero(void *s, size_t n)
+{
+	char	*tmp;
+
+	tmp = (char *)s;
+	while (n > 0)
+	{
+		*(tmp++) = 0;
+		n--;
+	}
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	unsigned char	*t;
+
+	t = malloc((count * size));
+	if (!t)
+		return (t);
+	ft_bzero(t, (count * size));
+	return (t);
+}
+// int	ft_isdigit(int c)
+// {
+// 	if (c >= '0' && c <= '9')
+// 		return (1);
+// 	else
+// 		return (0);
+// }
+
+int	ft_isalpha(int c)
+{
+	int	i;
+
+	i = 0;
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+	{
+		i = 1;
+	}
+	else
+		i = 0;
+	return (i);
+}
+
+int	ft_isalnum(int c)
+{
+	if (ft_isalpha(c) || ft_isdigit(c))
+		return (1);
+	return (0);
+}
 
 char	*ft_strcpy(char *dest, const char *src)
 {
@@ -101,6 +152,29 @@ int token_len(char **tokens)
 	return len;
 }
 
+size_t	ft_strcspn(const char *s, const char *reject)
+{
+	size_t i;
+	size_t i2;
+
+	i = 0;
+	i2 = 0;
+	while (s[i] != '\0')
+	{
+		i2 = 0;
+		while (reject[i2] != '\0')
+		{
+			if (s[i] == reject[i2])
+				return (i);
+			i2++;
+		}
+		i++;
+	}
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
+}
 
 char **ft_subarray(char **tokens, int start, int end)
 {
@@ -114,11 +188,11 @@ char **ft_subarray(char **tokens, int start, int end)
 	return (sub);
 }
 
-char	*ft_substr_par(char *s, unsigned int start, size_t len)
+char	*ft_substr_par(char *s, int start, int len)
 {
 	char	*result;
-	size_t	l1;
-	size_t	i;
+	int	l1;
+	int	i;
 
 	if (!s)
 		return (NULL);
@@ -168,36 +242,6 @@ char	*ft_substr_par(char *s, unsigned int start, size_t len)
 // 	}
 // 	return (0);
 // }
-
-char	**ft_strjoinarray(char **s1, char **s2)
-{
-	char	**t;
-	int		i;
-	int		j;
-	int		l1;
-	int		l2;
-
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (ft_subarray(s2, 0, token_len(s2)));
-	if (!s2)
-		return (ft_subarray(s1, 0, token_len(s1)));
-	i = 0;
-	j = 0;
-	l1 = token_len(s1);
-	l2 = token_len(s2);
-	t = malloc(sizeof(char *) * (l1 + l2 + 1));
-	if (!t)
-		return (NULL);
-	while (i < l1)
-		t[i++] = ft_strdup(*s1++);
-	while (j < l2)
-		t[i + j++] = ft_strdup(*s2++);
-	t[i + j] = NULL;
-	return (t);
-}
-
 char	*ft_strjoin_par(char *s1, char *s2)
 {
 	char	*t;

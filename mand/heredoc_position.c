@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 int    has_cmd_before(t_data *d, int pos)
 {
@@ -50,7 +49,7 @@ int    has_cmd_after(t_data *d, int pos)
 	return (0);
 }
 
-void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input)
+void    detect_heredoc_position(t_data *d, t_heredoc *h)
 {
 	t_data    *cur;
 	t_redir    *r;
@@ -81,6 +80,16 @@ void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input)
 		h->before_hered = 1;
 }
 
+void    copy_array(char **dest, char **src, int len)
+{
+	int    i;
+	i = 0;
+	while (i < len)
+	{
+		dest[i] = src[i];
+		i++;
+	}
+}
 
 void    merge_cmd(t_data *a, t_data *b)
 {
@@ -93,8 +102,8 @@ void    merge_cmd(t_data *a, t_data *b)
 	new = malloc(sizeof(char) * (i + j + 1));
 	if (!new)
 		return ;
-	new = ft_subarray(a->cmd, 0, i);
-	new = ft_strjoinarray(new, ft_subarray(b->cmd, 0, j));
+	copy_array(new, a->cmd, i);
+	copy_array(new + i, b->cmd, j);
 	new[i + j] = NULL;
 	free(a->cmd);
 	free(b->cmd);

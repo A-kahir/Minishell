@@ -20,20 +20,38 @@ t_built *ft_export(t_built *line_env, char **cmd)
     {
         int i;
         int print_export = 0;
-        // while (cmd[i])
-        // {
-        //     printf("cmd[%d] ===> %s\n", i, cmd[i]);
-        //     i++;
-        // }
+        
+        i = 1;
+        while (cmd[i])
+        {
+            printf("cmd[%d] ===> %s\n", i, cmd[i]);
+            i++;
+        }
         i = 1;
         while (cmd[i])
         {
             int check = ft_specify_var(cmd[i]);
-            if (cmd[i][0] == '$')
+            if (check == 4)
             {
                 if (cmd[i + 1] == NULL)
-                    print_export = 0;
-                else
+                {
+                    t_built *curr = line_env;
+                    while (curr)
+                    {
+                        if (ft_strcmp(curr->var, cmd[i]) == 0)
+                        {
+                            print_export = 0;
+                            break ;
+                        }
+                        else if (i > 0 && ft_strcmp(curr->var, cmd[i]) != 0 && curr->next == NULL)
+                        {
+                            print_export = 1;
+                            break ;
+                        }
+                        curr = curr->next;
+                    }
+                }
+                else if (i > 0)
                     print_export = 1;
                 i++;
                 continue;

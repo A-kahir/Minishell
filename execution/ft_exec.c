@@ -34,6 +34,7 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 		status = ft_exec_normal(data, env_here, line_env, stat);
 	else if (flag_path == 0)
 		status = ft_if_un_path(data, env_here, line_env, stat);
+	ft_free_split(env_here.env); 
 	return (status);
 }
 
