@@ -38,37 +38,74 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 	return (status);
 }
 
+void ft_rm_list_env(t_built **head, t_built *rm_node)
+{
+	t_built *curr = *head;
+	t_built *now = NULL;
+
+	while (curr)
+	{
+		if (curr == rm_node)
+		{
+			if (now == NULL)
+				*head = curr->next;
+			else
+				now->next = curr->next;
+			if (curr->var)
+				free(curr->var);
+			if (curr->value)
+				free(curr->value);
+			free(curr);
+			return;
+		}
+		now = curr;
+		curr = curr->next;
+	}
+}
+
+
+
 int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 {
 	t_ex_othr env_here;
-	static int no_env;
-	int status;
+	static int no_env = 0;
+	int status = 0;
+	t_built *curr = line_env;
+	t_built *tmp;
 
 	env_here.heredoc = heredoc;
-	status = 0;
-	if ((ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL) 
-		|| (ft_strcmp(data->cmd[0], "env") == 0 && ft_strcmp(data->cmd[1], "-i") == 0)
+	if ((line_env && ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL)
+		|| (data->cmd && data->cmd[0] && data->cmd[1] &&
+			ft_strcmp(data->cmd[0], "env") == 0 && ft_strcmp(data->cmd[1], "-i") == 0)
 		|| no_env == 1)
 	{
 		if (no_env == 0)
 		{
-			t_built *curr = line_env;
 			while (curr)
 			{
-				if (ft_strcmp(curr->var, "PWD") != 0
-					|| ft_strcmp(curr->var, "SHLVL") != 0
-					|| ft_strcmp(curr->var, "OLDPWD") != 0)
-						ft_rm_list(&line_env, curr);
-				curr = curr->next;
+				tmp = curr->next;
+				if (ft_strcmp(curr->var, "PWD") != 0 &&
+					ft_strcmp(curr->var, "SHLVL") != 0 &&
+					ft_strcmp(curr->var, "OLDPWD") != 0)
+				{
+					ft_rm_list_env(&line_env, curr);
+				}
+				curr = tmp;
 			}
 		}
+		if (data->cmd[0])
+			free(data->cmd[0]);
+		if (data->cmd[1])
+			free(data->cmd[1]);
 		no_env = 1;
-		status = ft_no_env(data, env_here, line_env, stat);
+		if (line_env)
+			status = ft_no_env(data, env_here, line_env, stat);
+		else
+			status = ft_no_env(data, env_here, NULL, stat);
 	}
 	else if (no_env == 0)
 	{
 		status = ft_have_env(data, line_env, env_here, stat);
 	}
-	// printf("status ==> %d\n", status);
 	return (status);
 }
