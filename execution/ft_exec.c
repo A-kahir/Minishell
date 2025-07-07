@@ -38,33 +38,6 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 	return (status);
 }
 
-void ft_rm_list_env(t_built **head, t_built *rm_node)
-{
-	t_built *curr = *head;
-	t_built *now = NULL;
-
-	while (curr)
-	{
-		if (curr == rm_node)
-		{
-			if (now == NULL)
-				*head = curr->next;
-			else
-				now->next = curr->next;
-			if (curr->var)
-				free(curr->var);
-			if (curr->value)
-				free(curr->value);
-			free(curr);
-			return;
-		}
-		now = curr;
-		curr = curr->next;
-	}
-}
-
-
-
 int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 {
 	t_ex_othr env_here;
@@ -74,34 +47,19 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	t_built *tmp;
 
 	env_here.heredoc = heredoc;
-	if ((line_env && ft_strcmp(line_env->var, "OLDPWD") == 0 && line_env->next == NULL)
+	int count = 0;
+	while (curr)
+	{
+		count++;
+		curr = curr->next;
+	}
+	if ((count == 3)
 		|| (data->cmd && data->cmd[0] && data->cmd[1] &&
 			ft_strcmp(data->cmd[0], "env") == 0 && ft_strcmp(data->cmd[1], "-i") == 0)
 		|| no_env == 1)
 	{
-		if (no_env == 0)
-		{
-			while (curr)
-			{
-				tmp = curr->next;
-				if (ft_strcmp(curr->var, "PWD") != 0 &&
-					ft_strcmp(curr->var, "SHLVL") != 0 &&
-					ft_strcmp(curr->var, "OLDPWD") != 0)
-				{
-					ft_rm_list_env(&line_env, curr);
-				}
-				curr = tmp;
-			}
-		}
-		if (data->cmd[0])
-			free(data->cmd[0]);
-		if (data->cmd[1])
-			free(data->cmd[1]);
 		no_env = 1;
-		if (line_env)
-			status = ft_no_env(data, env_here, line_env, stat);
-		else
-			status = ft_no_env(data, env_here, NULL, stat);
+		status = ft_no_env(data, env_here, line_env, stat);
 	}
 	else if (no_env == 0)
 	{

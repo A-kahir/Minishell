@@ -53,6 +53,7 @@ char	**ft_fill_envp(t_built *line_env)
 	envp = malloc(sizeof(char *) * (len + 1));
 	if (!envp)
 		return (NULL);
+
 	i = 0;
 	curr = line_env;
 	while (curr)
@@ -61,7 +62,12 @@ char	**ft_fill_envp(t_built *line_env)
 		{
 			envp[i] = ft_build_env(curr);
 			if (!envp[i])
-				return (ft_free_split(envp), NULL);
+			{
+				while (--i >= 0)
+					free(envp[i]);
+				free(envp);
+				return (NULL);
+			}
 			i++;
 		}
 		curr = curr->next;
