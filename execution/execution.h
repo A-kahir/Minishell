@@ -109,7 +109,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 void ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
 void ft_echo(char **str, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env);
-void ft_pwd(void);
+void ft_pwd(t_built *line_env);
 t_built *ft_export(t_built *line_env, char **cmd);
 // -> func export :
 void ft_add_var(t_built *line_env, char *cmd);
@@ -137,7 +137,7 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here);
 void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 
 // **************func execution*****************
-char	**ft_get_path(char *cmd, char **env);
+char	**ft_get_path(char *cmd, char **env, t_built *line_env);
 int ft_flag_redir(t_data *data);
 
 // ***************utils execution****************** 

@@ -62,7 +62,7 @@ void	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 	else if (data->builtin_type == 0)
 		ft_echo(data->cmd, in);
 	else if (data->builtin_type == 2)
-		ft_pwd();
+		ft_pwd(line_env);
 	else if (data->builtin_type == 3)
 		line_env = ft_export(line_env, data->cmd);
 	else if (data->builtin_type == 4)

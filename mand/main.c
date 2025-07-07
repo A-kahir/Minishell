@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/07 09:45:04 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/07 18:48:20 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,10 +141,12 @@ void re_do(t_data *end, t_built	*env)
 	end = NULL;
 	initsh();
 	// signal(SIGINT, handler);
-	if (!line_env)
+	static int one_time;
+	if (!line_env && one_time == 0)
 	{
 		line_env = ft_fill_struct(env);
-		line_env = ft_update_exp(line_env, 0); 
+		line_env = ft_update_exp(line_env, 0);
+		one_time = 1;
 	}
 	while(1)
 	{

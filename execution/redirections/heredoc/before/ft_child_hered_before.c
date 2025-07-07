@@ -45,7 +45,7 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 		ft_is_builtins(curr, line_env, in);
 		exit(0);
 	}
-	cmd_args = ft_get_path(curr->cmd[0], env_here.env);
+	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args)
 	{
 		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')

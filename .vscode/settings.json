@@ -65,6 +65,7 @@
     "string_view": "c",
     "vector": "c",
     "readline.h": "c",
-    "types.h": "c"
+    "types.h": "c",
+    "ostream": "c"
   }
 }

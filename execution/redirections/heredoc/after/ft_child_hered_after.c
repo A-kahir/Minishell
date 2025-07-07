@@ -38,7 +38,7 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 	ft_close_pipes(in.pipes, in.n_cmds);
 	if (ft_strcmp(command, "built") == 0)
 		(ft_is_builtins(curr, line_env, in), exit(0));
-	cmd_args = ft_get_path(curr->cmd[0], env_here.env);
+	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args)
 	{
 		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')

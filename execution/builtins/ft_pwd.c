@@ -12,7 +12,7 @@
 
 #include "../execution.h"
 
-void	ft_pwd(void)
+void	ft_pwd(t_built *line_env)
 {
 	char	*path;
 
@@ -24,6 +24,15 @@ void	ft_pwd(void)
 	}
 	else
 	{
-		perror("pwd");
+		t_built *curr = line_env;
+		while (curr)
+		{
+			if (ft_strcmp(curr->var, "PWD") == 0)
+			{
+				printf("%s\n", curr->value);
+				break ;
+			}
+			curr = curr->next;
+		}
 	}
 }
