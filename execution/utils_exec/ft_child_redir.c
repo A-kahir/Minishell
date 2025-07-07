@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/03 18:09:28 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/07 11:30:03 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,20 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
     }
     cmds = ft_get_path(curr->cmd[0], env_here.env);
     if (!cmds)
-    {
-        if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
-            (printf("%s: command not found\n", curr->cmd[0]), exit(127));
-        else
-            (printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
-    }
-    if (execve(cmds[0], curr->cmd, env_here.env) == -1)
-        (perror("execve failed"), exit(1));
+	{
+		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
+		{
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
+		else
+		{
+			write(2, "minishell: ", 11);
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
+		exit(127);
+	}
+	if (execve(cmds[0], curr->cmd, env_here.env) == -1)
+		(perror("execve failed"), ft_free_split(cmds), exit(1));
 }

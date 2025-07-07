@@ -12,65 +12,75 @@
 
 #include "../../execution.h"
 
+int ft_add_vars(char **cmd)
+{
+    int i = 1;
+    int count = 0;
+
+    while (cmd[i])
+    {
+        if (cmd[i][0] == '$' && ft_strlen(cmd[i]) == 1)
+        {
+            i++;
+            continue;
+        }
+        if (cmd[i][0] == '$' && getenv(cmd[i] + 1) == NULL)
+        {
+            i++;
+            continue;
+        }
+        count++;
+        i++;
+    }
+    return count;
+}
+
+
 t_built *ft_export(t_built *line_env, char **cmd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
         ft_only_print(line_env);
     else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
     {
-        int i;
+        int i = 1;
         int print_export = 0;
-        
-        i = 1;
-        while (cmd[i])
+        int valid_count = ft_add_vars(cmd);
+
+        if (valid_count == 0)
         {
-            printf("cmd[%d] ===> %s\n", i, cmd[i]);
-            i++;
+            ft_only_print(line_env);
+            return line_env;
         }
-        i = 1;
         while (cmd[i])
         {
+            char *buff = getenv(cmd[i] + 1);
+            if (cmd[i][0] == '$' && buff == NULL)
+            {
+                i++;
+                continue;
+            }
             int check = ft_specify_var(cmd[i]);
             if (check == 4)
             {
-                if (cmd[i + 1] == NULL)
-                {
-                    t_built *curr = line_env;
-                    while (curr)
-                    {
-                        if (ft_strcmp(curr->var, cmd[i]) == 0)
-                        {
-                            print_export = 0;
-                            break ;
-                        }
-                        else if (i > 0 && ft_strcmp(curr->var, cmd[i]) != 0 && curr->next == NULL)
-                        {
-                            print_export = 1;
-                            break ;
-                        }
-                        curr = curr->next;
-                    }
-                }
-                else if (i > 0)
-                    print_export = 1;
+                print_export = 1;
                 i++;
                 continue;
             }
             if (check == 1)
-			{
+            {
                 ft_is_positif(line_env, cmd[i]);
-				print_export = 0;
-			}
+                print_export = 0;
+            }
             else if (check == -1)
             {
                 printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
-                return (line_env);
+                return line_env;
             }
             else if (check == 0)
-			{
+            {
                 ft_add_var(line_env, cmd[i]);
-				print_export = 0;
-			}
+                print_export = 0;
+            }
             i++;
         }
         if (print_export)

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/03 15:07:53 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/07 10:31:38 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,18 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
     if (!cmd_args)
 	{
 		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
-			(printf("%s: command not found\n", curr->cmd[0]), exit(127));
+		{
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
 		else
-			(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+		{
+			write(2, "minishell: ", 11);
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
+		exit(127);
 	}
-    if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
-        (perror("execve failed"), exit(1));
+	if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
+		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
 }

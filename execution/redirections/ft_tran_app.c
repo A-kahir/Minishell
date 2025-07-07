@@ -14,7 +14,6 @@
 
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
-    char **cmds;
     int fd;
     int status;
     t_exec in;

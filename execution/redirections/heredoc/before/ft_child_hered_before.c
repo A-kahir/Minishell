@@ -45,16 +45,22 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 		ft_is_builtins(curr, line_env, in);
 		exit(0);
 	}
-	if (!curr->cmd || !curr->cmd[0])
-		exit(0);
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env);
 	if (!cmd_args)
 	{
-		if (curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
-			(printf("%s: command not found\n", curr->cmd[0]), exit(127));
+		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
+		{
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
 		else
-			(printf("minishell: %s: command not found\n", curr->cmd[0]), exit(127));
+		{
+			write(2, "minishell: ", 11);
+			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+			write(2, ": command not found\n", 21);
+		}
+		exit(127);
 	}
 	if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
-		(perror("execve failed"), exit(1));
+		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
 }

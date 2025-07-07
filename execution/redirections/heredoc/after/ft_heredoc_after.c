@@ -63,14 +63,11 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here)
     in.i = 0;
     while (curr)
     {
-        if (curr->cmd && curr->cmd[0])
-        {
-            pid = fork();
-            if (pid == -1)
-                (perror("fork failed"), ft_close_pipes(in.pipes, in.n_cmds), exit(1));
-            else if (pid == 0)
-                ft_child_hered_aft(curr, line_env, env_here, in);
-        }
+        pid = fork();
+        if (pid == -1)
+            (perror("fork failed"), ft_close_pipes(in.pipes, in.n_cmds), exit(1));
+        else if (pid == 0)
+            ft_child_hered_aft(curr, line_env, env_here, in);
         curr = curr->next;
         in.i++;
     }

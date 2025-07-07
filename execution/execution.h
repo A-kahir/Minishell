@@ -107,7 +107,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 
 // *****************builtins func**************
 void ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
-void ft_echo(char **str, t_built *line_env, t_exec in);
+void ft_echo(char **str, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env);
 void ft_pwd(void);
 t_built *ft_export(t_built *line_env, char **cmd);

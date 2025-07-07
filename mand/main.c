@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/05 18:39:43 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/07 09:45:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ void re_do(t_data *end, t_built	*env)
         in.status = ft_strdup(tmp);
         free(tmp);
 		status = ft_exec(end, heredoc, line_env, in);
+		flag = 1;
 		n_clean(end);
 		free(heredoc);
 		free(string);

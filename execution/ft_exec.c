@@ -44,18 +44,20 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	static int no_env;
 	int status;
 
-	t_data *tmp = data;
-	int i = 0;
+	// t_data *tmp = data;
+	// int i = 0;
 	// while (tmp)
 	// {
 	// 	printf("1) type->cmd ---> %d\n", tmp->type);
-	// 	printf("2) data->cmd[%d] ==> %s\n", i, tmp->cmd[i]);
+	// 	printf("2) data->cmd[%d] ==> %s\n", i, tmp->cmd[0]);
+	// 	if (tmp->cmd[1])
+	// 		printf("2) data->cmd[1] ==> %s\n", tmp->cmd[1]);
 	// 	printf("3) builtins flag ==> %d\n", tmp->builtin_type);
-	// 	printf("4) redir Type ==> %d\n", tmp->redir->type);
-	// 	printf("heredoc type (before) ===> %d\n", heredoc->before_hered);
-	// 	printf("heredoc type (after) ===> %d\n", heredoc->after_hered);
-	// 	printf("heredoc type (middle) ===> %d\n", heredoc->middle_hered);
-	// 	printf("5) redir TARGET ==> %s\n\n", tmp->redir->target);
+		// printf("4) redir Type ==> %d\n", tmp->redir->type);
+		// printf("-> heredoc type (before) ===> %d\n", heredoc->before_hered);
+		// printf("-> heredoc type (after) ===> %d\n", heredoc->after_hered);
+		// printf("-> heredoc type (middle) ===> %d\n", heredoc->middle_hered);
+		// printf("5) redir TARGET ==> %s\n\n", tmp->redir->target);
 	// 	i++;
 	// 	tmp = tmp->next;
 	// }
@@ -70,5 +72,6 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	{
 		status = ft_have_env(data, line_env, env_here, stat);
 	}
+	// printf("status ==> %d\n", status);
 	return (status);
 }
