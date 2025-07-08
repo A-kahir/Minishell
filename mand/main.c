@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/07 18:48:20 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/08 14:09:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,74 +125,6 @@ void re_do(t_data *end, t_built	*env)
 	}
 }
 
-void ft_rm_list_env(t_built **head, t_built *rm_node)
-{
-    t_built *curr = *head;
-    t_built *prev = NULL;
-
-    while (curr)
-    {
-        if (curr == rm_node)
-        {
-            if (prev == NULL)
-                *head = curr->next;
-            else
-                prev->next = curr->next;
-            if (curr->var)
-            {
-                free(curr->var);
-                curr->var = NULL;
-            }
-            if (curr->value)
-            {
-                free(curr->value);
-                curr->value = NULL;
-            }
-            free(curr);
-            curr = NULL;
-            return ;
-        }
-        prev = curr;
-        curr = curr->next;
-    }
-}
-
-void clean_line_env(t_built **line_env_ptr)
-{
-    t_built *curr = *line_env_ptr;
-    t_built *tmp;
-
-    while (curr)
-    {
-        tmp = curr->next;
-        if (strcmp(curr->var, "PWD") != 0 &&
-            strcmp(curr->var, "SHLVL") != 0 &&
-            strcmp(curr->var, "OLDPWD") != 0)
-        {
-            ft_rm_list_env(line_env_ptr, curr);
-        }
-        curr = tmp;
-    }
-}
-
-int is_empty_env(char **env)
-{
-	int i = 0;
-	while (env && env[i])
-	{
-		if (strncmp(env[i], "PWD=", 4) == 0 ||
-			strncmp(env[i], "SHLVL=", 6) == 0 ||
-			strncmp(env[i], "_=", 2) == 0)
-		{
-			i++;
-			continue;
-		}
-		return 0;
-	}
-	return 1;
-}
-
-
 int main(int ac, char **av, char **env)
 {
 		char	**s;
@@ -215,11 +147,10 @@ int main(int ac, char **av, char **env)
 	{
 		if (env == NULL || env[0] == NULL)
 			line_env = NULL;
-		else if (is_empty_env(env))
+		else if (ft_empty_env(env))
 			line_env = NULL;
 		else
 			line_env = ft_fill_struct(env);
-
 		if (line_env)
 			line_env = ft_update_exp(line_env, 0);
 		one_time = 1;
@@ -278,9 +209,9 @@ int main(int ac, char **av, char **env)
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			strcmp(end->cmd[0], "env") == 0 && strcmp(end->cmd[1], "-i") == 0)
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
 		{
-			clean_line_env(&line_env);
+			ft_clean_env(&line_env);
 		}
 		else
 			status = ft_exec(end, heredoc, line_env, in);

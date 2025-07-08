@@ -36,6 +36,8 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_only_print.c \
 	execution/utils_exec/ft_open_outfile.c \
 	execution/utils_exec/ft_child_redir.c \
+	execution/utils_exec/ft_clean_env.c \
+	execution/utils_exec/ft_empty_env.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \
@@ -66,7 +68,8 @@ LIBFT_FUNC_SRC = \
 	execution/libft_func/ft_strlen.c \
 	execution/libft_func/ft_strncmp.c \
 	execution/libft_func/ft_substr.c \
-	execution/libft_func/ft_itoa.c 
+	execution/libft_func/ft_itoa.c \
+	execution/libft_func/ft_rm_list_env.c
 
 BUILTINS_SRC = \
 	execution/builtins/ft_unset.c \

@@ -156,6 +156,8 @@ void ft_only_print(t_built *line);
 int ft_open_outfile(t_data *data);
 void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 char	*ft_check_built_cmd(t_data *data);
+void ft_clean_env(t_built **line_env_ptr);
+int ft_empty_env(char **env);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
@@ -174,5 +176,6 @@ void	*ft_memcpy(void *dst, void *src, size_t n);
 void	ft_free_split(char **split);
 char	*ft_strnstr(char *haystack, char *needle, int len);
 char	*ft_itoa(int n);
+void ft_rm_list_env(t_built **head, t_built *rm_node);
 
 #endif

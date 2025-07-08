@@ -37,15 +37,19 @@ static void	ft_print_env_vars(t_built *curr)
 t_built	*ft_env(t_built *line_env)
 {
 	t_built		*curr;
-	static int	flag_path_env;
+	t_built		*tmp;
 
 	if (line_env)
 	{
-		if (flag_path_env == 0)
-			line_env = ft_add_back(line_env, "_", "/usr/bin/env");
+		tmp = line_env;
+		while (tmp)
+		{
+			if (ft_strcmp(tmp->value, "/usr/bin/env") != 0 && tmp->next == NULL)
+				line_env = ft_add_back(line_env, "_", "/usr/bin/env");
+			tmp = tmp->next;
+		}
 		curr = line_env;
 		ft_print_env_vars(curr);
-		flag_path_env = 1;
 	}
 	return (line_env);
 }

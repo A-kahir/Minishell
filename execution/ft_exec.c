@@ -53,10 +53,7 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 		count++;
 		curr = curr->next;
 	}
-	if ((count == 3)
-		|| (data->cmd && data->cmd[0] && data->cmd[1] &&
-			ft_strcmp(data->cmd[0], "env") == 0 && ft_strcmp(data->cmd[1], "-i") == 0)
-		|| no_env == 1)
+	if ((count == 3) || no_env == 1)
 	{
 		no_env = 1;
 		status = ft_no_env(data, env_here, line_env, stat);
