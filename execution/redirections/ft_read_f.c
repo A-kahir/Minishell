@@ -18,6 +18,11 @@ int ft_open_infile(t_data *data)
 
     if (!data->redir || !data->redir->target)
         return (-1);
+    if (data->redir->target)
+    {
+        if (data->redir->target[0] == '$' && data->redir->target[1] != '\0')
+            return (printf("minishell: %s: ambiguous redirect\n", data->redir->target), -1);
+    }
     inf_fd = open(data->redir->target, O_RDONLY);
     if (inf_fd < 0)
     {
@@ -111,7 +116,6 @@ int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
             ft_close_pipes(in.pipes, in.n_cmds);
             free(in.pipes);
             perror("Fork failed");
-            exit(1);
         }
         else if (pid == 0)
             ft_child_read_f(curr, line_env, env_here, in);

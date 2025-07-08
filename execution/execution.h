@@ -64,10 +64,10 @@ typedef enum s_type_node
 typedef enum s_type_redir
 {
 	NOT_REDIR = -1,
-	TRUNCATE,  // > Redirects standard output to a file, overwriting the file if it exists.
-	APPEND,    // >> Redirects standard output to a file, appending to the file if it exists.
-	READ_F,    // < Redirects a file as standard input to a command.
-	HEREDOC    // << Tells the shell to read input until a specific delimiter is reached.
+	TRUNCATE,  // > Redirects standard output to a file, overwriting the file if it exists. $
+	APPEND,    // >> Redirects standard output to a file, appending to the file if it exists. $
+	READ_F,    // < Redirects a file as standard input to a command. $
+	HEREDOC    // << Tells the shell to read input until a specific delimiter is reached. $
 }	t_type_redir;
 
 typedef struct s_redir

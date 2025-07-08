@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/07 16:41:59 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/08 15:26:56 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
     {
         fd = ft_open_outfile(curr);
         if (fd == -1)
-            (perror("open outfile failed"), exit(1));
+            exit(1);
         if (dup2(fd, 1) == -1)
             (perror("dup2 outfile failed"), close(fd), exit(1));
         close(fd);

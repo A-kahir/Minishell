@@ -69,7 +69,7 @@ char	*expanding(char *s, t_built *env)
         return (NULL);
     while (s[i])
     {
-        if (s[i] == '$' && ft_isalpha(s[i + 1]))
+        if (s[i] == '$')
         {
             result = helper_func(result, s, start, i, env);
             i++;

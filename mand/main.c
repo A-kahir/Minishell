@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/08 14:09:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/08 16:01:23 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ int main(int ac, char **av, char **env)
 			merge_middle_heredoc_cmd(end);
 		t_data *curr = end;
         static int flag;
+        static int flag_fd;
         while (curr)
         {
             if (curr->cmd && curr->cmd[0] && ft_strcmp(curr->cmd[0], "$?") == 0)
@@ -203,6 +204,19 @@ int main(int ac, char **av, char **env)
                     curr->cmd[0] = ft_strdup(ft_itoa(status));
                 }
             }
+			else if (curr->redir && curr->redir->type != 3 &&  curr->redir->target && ft_strcmp(curr->redir->target, "$?") == 0)
+			{
+				free(curr->redir->target);
+				if (flag_fd == 0)
+				{
+					curr->redir->target = ft_strdup("0");
+					flag_fd = 1;
+				}
+				else if (flag_fd == 1)
+				{
+					curr->redir->target = ft_strdup(ft_itoa(status));
+				}
+			}
             curr = curr->next;
         }
         char *tmp = ft_itoa(status);
