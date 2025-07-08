@@ -18,6 +18,8 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+#include <errno.h>
+#include <sys/stat.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -39,6 +41,7 @@ typedef struct s_built
 	char *var;
 	char *value;
 	char *old_pwd;
+	char *pwd;
 	struct s_built *next;
 } t_built;
 

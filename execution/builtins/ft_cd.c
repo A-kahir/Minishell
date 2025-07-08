@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:28:26 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/08 17:29:34 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/08 20:53:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,12 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd)
 		if (chdir(str[1]) == -1)
 			printf("minishell: cd: %s: No such file or directory\n", str[1]);
 		else
+		{
+			home = getcwd(NULL, 0);
+			line_env->pwd = ft_strdup(home);
+			free(home);
 			*flag_cd = 1;
+		}
 	}
 	return (line_env);
 }

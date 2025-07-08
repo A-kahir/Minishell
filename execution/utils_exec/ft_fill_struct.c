@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:23:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/01 20:04:35 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/08 20:42:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ static int	ft_add_new_node(t_built **head, char *env_line)
 	if (new_node->value && ft_strcmp(new_node->value, "./minishell") == 0)
 		return (free(new_node->var), free(new_node->value), free(new_node), 1);
 	new_node->old_pwd = NULL;
+	new_node->pwd = NULL;
 	new_node->next = NULL;
 	if (!*head)
 		*head = new_node;

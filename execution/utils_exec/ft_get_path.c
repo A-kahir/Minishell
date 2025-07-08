@@ -95,6 +95,7 @@ static char	**search_in_path(char **cmd_args, char **env)
 char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 {
 	char	**cmd_args;
+	struct stat data;
 
 	if (is_only_spaces(cmd))
 		return (NULL);
@@ -105,24 +106,20 @@ char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 	{
 		if (access(cmd_args[0], X_OK) == 0)
 		{
-			t_built *curr = line_env;
-			while (curr)
+			if (stat(cmd, &data) == 0 && S_ISDIR(data.st_mode))
 			{
-					if (curr->value && ft_strcmp(curr->value, cmd) == 0)
-					{
-						if (ft_strcmp(curr->var, "HOME") == 0
-							|| ft_strcmp(curr->var, "TMPDIR") == 0
-							|| ft_strcmp(curr->var, "ZDOTDIR") == 0
-							|| ft_strcmp(curr->var, "ZSH") == 0)
-							{
-								free(cmd_args[0]);
-								cmd_args[0] = ft_strdup("dire");
-								return (cmd_args);
-							}
-					}
-				curr = curr->next;
+				write(2, "minishell: ", 12);
+				write(2, cmd, ft_strlen(cmd));
+				write(2, ": is a directory\n", 18);
+				exit(126);
 			}
-			return (cmd_args);
+		}
+		else if (errno == 20)
+		{
+			write(2, "minishell: ", 12);
+			write(2, cmd, ft_strlen(cmd));
+			write(2, ": Not a directory\n", 19);
+			exit(126);
 		}
 		else
 		{

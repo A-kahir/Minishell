@@ -30,9 +30,14 @@ void	ft_pwd(t_built *line_env)
 			if (ft_strcmp(curr->var, "PWD") == 0)
 			{
 				printf("%s\n", curr->value);
-				break ;
+				return ;
 			}
 			curr = curr->next;
 		}
+		if (line_env->pwd)
+			printf("%s\n", line_env->pwd);
+		else if (line_env->old_pwd)
+			printf("%s\n", line_env->old_pwd);
+		return ;
 	}
 }
