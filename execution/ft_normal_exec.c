@@ -74,6 +74,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here);
 	}
-	free(in.status);
+	if (in.status)
+		free(in.status);
 	return (status);
 }
