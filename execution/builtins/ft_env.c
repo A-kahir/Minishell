@@ -25,6 +25,8 @@ static void	ft_print_env_vars(t_built *curr)
 			curr = curr->next;
 			continue ;
 		}
+		if (ft_strcmp(curr->value, "/mnt/homes/akahir/Desktop/Minishell/./minishell") == 0)
+			curr = curr->next;
 		if (curr->var && curr->value)
 		{
 			printf("%s=", curr->var);

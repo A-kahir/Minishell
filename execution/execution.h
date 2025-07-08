@@ -177,5 +177,6 @@ void	ft_free_split(char **split);
 char	*ft_strnstr(char *haystack, char *needle, int len);
 char	*ft_itoa(int n);
 void ft_rm_list_env(t_built **head, t_built *rm_node);
+void ft_close_fd_opening(void);
 
 #endif
