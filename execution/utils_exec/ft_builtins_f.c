@@ -37,19 +37,21 @@ static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
 	temp = line_env;
 	while (temp)
 	{
-		if (ft_strcmp(temp->var, "PWD") == 0)
+		if (ft_strcmp(temp->var, "PWD") == 0 && temp->value)
 		{
-			if (temp->value)
-				before_cd = ft_strdup(temp->value);
-			break ;
+			before_cd = ft_strdup(temp->value);
+			break;
 		}
 		temp = temp->next;
 	}
-	line_env = ft_cd(data->cmd, line_env);
-	*flag_cd = 1;
-	temp = line_env;
-	if (!ft_save_oldpwd_f(temp, before_cd) && before_cd)
+	line_env = ft_cd(data->cmd, line_env, flag_cd);
+	if (*flag_cd == 1 && before_cd)
+	{
+		ft_save_oldpwd_f(line_env, before_cd);
 		line_env = ft_add_front(line_env, "OLDPWD", before_cd);
+	}
+	else
+		free(before_cd);
 	return (line_env);
 }
 
