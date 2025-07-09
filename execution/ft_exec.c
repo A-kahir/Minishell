@@ -44,12 +44,28 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	static int no_env = 0;
 	int status = 0;
 	t_built *curr = line_env;
-	t_built *tmp;
+	t_data *tmp;
 
 	env_here.heredoc = heredoc;
-	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->after_hered);
-	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->middle_hered);
-	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->before_hered);
+	tmp = data;
+	while (tmp)
+	{
+		if (tmp->type)
+			printf("1) tmp->type ===> %d\n", data->type);
+		if (tmp->redir->type)
+			printf("2) tmp->redir->type ===> %d\n", tmp->redir->type);
+		if (tmp->redir->target)
+			printf("3) tmp->redir->target ===> %s\n", tmp->redir->target);
+		if (tmp->builtin_type)
+			printf("4) tmp->builtins type ====> %d\n", tmp->builtin_type);
+		if (tmp->cmd[0])
+			printf("5) tmp->cmd[0] ===> %s\n", tmp->cmd[0]);
+		if (tmp->cmd[1])
+			printf("6) tmp->cmd[1] ===> %s\n", tmp->cmd[1]);
+		if (tmp->next != NULL)
+			printf("****************\n");
+		tmp = tmp->next;
+	}
 	int count = 0;
 	while (curr)
 	{
