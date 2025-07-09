@@ -30,6 +30,33 @@ int ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here)
 			return (perror("Pipe creation failed"), free(in.pipes), 1);
 		in.i++;
 	}
+	int *hered_fd = malloc(sizeof(int) * in.n_cmds);
+	if (!hered_fd)
+		exit(1);
+	in.i = 0;
+	t_data *tmp = data;
+	while (in.i < in.n_cmds)
+	{
+		hered_fd[in.i] = -1;
+		int fd = -1;
+		t_redir *redir = tmp->redir;
+		while (redir)
+		{
+			if (redir->type == 3)
+			{
+				if (fd != -1)
+					close(fd);
+				fd = ft_handle_heredoc(redir->target, line_env);
+			}
+			redir = redir->next;
+		}
+		if (fd != -1)
+			hered_fd[in.i] = fd;
+		tmp = tmp->next;
+		in.i++;
+	}
+	in.status = (char *)hered_fd;
+	curr = data;
 	pids = malloc(sizeof(pid_t) * in.n_cmds);
 	if (!pids)
 		return (free(in.pipes), 1);
@@ -58,7 +85,15 @@ int ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here)
 		in.i++;
 	}
 	status = status / 256;
+	in.i = 0;
+	while (in.i < in.n_cmds)
+	{
+		if (hered_fd[in.i] != -1)
+			close(hered_fd[in.i]);
+		in.i++;
+	}
 	free(in.pipes);
 	free(pids);
+	free(hered_fd);
 	return (status);
 }

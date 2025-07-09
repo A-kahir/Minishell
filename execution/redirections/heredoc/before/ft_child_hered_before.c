@@ -15,18 +15,14 @@
 void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
 {
 	char **cmd_args;
-	int heredoc_fd = -1;
+	int *hered_fd = (int *)in.status;
 	char *command;
 
-	if (curr->redir && curr->redir->type == HEREDOC)
+	if (hered_fd[in.i] != -1)
 	{
-		heredoc_fd = ft_handle_heredoc(curr->redir->target);
-		if (heredoc_fd != -1)
-		{
-			if (dup2(heredoc_fd, STDIN_FILENO) == -1)
-				(perror("dup2 input from heredoc failed"), exit(1));
-			close(heredoc_fd);
-		}
+		if (dup2(hered_fd[in.i], STDIN_FILENO) == -1)
+			(perror("dup2 input from heredoc failed"), exit(1));
+		close(hered_fd[in.i]);
 	}
 	else if (in.i > 0)
 	{
@@ -46,27 +42,15 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 		exit(0);
 	}
 	if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
-	{
 		exit(0);
-	}
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
 	{
-		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
-		{
-			write(2, "minishell: ", 11);
-			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
-			write(2, ": command not found\n", 21);
-			exit(127);
-		}
-		else
-		{
-			write(2, "minishell: ", 11);
-			write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
-			write(2, ": command not found\n", 21);
-			exit(127);
-		}
+		write(2, "minishell: ", 11);
+		write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+		write(2, ": command not found\n", 21);
+		exit(127);
 	}
-	else if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
+	if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
 		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
 }

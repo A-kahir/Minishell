@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 17:18:13 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 20:17:45 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
             {
                 if (fd != -1)
                     close(fd);
-                fd = ft_handle_heredoc(redir->target);
+                fd = ft_handle_heredoc(redir->target, line_env);
             }
             redir = redir->next;
         }

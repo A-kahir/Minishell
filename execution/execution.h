@@ -128,7 +128,7 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here);
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here);
 int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here);
 // -> heredoc :
-int ft_handle_heredoc(char *del);
+int ft_handle_heredoc(char *del, t_built *line_env);
 		// -> heredoc before:
 int    ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here);
 void	ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
@@ -162,6 +162,7 @@ char	*ft_check_built_cmd(t_data *data);
 void ft_clean_env(t_built **line_env_ptr);
 int ft_empty_env(char **env);
 int ft_check_this_var(char *str, t_built *line_env);
+char	*expanding(char *s, t_built *env);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

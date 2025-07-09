@@ -48,7 +48,7 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here)
             {
                 if (fd != -1)
                     close(fd);
-                fd = ft_handle_heredoc(redir->target);
+                fd = ft_handle_heredoc(redir->target, line_env);
             }
             redir = redir->next;
         }

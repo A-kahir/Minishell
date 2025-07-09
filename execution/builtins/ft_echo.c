@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:02 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 14:09:50 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 20:06:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,10 @@ void	ft_echo(char **str, t_exec in)
 
 	while (str[i] && ft_check(str, &i))
 		flag_n = 1;
-
 	while (str[i])
 	{
+		if (str[i][0] == '$' && str[i][1] == '\0')
+			break ;
 		if (ft_strcmp(str[i], "$?") == 0)
 		{
 			if (in.status)
