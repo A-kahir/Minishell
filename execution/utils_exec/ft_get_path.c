@@ -94,36 +94,53 @@ static char	**search_in_path(char **cmd_args, char **env)
 
 char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 {
-	char	**cmd_args;
-	struct stat data;
+	char			**cmd_args;
+	struct stat		data;
 
 	if (is_only_spaces(cmd))
 		return (NULL);
+
 	cmd_args = ft_split(cmd, ' ');
-	if (!cmd_args)
+	if (!cmd_args || !cmd_args[0])
 		return (NULL);
+
 	if (ft_strchr(cmd_args[0], '/'))
 	{
+		errno = 0;
 		if (access(cmd_args[0], X_OK) == 0)
 		{
-			if (stat(cmd, &data) == 0 && S_ISDIR(data.st_mode))
+			if (stat(cmd_args[0], &data) == 0 && S_ISDIR(data.st_mode))
 			{
-				write(2, "minishell: ", 12);
-				write(2, cmd, ft_strlen(cmd));
+				write(2, "minishell: ", 11);
+				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
 				write(2, ": is a directory\n", 18);
 				exit(126);
 			}
-		}
-		else if (errno == 20)
-		{
-			write(2, "minishell: ", 12);
-			write(2, cmd, ft_strlen(cmd));
-			write(2, ": Not a directory\n", 19);
-			exit(126);
+			return (cmd_args);
 		}
 		else
 		{
-			ft_free_split(cmd_args);
+			if (errno == ENOTDIR)
+			{
+				write(2, "minishell: ", 11);
+				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
+				write(2, ": Not a directory\n", 19);
+				exit(126);
+			}
+			else if (errno == ENOENT)
+			{
+				write(2, "minishell: ", 11);
+				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
+				write(2, ": No such file or directory\n", 29);
+				exit(127);
+			}
+			else
+			{
+				write(2, "minishell: ", 11);
+				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
+				write(2, ": Permission denied\n", 21);
+				exit(126);
+			}
 			return (NULL);
 		}
 	}

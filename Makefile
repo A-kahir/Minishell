@@ -38,6 +38,7 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_child_redir.c \
 	execution/utils_exec/ft_clean_env.c \
 	execution/utils_exec/ft_empty_env.c \
+	execution/utils_exec/ft_check_this_var.c
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \
@@ -87,7 +88,7 @@ SRC = $(MAND_SRC) $(EXEC_SRC) $(UTILS_EXEC_SRC) $(REDIR_SRC) $(HEREDOC_SRC) $(LI
 
 OBJS = $(SRC:.c=.o)
 
-CC = cc -g -fsanitize=address -g #-fsanitize=undefined -g -Wall -Wextra -Werror
+CC = cc -fsanitize=address -g #-fsanitize=undefined -g -Wall -Wextra -Werror
 RM = rm -f
  CFLAGS = -Wall -Wextra -Werror
 # READLINE_INC = -I$(shell brew --prefix readline)/include

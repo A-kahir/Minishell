@@ -161,6 +161,7 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 char	*ft_check_built_cmd(t_data *data);
 void ft_clean_env(t_built **line_env_ptr);
 int ft_empty_env(char **env);
+int ft_check_this_var(char *str, t_built *line_env);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
