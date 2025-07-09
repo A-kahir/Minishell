@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../../execution.h"
-int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
+int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     t_exec in;
     t_data *curr;
@@ -51,7 +51,7 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
             {
                 if (fd != -1)
                     close(fd);
-                fd = ft_handle_heredoc(redir->target, line_env);
+                fd = ft_handle_heredoc(redir->target, line_env, stat);
             }
             redir = redir->next;
         }

@@ -76,7 +76,7 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			ft_is_builtins(data, line_env, in);
 		if (flag_redir == 1)
-			status = ft_is_redir(data, line_env, env_here);
+			status = ft_is_redir(data, line_env, env_here, stat);
 	}
 	free(in.status);
 	return (status);

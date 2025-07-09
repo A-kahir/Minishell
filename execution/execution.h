@@ -124,19 +124,19 @@ void ft_exit(char **str);
 
 
 // **************redirections func*************
-int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here);
 int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here);
 // -> heredoc :
-int ft_handle_heredoc(char *del, t_built *line_env);
+int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat);
 		// -> heredoc before:
-int    ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here);
+int    ft_heredoc_before(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 void	ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 		// -> heredoc after :
-int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 		// -> heredoc middle :
-int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 
 // **************func execution*****************

@@ -12,7 +12,7 @@
 
 #include "../../execution.h"
 
-int ft_handle_heredoc(char *del, t_built *line_env)
+int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
 {
     int pipe_fd[2];
     char *line;
@@ -31,11 +31,11 @@ int ft_handle_heredoc(char *del, t_built *line_env)
         line = readline("> ");
         if (!line)
             break;
-        if (line[0] == '$' && line[1] == '?' && line[3] == '\0')
+        if (ft_strcmp(line, "$?") == 0)
         {
-            printf("heeeere");
+            free(line);
+            line = ft_strdup(stat.status);
         }
-        printf("liiiiiineeeee =====> %s\n", line);
         line = expanding(line, line_env);
         if (line && del && ft_strcmp(line, del) == 0)
         {
