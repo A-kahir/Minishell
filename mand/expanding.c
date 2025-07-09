@@ -5,26 +5,28 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/05 18:41:41 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/05 18:41:41 by yael-oua         ###   ########.fr       */
+/*   Created: 2025/07/05 18:25:36 by yael-oua          #+#    #+#             */
+/*   Updated: 2025/07/05 18:25:36 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 
-char *get_env_value(const char *var, t_built *env) {
-    while (env) {
-        if (strcmp(env->var, var) == 0)
+char *get_env_value(char *var, t_built *env)
+{
+    while (env)
+    {
+        if (ft_strcmp(env->var, var) == 0)
             return env->value;
         env = env->next;
     }
     return NULL;
 }
 
-static char	*helper_func(char *result, char *s, size_t start, size_t end, t_built *env)
+static char	*helper_func(char *result, char *s, int start, int end, t_built *env)
 {
-    size_t	i;
+    int	i;
     char	*tmp;
     char	*var;
     char	*val;

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 13:09:13 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 13:09:34 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 13:51:24 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int ft_check_this_var(char *str, t_built *line_env)
 	curr = line_env;
 	while (curr)
 	{
-		if (ft_strcmp(curr->var, str) == 0)
+		if (ft_strcmp(curr->var, str) == 0 && curr->value != NULL)
 			return (0);
 		curr = curr->next;
 	}

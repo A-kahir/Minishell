@@ -49,7 +49,7 @@ int    has_cmd_after(t_data *d, int pos)
 	return (0);
 }
 
-void    detect_heredoc_position(t_data *d, t_heredoc *h)
+void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input)
 {
 	t_data    *cur;
 	t_redir    *r;

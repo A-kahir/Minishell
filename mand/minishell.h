@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/05 18:39:19 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/07 14:53:56 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define MINISHELL_H
 
 #include<stdio.h>
-#include<string.h>
+// #include<string.h>
 #include<stdlib.h>
 #include<unistd.h>
 #include<sys/types.h>
@@ -90,11 +90,12 @@ int	syntax_error(char **s);
 char	*ft_strcpy(char *dest, const char *src);
 // char	*ft_strdup(const char *src);
 char	**ft_subarray(char **tokens, int start, int end);
-char	*ft_substr_par(char *s, int start, int len);
+char	*ft_substr_par(char *s, unsigned int start, size_t len);
+char	**ft_strjoinarray(char **s1, char **s2);
 // int		ft_strcmp(const char *s1, const char *s2);
 // int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
-void    detect_heredoc_position(t_data *d, t_heredoc *h);
+void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input);
 void    merge_middle_heredoc_cmd(t_data *d);
 
 t_data	*part1(char **s);

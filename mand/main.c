@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/08 16:01:23 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 13:36:11 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,61 @@ void re_do(t_data *end, t_built	*env)
 		tmp = tmp->next;
 	}
 }
+// int main(int ac, char **av, char **env)
+// {
+// 	char	**s;
+// 	t_data	*end;
+// 	char *string;
+// 	static t_built *line_env;
+// 	int i = 0;
+// 	t_heredoc *heredoc;
+
+// 	string = NULL;
+// 	end = NULL;
+// 	initsh();
+// 	// signal(SIGINT, handler);
+// 	if (!line_env)
+// 	{
+// 		line_env = ft_fill_struct(env);
+// 		line_env = ft_update_exp(line_env, 0); 
+// 	}
+// 	while(1)
+// 	{
+// 		string = getinput(string);
+// 		if(!string)
+// 			continue;
+// 		if(check_before(string))
+// 		{
+// 			string = NULL;
+// 			continue;
+// 		}
+// 		// string = expand_dollar(string, line_env);
+// 		// printf("%s\n", string);
+// 		s = tokenize(string, line_env);
+// 		if(!syntax_error(s))
+// 		{
+// 			string = NULL;
+// 			freedp(s);
+// 			continue;
+// 		}
+// 		end = part1(s);
+// 		// t_data *tmp = end;
+// 		// re_do(end, line_env);
+// 		freedp(s);
+// 		heredoc = malloc(sizeof(t_heredoc));
+// 		detect_heredoc_position(end, heredoc, string);
+// 		if (heredoc->middle_hered)
+// 			merge_middle_heredoc_cmd(end);
+// 		// ft_exec(end, env, heredoc, line_env);
+// 		n_clean(end);
+// 		free(heredoc);
+// 		free(string);
+// 		string = NULL;
+// 	}
+// 	return 0;
+// }
+
+
 
 int main(int ac, char **av, char **env)
 {
@@ -183,7 +238,7 @@ int main(int ac, char **av, char **env)
 		// re_do(end, line_env);
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
-		detect_heredoc_position(end, heredoc);
+		detect_heredoc_position(end, heredoc, string);
 		if (heredoc->middle_hered)
 			merge_middle_heredoc_cmd(end);
 		t_data *curr = end;

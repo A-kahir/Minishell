@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/05 18:38:09 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/07 14:51:44 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int	ft_isalnum(int c)
 		return (1);
 	return (0);
 }
+
 
 char	*ft_strcpy(char *dest, const char *src)
 {
@@ -152,6 +153,35 @@ int token_len(char **tokens)
 	return len;
 }
 
+char	**ft_strjoinarray(char **s1, char **s2)
+{
+	char	**t;
+	int		i;
+	int		j;
+	int		l1;
+	int		l2;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_subarray(s2, 0, token_len(s2)));
+	if (!s2)
+		return (ft_subarray(s1, 0, token_len(s1)));
+	i = 0;
+	j = 0;
+	l1 = token_len(s1);
+	l2 = token_len(s2);
+	t = malloc(sizeof(char *) * (l1 + l2 + 1));
+	if (!t)
+		return (NULL);
+	while (i < l1)
+		t[i++] = ft_strdup(*s1++);
+	while (j < l2)
+		t[i + j++] = ft_strdup(*s2++);
+	t[i + j] = NULL;
+	return (t);
+}
+
 size_t	ft_strcspn(const char *s, const char *reject)
 {
 	size_t i;
@@ -188,11 +218,11 @@ char **ft_subarray(char **tokens, int start, int end)
 	return (sub);
 }
 
-char	*ft_substr_par(char *s, int start, int len)
+char	*ft_substr_par(char *s, unsigned int start, size_t len)
 {
 	char	*result;
-	int	l1;
-	int	i;
+	size_t	l1;
+	size_t	i;
 
 	if (!s)
 		return (NULL);

@@ -6,10 +6,11 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/05 18:21:07 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/07 14:54:26 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "minishell.h"
 t_type_buil	get_b(char *s)
 {
@@ -52,51 +53,6 @@ int	find_pipe(char **s)
 	}
 	return (c);
 }
-t_redir *create_redir_node(t_type_redir type, char *target)
-{
-	t_redir *new = malloc(sizeof(t_redir));
-	if (!new || !target) 
-		return (NULL);
-	new->type = type;
-	new->target = strdup(target);
-	if (!new->target) 
-		return (free(new), NULL);
-	new->next = NULL;
-	return (new);
-}
-
-
-int	check_red(char **s, int i, int k)
-{
-	int	j;
-
-	j = -1;
-	while (s[i] && i <= k)
-	{
-		if(!ft_strcmp(s[i], ">") || !ft_strcmp(s[i], "<") 
-			|| !ft_strcmp(s[i], "<<") || !ft_strcmp(s[i], ">>"))
-			j = i;
-		i++;
-	}
-	return (j);
-}
-
-
-t_type_redir check_redirection(char *token)
-{
-	if (!token || !*token) 
-		return (NOT_REDIR);
-	if (!strcmp(token, ">")) 
-		return (TRUNCATE);
-	if (!strcmp(token, ">>")) 
-	    return (APPEND);
-	if (!strcmp(token, "<")) 
-	    return (READ_F);
-	if (!strcmp(token, "<<")) 
-	    return (HEREDOC);
-	return (NOT_REDIR);
-}
-
 char	*extract_quoates(char *str, int i)
 {
 	char	*token;
@@ -155,10 +111,8 @@ char **last_fix(char **s)
 	int	i;
 	char	**t;
 
-	t = malloc(sizeof(char *) * (token_len(s) + 1));
-	if (!t)
-		return (NULL);
 	i = 0;
+	t = malloc(sizeof(char *) * (token_len(s) + 1));
 	while (s[i])
 	{
 		if(semiflag(s[i]))
@@ -170,6 +124,51 @@ char **last_fix(char **s)
 	t[i] =  NULL;
 	return(t);
 }
+t_redir *create_redir_node(t_type_redir type, char *target)
+{
+	t_redir *new = malloc(sizeof(t_redir));
+	if (!new || !target) 
+		return (NULL);
+	new->type = type;
+	new->target = extract_quoates(target, 0);
+	if (!new->target) 
+		return (free(new), NULL);
+	new->next = NULL;
+	return (new);
+}
+
+
+int	check_red(char **s, int i, int k)
+{
+	int	j;
+
+	j = -1;
+	while (s[i] && i <= k)
+	{
+		if(!ft_strcmp(s[i], ">") || !ft_strcmp(s[i], "<") 
+			|| !ft_strcmp(s[i], "<<") || !ft_strcmp(s[i], ">>"))
+			j = i;
+		i++;
+	}
+	return (j);
+}
+
+
+t_type_redir check_redirection(char *token)
+{
+	if (!token || !*token) 
+		return (NOT_REDIR);
+	if (!ft_strcmp(token, ">")) 
+		return (TRUNCATE);
+	if (!ft_strcmp(token, ">>")) 
+	    return (APPEND);
+	if (!ft_strcmp(token, "<")) 
+	    return (READ_F);
+	if (!ft_strcmp(token, "<<")) 
+	    return (HEREDOC);
+	return (NOT_REDIR);
+}
+
 
 t_data *create_data_node(t_type_node t)
 {
@@ -187,8 +186,10 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 {
 	t_data	*cmd;
 	int	j;
+	int	quote_len;
 
 	j = 0;
+	quote_len = token_len(s);
 	cmd = create_data_node(t);
 	if (!cmd)
 		return(n_clean(cmd), NULL);
@@ -197,7 +198,8 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	if (j >= 0)
 	{
 		cmd->redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
-		cmd->cmd = ft_subarray(last_fix(s), i, j);
+		cmd->cmd = ft_strjoinarray(ft_subarray(last_fix(s), i, j), ft_subarray(last_fix(s), j + 2, k));
+		printf("->: %s\n", cmd->cmd[0]);
 	}
 	else
 	{
