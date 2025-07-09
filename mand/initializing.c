@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/07 14:54:26 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:46:45 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,6 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	{
 		cmd->redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
 		cmd->cmd = ft_strjoinarray(ft_subarray(last_fix(s), i, j), ft_subarray(last_fix(s), j + 2, k));
-		printf("->: %s\n", cmd->cmd[0]);
 	}
 	else
 	{
