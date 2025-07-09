@@ -22,6 +22,8 @@ int    has_cmd_before(t_data *d, int pos)
 	{
 		if (cur->cmd && cur->cmd[0])
 			return (1);
+		else if (cur->redir && cur->redir->target)
+			return(1);
 		cur = cur->next;
 		i++;
 	}
@@ -42,7 +44,7 @@ int    has_cmd_after(t_data *d, int pos)
 	}
 	while (cur)
 	{
-		if (cur->cmd && cur->cmd[0])
+		if (cur->cmd && cur->cmd[0] || (cur->redir && cur->redir->target))
 		return (1);
 		cur = cur->next;
 	}
@@ -102,9 +104,7 @@ void    merge_cmd(t_data *a, t_data *b)
 	new = malloc(sizeof(char) * (i + j + 1));
 	if (!new)
 		return ;
-	copy_array(new, a->cmd, i);
-	copy_array(new + i, b->cmd, j);
-	new[i + j] = NULL;
+	new = ft_strjoinarray(a->cmd, b->cmd);
 	free(a->cmd);
 	free(b->cmd);
 	a->cmd = new;

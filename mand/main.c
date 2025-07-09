@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/09 13:36:11 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 15:56:58 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,12 @@ int main(int ac, char **av, char **env)
 			ft_clean_env(&line_env);
 		}
 		else
+		{
+			// printf("env_here.heredoc->after_hered ==> %d\n", heredoc->after_hered);
+			// printf("env_here.heredoc->after_hered ==> %d\n", heredoc->middle_hered);
+			// printf("env_here.heredoc->after_hered ==> %d\n", heredoc->before_hered);
 			status = ft_exec(end, heredoc, line_env, in);
+		}
 		flag = 1;
 		n_clean(end);
 		free(heredoc);

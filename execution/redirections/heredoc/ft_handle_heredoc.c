@@ -31,7 +31,7 @@ int ft_handle_heredoc(char *del)
         line = readline("> ");
         if (!line)
             break;
-        if (ft_strcmp(line, del) == 0)
+        if (line && del && ft_strcmp(line, del) == 0)
         {
             free(line);
             break;

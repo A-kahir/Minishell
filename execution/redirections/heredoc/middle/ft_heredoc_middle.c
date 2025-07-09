@@ -6,12 +6,11 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/02 18:35:47 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/09 17:18:13 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../execution.h"
-
 int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
     t_exec in;
@@ -36,6 +35,32 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
         }
         in.i++;
     }
+    int *hered_fd = malloc(sizeof(int) * in.n_cmds);
+    if (!hered_fd)
+        exit(1);
+    in.i = 0;
+    t_data *tmp = data;
+    while (in.i < in.n_cmds)
+    {
+        hered_fd[in.i] = -1;
+        int fd = -1;
+        t_redir *redir = tmp->redir;
+        while (redir)
+        {
+            if (redir->type == 3)
+            {
+                if (fd != -1)
+                    close(fd);
+                fd = ft_handle_heredoc(redir->target);
+            }
+            redir = redir->next;
+        }
+        if (fd != -1)
+            hered_fd[in.i] = fd;
+        tmp = tmp->next;
+        in.i++;
+    }
+    in.status = (char *)hered_fd;
     curr = data;
     in.i = 0;
     while (in.i < in.n_cmds && curr)
@@ -45,6 +70,7 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
         {
             ft_close_pipes(in.pipes, in.n_cmds);
             free(in.pipes);
+            free(hered_fd);
             return (perror("Fork failed"), 1);
         }
         else if (pid == 0)
@@ -55,6 +81,14 @@ int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here)
     ft_close_pipes(in.pipes, in.n_cmds);
     while (wait(&status) > 0);
     status = status / 256;
+    in.i = 0;
+    while (in.i < in.n_cmds)
+    {
+        if (hered_fd[in.i] != -1)
+            close(hered_fd[in.i]);
+        in.i++;
+    }
+    free(hered_fd);
     free(in.pipes);
     return (status);
 }

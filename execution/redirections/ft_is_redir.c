@@ -36,6 +36,7 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
     t_data *curr;
     int status;
+    int flag = 0;
 
     curr = data;
     status = 0;
@@ -47,9 +48,9 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here)
             while (redir)
             {
                 if (redir->type == 0 || redir->type == 1)
-                    status = ft_tran_app(data, line_env, env_here);
+                    status = ft_tran_app(curr, line_env, env_here);
                 else if (redir->type == 2)
-                    status = ft_read_f(data, line_env, env_here);
+                    status = ft_read_f(curr, line_env, env_here);
                 redir = redir->next;
             }
         }

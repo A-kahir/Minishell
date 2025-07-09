@@ -47,6 +47,9 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	t_built *tmp;
 
 	env_here.heredoc = heredoc;
+	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->after_hered);
+	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->middle_hered);
+	// printf("env_here.heredoc->after_hered ==> %d\n", env_here.heredoc->before_hered);
 	int count = 0;
 	while (curr)
 	{

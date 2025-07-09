@@ -24,7 +24,7 @@ int ft_open_infile(t_data *data)
             return (printf("minishell: %s: ambiguous redirect\n", data->redir->target), -1);
     }
     inf_fd = open(data->redir->target, O_RDONLY);
-    if (inf_fd < 0)
+    if (inf_fd < 0 && data->redir->type == 2)
     {
         printf("Minishell: %s: No such file or directory\n", data->redir->target);
         return (-1);
