@@ -26,8 +26,10 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
         close(pipe_fd[1]);
         return (-1);
     }
+    int i;
     while (1)
     {
+        i = 0;
         line = readline("> ");
         if (!line)
             break;

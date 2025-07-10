@@ -38,6 +38,8 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     int fd;
 
     fd = ft_open_infile(curr);
+    if (curr->cmd[0] == NULL)
+        exit(0);
     if (fd == -1)
         exit(1);
     if (fd != -1)

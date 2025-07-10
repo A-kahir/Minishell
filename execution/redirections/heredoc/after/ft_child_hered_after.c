@@ -18,6 +18,8 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 	int *hered_fd = (int *)in.status;
 	char *command;
 
+	if (curr->cmd[0] == NULL)
+        exit(0);
 	command = ft_check_built_cmd(curr);
 	if (in.i == 0 && hered_fd[0] != -1)
 	{

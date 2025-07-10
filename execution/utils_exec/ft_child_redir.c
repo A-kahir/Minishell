@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 13:12:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/10 15:33:17 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
             (perror("dup2 outfile failed"), close(fd), exit(1));
         close(fd);
     }
+    if (curr->cmd[0] == NULL)
+        exit(0);
     if (ft_strcmp(ft_check_built_cmd(curr), "built") == 0)
     {
         ft_is_builtins(curr, line_env, in);

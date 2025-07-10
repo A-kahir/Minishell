@@ -47,25 +47,25 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	t_data *tmp;
 
 	env_here.heredoc = heredoc;
-	tmp = data;
-	while (tmp)
-	{
-		if (tmp->type)
-			printf("1) tmp->type ===> %d\n", data->type);
-		if (tmp->redir->type)
-			printf("2) tmp->redir->type ===> %d\n", tmp->redir->type);
-		if (tmp->redir->target)
-			printf("3) tmp->redir->target ===> %s\n", tmp->redir->target);
-		if (tmp->builtin_type)
-			printf("4) tmp->builtins type ====> %d\n", tmp->builtin_type);
-		if (tmp->cmd[0])
-			printf("5) tmp->cmd[0] ===> %s\n", tmp->cmd[0]);
-		if (tmp->cmd[1])
-			printf("6) tmp->cmd[1] ===> %s\n", tmp->cmd[1]);
-		if (tmp->next != NULL)
-			printf("****************\n");
-		tmp = tmp->next;
-	}
+	// tmp = data;
+	// while (tmp)
+	// {
+	// 	if (tmp->type)
+	// 		printf("1) tmp->type ===> %d\n", data->type);
+	// 	if (tmp->redir->type)
+	// 		printf("2) tmp->redir->type ===> %d\n", tmp->redir->type);
+	// 	if (tmp->redir->target)
+	// 		printf("3) tmp->redir->target ===> %s\n", tmp->redir->target);
+	// 	if (tmp->builtin_type)
+	// 		printf("4) tmp->builtins type ====> %d\n", tmp->builtin_type);
+	// 	if (tmp->cmd[0])
+	// 		printf("5) tmp->cmd[0] ===> %s\n", tmp->cmd[0]);
+	// 	if (tmp->cmd[1])
+	// 		printf("6) tmp->cmd[1] ===> %s\n", tmp->cmd[1]);
+	// 	if (tmp->next != NULL)
+	// 		printf("****************\n");
+	// 	tmp = tmp->next;
+	// }
 	int count = 0;
 	while (curr)
 	{

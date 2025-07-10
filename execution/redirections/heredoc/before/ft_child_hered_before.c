@@ -20,18 +20,18 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
 
 	if (hered_fd[in.i] != -1)
 	{
-		if (dup2(hered_fd[in.i], STDIN_FILENO) == -1)
+		if (dup2(hered_fd[in.i], 0) == -1)
 			(perror("dup2 input from heredoc failed"), exit(1));
 		close(hered_fd[in.i]);
 	}
 	else if (in.i > 0)
 	{
-		if (dup2(in.pipes[in.i - 1][0], STDIN_FILENO) == -1)
+		if (dup2(in.pipes[in.i - 1][0], 0) == -1)
 			(perror("dup2 input from pipe failed"), exit(1));
 	}
 	if (in.i < in.n_cmds - 1)
 	{
-		if (dup2(in.pipes[in.i][1], STDOUT_FILENO) == -1)
+		if (dup2(in.pipes[in.i][1], 1) == -1)
 			(perror("dup2 output to pipe failed"), exit(1));
 	}
 	ft_close_pipes(in.pipes, in.n_cmds);
