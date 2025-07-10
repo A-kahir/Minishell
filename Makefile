@@ -41,6 +41,7 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_empty_env.c \
 	execution/utils_exec/ft_check_this_var.c \
 	execution/utils_exec/ft_expand_dollar.c \
+	execution/utils_exec/ft_open_infile.c 
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \

@@ -34,12 +34,6 @@ static char	*helper_func_exec(char *result, char *s, int start, int end, t_built
         free(result);
         result = tmp2;
     }
-    // else
-    // {
-    //     tmp2 = ft_strjoin_par(result, ft_strjoin_par("$", var));
-    //     free(result);
-    //     result = tmp2;
-    // }
     free(tmp);
     free(var);
     return (result);

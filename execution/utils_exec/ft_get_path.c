@@ -99,11 +99,11 @@ char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 
 	if (is_only_spaces(cmd))
 		return (NULL);
-
 	cmd_args = ft_split(cmd, ' ');
+	if (cmd_args[1])
+		return (NULL);
 	if (!cmd_args || !cmd_args[0])
 		return (NULL);
-
 	if (ft_strchr(cmd_args[0], '/'))
 	{
 		errno = 0;

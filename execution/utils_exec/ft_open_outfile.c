@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:12:51 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/08 15:42:00 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/10 19:27:26 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,17 @@ int ft_open_outfile(t_data *data)
     if (data->redir->target && data->redir->type == 0)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-        if (outf_fd < 0)
-            return (perror("Error opening output file"), -1);
     }
     else if (data->redir->target && data->redir->type == 1)
     {
         outf_fd = open(data->redir->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
-        if (outf_fd < 0)
-            return (perror("Error opening output file"), -1);
+    }
+    if (outf_fd < 0)
+    {
+        write(2, "minishell: ", 12);
+        write(2, data->redir->target, ft_strlen(data->redir->target));
+        write(2, ": No such file or directory\n", 29);
+        return (-1);
     }
     return (outf_fd);
 }

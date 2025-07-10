@@ -72,7 +72,11 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 			free(in.pipes);
 		}
 		if (data && ((ft_strcmp(command, "cmd") == 0 && flag_redir == 0) || data->builtin_type == 5))
-			printf("minishell: %s: No such file or directory\n", data->cmd[0]);
+		{
+			write(2, "minishell: ", 12);
+			write(2, data->cmd[0], ft_strlen(data->cmd[0]));
+			write(2, ": No such file or directory\n", 29);
+		}
 		if (ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 			ft_is_builtins_f(data, line_env, in);
 		if (flag_redir == 1)
