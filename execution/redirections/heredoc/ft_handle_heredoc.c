@@ -16,9 +16,10 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
 {
     int pipe_fd[2];
     char *line;
-
+    char *expnd;
+    
     if (pipe(pipe_fd) == -1)
-        (perror("pipe failed"), exit(1));
+        return (perror("pipe failed"), -1);
     if (!del)
     {
         write(2, "heredoc: delimiter is NULL\n", 28);
@@ -26,26 +27,26 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
         close(pipe_fd[1]);
         return (-1);
     }
-    int i;
     while (1)
     {
-        i = 0;
         line = readline("> ");
         if (!line)
             break;
-        if (ft_strcmp(line, "$?") == 0)
-        {
-            free(line);
-            line = ft_strdup(stat.status);
-        }
-        line = expanding(line, line_env);
-        if (line && del && ft_strcmp(line, del) == 0)
+
+        if (ft_strcmp(line, del) == 0)
         {
             free(line);
             break;
         }
-        write(pipe_fd[1], line, ft_strlen(line));
-        write(pipe_fd[1], "\n", 1);
+        expnd = expanding(line, line_env);
+        char *tmp = ft_expand_dollar(expnd, stat.status);
+        free(expnd);
+        if (tmp)
+        {
+            write(pipe_fd[1], tmp, ft_strlen(tmp));
+            write(pipe_fd[1], "\n", 1);
+            free(tmp);
+        }
         free(line);
     }
     close(pipe_fd[1]);
