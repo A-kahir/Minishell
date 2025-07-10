@@ -164,6 +164,7 @@ int ft_empty_env(char **env);
 int ft_check_this_var(char *str, t_built *line_env);
 char	*expanding(char *s, t_built *env);
 char *ft_expand_dollar(char *line, char *status);
+char	*ft_expanding_exec(char *s, t_built *env);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

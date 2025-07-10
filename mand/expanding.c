@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 char *get_env_value(char *var, t_built *env)
 {
     while (env)

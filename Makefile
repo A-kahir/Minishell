@@ -9,6 +9,7 @@ MAND_SRC = \
     mand/initializing.c \
     mand/heredoc_position.c \
     mand/expanding.c \
+	mand/ft_expand.c \
 
 EXEC_SRC = \
 	execution/ft_exec.c \
@@ -39,7 +40,7 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_clean_env.c \
 	execution/utils_exec/ft_empty_env.c \
 	execution/utils_exec/ft_check_this_var.c \
-	execution/utils_exec/ft_expand_dollar.c
+	execution/utils_exec/ft_expand_dollar.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \

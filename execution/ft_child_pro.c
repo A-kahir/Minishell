@@ -31,6 +31,17 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 		(ft_is_redir(curr, line_env, env_here, in), exit(0));
 	if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
 		exit(0);
+	t_data *tmp = curr;
+	while (tmp)
+	{
+		int i = 0;
+		while (tmp->cmd[i] != NULL)
+		{
+			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
+			i++;
+		}
+		tmp = tmp->next;
+	}
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
 	{
@@ -51,4 +62,4 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 	}
 	else if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
 		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
-}
+} 

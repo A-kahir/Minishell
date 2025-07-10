@@ -35,7 +35,6 @@ int ft_add_vars(char **cmd)
     return count;
 }
 
-
 t_built *ft_export(t_built *line_env, char **cmd)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
