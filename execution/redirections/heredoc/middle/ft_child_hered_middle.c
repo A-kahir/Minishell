@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/10 17:06:33 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:10:54 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
 		int i = 0;
 		while (tmp->cmd[i] != NULL)
 		{
+            free(tmp->cmd[i]);
 			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
 			i++;
 		}

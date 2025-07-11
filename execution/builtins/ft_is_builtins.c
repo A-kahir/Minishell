@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../execution.h"
-
 static void	ft_save_oldpwd(t_built *temp, char *before_cd)
 {
 	while (temp)
@@ -20,7 +19,7 @@ static void	ft_save_oldpwd(t_built *temp, char *before_cd)
 		{
 			if (temp->value)
 				free(temp->value);
-			temp->value = before_cd;
+			temp->value = before_cd;  // assumes before_cd is newly strdup'd
 			return ;
 		}
 		temp = temp->next;
@@ -47,7 +46,7 @@ static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
 	line_env = ft_cd(data->cmd, line_env, flag_cd);
 	if (*flag_cd == 1 && before_cd)
 	{
-		ft_save_oldpwd(line_env, before_cd);
+		ft_save_oldpwd(line_env, ft_strdup(before_cd));  // duplicate to avoid double free
 		line_env = ft_add_front(line_env, "OLDPWD", before_cd);
 	}
 	else

@@ -37,6 +37,7 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 		int i = 0;
 		while (tmp->cmd[i] != NULL)
 		{
+			free(tmp->cmd[i]);
 			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
 			i++;
 		}
@@ -45,8 +46,6 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
 	{
-		// printf("************\n");
-		// printf("in.status =====> %s\n", in.status);
 		if (curr->cmd[0] && curr->cmd[0][0] >= '0' && curr->cmd[0][0] <= '9')
 		{
 			write(2, "minishell: ", 11);

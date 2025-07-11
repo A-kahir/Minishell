@@ -47,8 +47,8 @@ static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
 	line_env = ft_cd(data->cmd, line_env, flag_cd);
 	if (*flag_cd == 1 && before_cd)
 	{
-		ft_save_oldpwd_f(line_env, before_cd);
-		line_env = ft_add_front(line_env, "OLDPWD", before_cd);
+		line_env = ft_add_front(line_env, "OLDPWD", ft_strdup(before_cd));
+		free(before_cd);
 	}
 	else
 		free(before_cd);

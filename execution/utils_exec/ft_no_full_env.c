@@ -28,12 +28,22 @@ static int	ft_already_exists(t_built *line_env, char *var)
 
 void	ft_no_full_env(t_built *line_env)
 {
+	char *pwd;
+
 	if (!ft_already_exists(line_env, "PATH"))
 		ft_add_back(line_env, "PATH", PATH_ENV);
 	if (!ft_already_exists(line_env, "PWD"))
-		ft_add_back(line_env, "PWD", getcwd(NULL, 0));
+	{
+		pwd = getcwd(NULL, 0);
+		if (pwd)
+		{
+			ft_add_back(line_env, "PWD", pwd);
+			free(pwd);
+		}
+	}
 	if (!ft_already_exists(line_env, "SHLVL"))
 		ft_add_back(line_env, "SHLVL", "1");
 	if (!ft_already_exists(line_env, "OLDPWD"))
 		ft_add_back(line_env, "OLDPWD", NULL);
 }
+

@@ -6,11 +6,12 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 20:17:45 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:10:10 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../execution.h"
+
 int ft_handle_middle(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     t_exec in;

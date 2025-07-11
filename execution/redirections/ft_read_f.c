@@ -54,6 +54,7 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
 		int i = 0;
 		while (tmp->cmd[i] != NULL)
 		{
+            free(tmp->cmd[i]);
 			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
 			i++;
 		}

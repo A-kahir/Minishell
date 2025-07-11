@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/10 17:05:42 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:05:50 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 		int i = 0;
 		while (tmp->cmd[i] != NULL)
 		{
+            free(tmp->cmd[i]);
 			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
 			i++;
 		}

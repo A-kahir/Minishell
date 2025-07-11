@@ -6,12 +6,12 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/09 14:46:45 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/11 15:19:13 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "minishell.h"
+
 t_type_buil	get_b(char *s)
 {
 	if (ft_strcmp(s, "echo") == 0)
@@ -137,23 +137,6 @@ t_redir *create_redir_node(t_type_redir type, char *target)
 	return (new);
 }
 
-
-int	check_red(char **s, int i, int k)
-{
-	int	j;
-
-	j = -1;
-	while (s[i] && i <= k)
-	{
-		if(!ft_strcmp(s[i], ">") || !ft_strcmp(s[i], "<") 
-			|| !ft_strcmp(s[i], "<<") || !ft_strcmp(s[i], ">>"))
-			j = i;
-		i++;
-	}
-	return (j);
-}
-
-
 t_type_redir check_redirection(char *token)
 {
 	if (!token || !*token) 
@@ -161,14 +144,30 @@ t_type_redir check_redirection(char *token)
 	if (!ft_strcmp(token, ">")) 
 		return (TRUNCATE);
 	if (!ft_strcmp(token, ">>")) 
-	    return (APPEND);
+		return (APPEND);
 	if (!ft_strcmp(token, "<")) 
-	    return (READ_F);
+		return (READ_F);
 	if (!ft_strcmp(token, "<<")) 
-	    return (HEREDOC);
+		return (HEREDOC);
 	return (NOT_REDIR);
 }
 
+int	check_red(char **s, int i, int k)
+{
+	int	j;
+
+	j = -1;
+	while (s[i] && i < k)
+	{
+		if (check_redirection(s[i]) != NOT_REDIR)
+		{
+			j = i;
+			break;
+		}
+		i++;
+	}
+	return (j);
+}
 
 t_data *create_data_node(t_type_node t)
 {
@@ -182,23 +181,83 @@ t_data *create_data_node(t_type_node t)
 	return (node);
 }
 
+t_redir	*creatn2(char **s, int i, int k)
+{
+	int	j;
+	t_redir *redir_node = NULL;
+	t_redir *last_redir = NULL;
+
+	j = check_red(s, i, k);
+	while (j >= 0)
+	{
+		t_redir *new_redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
+		if (!redir_node)
+			redir_node = new_redir;
+		else
+			last_redir->next = new_redir;
+		last_redir = new_redir;
+		j = check_red(s, j + 2, k);
+	}
+	return(redir_node);
+}
+
+char	**command(char **s, int i, int k)
+{
+	int	j;
+	int count;
+	char	**tmp;
+	int idx;
+
+	count = 0;
+	j = i;
+	while (j < k && s[j])
+	{
+		if (check_redirection(s[j]) == NOT_REDIR)
+			count++;
+		else
+			j += 1;
+		j++;
+	}
+
+	tmp = malloc(sizeof(char *) * (count + 1));
+	if (!tmp)
+		return (NULL);
+
+	j = i;
+	idx = 0;
+	while (j < k && s[j])
+	{
+		if (check_redirection(s[j]) == NOT_REDIR)
+		{
+			tmp[idx++] = ft_strdup(s[j]);
+		}
+		else
+		{
+			j++;
+			if (j <= k && s[j])
+				j++;
+			continue;
+		}
+		j++;
+	}
+	tmp[idx] = NULL;
+	return (tmp);
+}
+
 t_data	*creatn(char **s, int i, int k, t_type_node t)
 {
 	t_data	*cmd;
-	int	j;
-	int	quote_len;
+	int	j = 0;
 
-	j = 0;
-	quote_len = token_len(s);
 	cmd = create_data_node(t);
 	if (!cmd)
-		return(n_clean(cmd), NULL);
+		return (n_clean(cmd), NULL);
 	cmd->type = t;
 	j = check_red(s, i, k);
 	if (j >= 0)
 	{
-		cmd->redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
-		cmd->cmd = ft_strjoinarray(ft_subarray(last_fix(s), i, j), ft_subarray(last_fix(s), j + 2, k));
+		cmd->redir= creatn2(s, i, k);
+		cmd->cmd= command(s, i, k);
 	}
 	else
 	{
@@ -216,13 +275,19 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t)
 	int	k;
 	t_data *curr;
 	t_data *node;
-	
-	1 && (k = 0, i = 0, curr = NULL, node = NULL);
-	while(s[i])
+
+	k = 0;
+	i = 0;
+	curr = NULL;
+	node = NULL;
+	while (s[i])
 	{
 		if (!ft_strcmp(s[i], "|") || !ft_strcmp(s[i], "||") || !ft_strcmp(s[i], "&&"))
 		{
-			curr = creatn(s, k, (i), t);
+			if (i != 0)
+				curr = creatn(s, k, (i - 1), t);
+			else
+				curr = creatn(s, k, i , t);
 			if(!cmd)
 				cmd = curr;
 			else

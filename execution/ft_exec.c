@@ -52,19 +52,35 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	// {
 	// 	if (tmp->type)
 	// 		printf("1) tmp->type ===> %d\n", data->type);
-	// 	if (tmp->redir->type)
+	// 	if (tmp && tmp->redir && tmp->redir->type)
 	// 		printf("2) tmp->redir->type ===> %d\n", tmp->redir->type);
-	// 	if (tmp->redir->target)
+	// 	if (tmp && tmp->redir && tmp->redir->target)
 	// 		printf("3) tmp->redir->target ===> %s\n", tmp->redir->target);
-	// 	if (tmp->builtin_type)
+	// 	if (tmp && tmp->builtin_type)
 	// 		printf("4) tmp->builtins type ====> %d\n", tmp->builtin_type);
-	// 	if (tmp->cmd[0])
+	// 	if (tmp && tmp->cmd && tmp->cmd[0])
 	// 		printf("5) tmp->cmd[0] ===> %s\n", tmp->cmd[0]);
-	// 	if (tmp->cmd[1])
+	// 	if (tmp && tmp->cmd && tmp->cmd[1])
 	// 		printf("6) tmp->cmd[1] ===> %s\n", tmp->cmd[1]);
-	// 	if (tmp->next != NULL)
-	// 		printf("****************\n");
+	// 	if (tmp && tmp->next != NULL)
+	// 		printf("******** NEXT NODE ********\n");
 	// 	tmp = tmp->next;
+	// }
+	// t_redir *redir;
+	// redir = data->redir;
+	// if (redir)
+	// {
+	// 	printf("=======> NOW STRUCT REDIRECTIONS <=======\n");
+	// 	while (redir)
+	// 	{
+	// 		if (redir && redir->type)
+	// 			printf("redir->type ===> %d\n", redir->type);
+	// 		if (redir && redir->target)
+	// 			printf("redir->target ====> %s\n", redir->target);
+	// 		if (redir && redir->next != NULL)
+	// 			printf("******* NEXT NODE ********\n");
+	// 		redir = redir->next;
+	// 	}
 	// }
 	int count = 0;
 	while (curr)
