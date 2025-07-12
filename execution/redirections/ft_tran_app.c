@@ -90,20 +90,25 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
 
     curr = data;
     in.n_cmds = ft_count_cmds(data);
+
     if (in.n_cmds == 1 && curr->cmd != NULL)
     {
-        if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
-        {
-            ft_handle_echo_builtin(curr);
-            return (0);
-        }
         pid = fork();
         if (pid == -1)
-            (perror("fork failed"), exit(1));
+        {
+            perror("fork failed");
+            exit(1);
+        }
         if (pid == 0)
         {
-            in.pipes = NULL;
+            ft_fd_redirections(curr->redir);
+            if (ft_strcmp(curr->cmd[0], "echo") == 0)
+            {
+                ft_handle_echo_builtin(curr);
+                exit(0);
+            }
             ft_child_redir(curr, line_env, env_here, in);
+            exit(0);
         }
         while (wait(&status) > 0)
             ;
@@ -118,7 +123,10 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
     }
     in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
     if (!in.pipes)
-        (perror("malloc"), exit(1));
+    {
+        perror("pipes");
+        exit(1);
+    }
     ft_create_pipes(&in);
     ft_fork_and_execute(data, line_env, env_here, &in);
     ft_close_pipes(in.pipes, in.n_cmds - 1);

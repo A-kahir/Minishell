@@ -48,7 +48,7 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
             dup2(in.pipes[in.i - 1][0], 0);
         if (in.i < in.n_cmds - 1)
             dup2(in.pipes[in.i][1], 1);
-        i = 0;
+        int i = 0;
         while (i < in.n_cmds - 1)
         {
             if (i != in.i - 1)
