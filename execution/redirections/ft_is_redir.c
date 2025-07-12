@@ -68,10 +68,9 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 	{
 		status = ft_is_heredoc(data, line_env, env_here, &status, stat);
 		if (ft_has_output_redir(data))
-			status = ft_tran_app(data, line_env, env_here);
+			status = ft_tran_app(data, line_env, env_here, stat);
 		return (status);
 	}
-
 	t_data *curr = data;
 	while (curr)
 	{
@@ -79,7 +78,7 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 		while (redir)
 		{
 			if (redir->type == TRUNCATE || redir->type == APPEND)
-				return ft_tran_app(data, line_env, env_here);
+				return ft_tran_app(data, line_env, env_here, stat);
 			else if (redir->type == READ_F)
 				return ft_read_f(data, line_env, env_here);
 			redir = redir->next;

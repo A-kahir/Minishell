@@ -12,28 +12,6 @@
 
 #include "../execution.h"
 
-void ft_handle_echo_builtin(t_data *curr)
-{
-    int i;
-    int j;
-
-    i = 1;
-    ft_fd_redirections(curr->redir);
-    while (curr->cmd[i] != NULL)
-    {
-        j = 0;
-        while (curr->cmd[i][j] != '\0')
-        {
-            write(1, &curr->cmd[i][j], 1);
-            j++;
-        }
-        if (curr->cmd[i + 1] != NULL)
-            write(1, " ", 1);
-        i++;
-    }
-    write(1, "\n", 1);
-}
-
 void ft_create_pipes(t_exec *in)
 {
     in->i = 0;
@@ -81,7 +59,7 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
     }
 }
 
-int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
+int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     int status;
     t_exec in;
@@ -90,7 +68,6 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
 
     curr = data;
     in.n_cmds = ft_count_cmds(data);
-
     if (in.n_cmds == 1 && curr->cmd != NULL)
     {
         pid = fork();
@@ -104,7 +81,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
             ft_fd_redirections(curr->redir);
             if (ft_strcmp(curr->cmd[0], "echo") == 0)
             {
-                ft_handle_echo_builtin(curr);
+                ft_echo(curr->cmd, stat);
                 exit(0);
             }
             ft_child_redir(curr, line_env, env_here, in);

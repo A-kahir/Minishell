@@ -125,7 +125,7 @@ void ft_exit(char **str);
 
 // **************redirections func*************
 int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
-int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here);
+int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
 int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here);
 // -> heredoc :
 int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat);
@@ -167,6 +167,7 @@ char *ft_expand_dollar(char *line, char *status);
 char	*ft_expanding_exec(char *s, t_built *env);
 int ft_open_infile(t_data *data);
 void ft_fd_redirections(t_redir *redir);
+
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
 char	**ft_split(const char *s, char c);
@@ -186,5 +187,6 @@ char	*ft_strnstr(char *haystack, char *needle, int len);
 char	*ft_itoa(int n);
 void ft_rm_list_env(t_built **head, t_built *rm_node);
 void ft_close_fd_opening(void);
+int	ft_check(char **str, int *i);
 
 #endif

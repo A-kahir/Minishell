@@ -6,28 +6,11 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:02 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/09 20:06:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/12 20:32:25 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
-
-static	int	ft_check(char **str, int *i)
-{
-	int	j;
-
-	j = 1;
-	if (!str[*i] || str[*i][0] != '-' || str[*i][1] != 'n')
-		return (0);
-	while (str[*i][j] == 'n')
-		j++;
-	if (str[*i][j] == '\0')
-	{
-		(*i)++;
-		return (1);
-	}
-	return (0);
-}
 
 void	ft_echo(char **str, t_exec in)
 {
