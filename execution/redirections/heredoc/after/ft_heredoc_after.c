@@ -54,7 +54,6 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
         }
         if (fd != -1)
             hered_fd[in.i] = fd;
-
         tmp = tmp->next;
         in.i++;
     }
@@ -79,7 +78,8 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
             close(hered_fd[in.i]);
         in.i++;
     }
-    while (wait(&status) > 0);
+    while (wait(&status) > 0)
+        ;
     status = status / 256;
     free(in.pipes);
     free(hered_fd);
