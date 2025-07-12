@@ -31,9 +31,9 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
 
     ft_fd_redirections(curr->redir);
     if (in.i > 0)
-        dup2(in.pipes[in.i - 1][0], STDIN_FILENO);
+        dup2(in.pipes[in.i - 1][0], 0);
     if (in.i < in.n_cmds - 1)
-        dup2(in.pipes[in.i][1], STDOUT_FILENO);
+        dup2(in.pipes[in.i][1], 1);
     ft_close_pipes(in.pipes, in.n_cmds);
     command = ft_check_built_cmd(curr);
     if (ft_strcmp(command, "built") == 0)
@@ -41,7 +41,7 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
         ft_is_builtins(curr, line_env, in);
         exit(0);
     }
-    if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
+    if (curr->cmd[0] != NULL && curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
         exit(0);
     ft_expand_all_args(curr, line_env);
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);

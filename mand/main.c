@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/09 15:56:58 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/12 15:25:41 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ int main(int ac, char **av, char **env)
 			status = ft_exec(end, heredoc, line_env, in);
 		}
 		flag = 1;
-		n_clean(end);
+		// n_clean(end);
 		free(heredoc);
 		free(string);
 		string = NULL;

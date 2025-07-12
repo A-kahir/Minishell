@@ -104,7 +104,7 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	t_data *tmp;
 
 	env_here.heredoc = heredoc;
-	debug_data(data);
+	// debug_data(data);
 	int count = 0;
 	while (curr)
 	{

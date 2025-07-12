@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/12 11:25:24 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/12 15:36:57 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 	char *command;
 	char **cmd_args;
 
-	ft_fd_redirections(curr->redir);
+	if (curr->redir)
+		ft_fd_redirections(curr->redir);
 	if (in.i > 0)
 		dup2(in.pipes[in.i - 1][0], 0);
 	if (in.i < in.n_cmds - 1)
@@ -29,18 +30,19 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 		ft_is_builtins(curr, line_env, in);
 		exit(0);
 	}
-	if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
+	if (curr->cmd[0] != NULL && curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
 		exit(0);
 	t_data *tmp = curr;
-	while (tmp)
+	int i = 0;
+	while (curr->cmd[i] != NULL && curr->cmd[i][0] == '$')
 	{
-		int i = 0;
-		while (tmp->cmd[i] != NULL)
+		char *expanded = ft_expanding_exec(curr->cmd[i], line_env);
+		if (expanded)
 		{
-			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
-			i++;
+			free(curr->cmd[i]);
+			curr->cmd[i] = expanded;
 		}
-		tmp = tmp->next;
+		i++;
 	}
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])

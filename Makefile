@@ -92,7 +92,7 @@ SRC = $(MAND_SRC) $(EXEC_SRC) $(UTILS_EXEC_SRC) $(REDIR_SRC) $(HEREDOC_SRC) $(LI
 
 OBJS = $(SRC:.c=.o)
 
-CC = cc -g #-fsanitize=address -g -g -g #-fsanitize=undefined -g -Wall -Wextra -Werror
+CC = cc -fsanitize=address -g #-fsanitize=undefined -g -Wall -Wextra -Werror
 RM = rm -f
  CFLAGS = -Wall -Wextra -Werror
 # READLINE_INC = -I$(shell brew --prefix readline)/include

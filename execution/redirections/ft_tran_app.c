@@ -12,7 +12,6 @@
 
 #include "../execution.h"
 
-
 void ft_handle_echo_builtin(t_data *curr)
 {
     int i;

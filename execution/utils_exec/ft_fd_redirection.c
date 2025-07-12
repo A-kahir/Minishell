@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 11:21:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/12 11:55:49 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/12 15:42:53 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,66 +16,75 @@
 void ft_fd_redirections(t_redir *redir)
 {
 	int fd;
-	int last_input;
-	int last_output;
+	int last_input = -1;
+	int last_output = -1;
+	t_redir *current = redir;
 
-	last_input = -1;
-	last_output = -1;
-	while (redir)
+	while (current)
 	{
-		if (redir->target && redir->target[0] == '$' && redir->target[1])
+		if (!current->target || current->target[0] == '\0')
+			exit(1);
+		if (current->target[0] == '$' && current->target[1])
 		{
-			printf("minishell: %s: ambiguous redirect\n", redir->target);
+			write(2, "minishell: ", 12);
+			write(2, current->target, ft_strlen(current->target));
+			write(2, ": ambiguous redirect\n", 22);
 			exit(1);
 		}
-		if (redir->type == 2)
+		if (current->type == READ_F)
 		{
 			if (last_input != -1)
 				close(last_input);
-			fd = open(redir->target, O_RDONLY);
+			fd = open(current->target, O_RDONLY);
 			if (fd < 0)
 			{
-				perror(redir->target);
+				perror(current->target);
 				exit(1);
 			}
 			last_input = fd;
 		}
-		else if (redir->type == 0)
+		else if (current->type == TRUNCATE)
 		{
 			if (last_output != -1)
 				close(last_output);
-			fd = open(redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			fd = open(current->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			if (fd < 0)
 			{
-				perror(redir->target);
+				perror(current->target);
 				exit(1);
 			}
 			last_output = fd;
 		}
-		else if (redir->type == 1)
+		else if (current->type == APPEND)
 		{
 			if (last_output != -1)
 				close(last_output);
-			fd = open(redir->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
+			fd = open(current->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
 			if (fd < 0)
 			{
-				perror(redir->target);
+				perror(current->target);
 				exit(1);
 			}
 			last_output = fd;
 		}
-		redir = redir->next;
+		current = current->next;
 	}
 	if (last_input != -1)
 	{
 		if (dup2(last_input, STDIN_FILENO) == -1)
-			(perror("dup2 infile"), exit(1));
+		{
+			perror("dup2 infile");
+			exit(1);
+		}
 		close(last_input);
 	}
 	if (last_output != -1)
 	{
 		if (dup2(last_output, STDOUT_FILENO) == -1)
-			(perror("dup2 outfile"), exit(1));
+		{
+			perror("dup2 outfile");
+			exit(1);
+		}
 		close(last_output);
 	}
 }
