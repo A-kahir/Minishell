@@ -12,85 +12,125 @@
 
 #include "../execution.h"
 
+
+void ft_handle_echo_builtin(t_data *curr)
+{
+    int i;
+    int j;
+
+    i = 1;
+    ft_fd_redirections(curr->redir);
+    while (curr->cmd[i] != NULL)
+    {
+        j = 0;
+        while (curr->cmd[i][j] != '\0')
+        {
+            write(1, &curr->cmd[i][j], 1);
+            j++;
+        }
+        if (curr->cmd[i + 1] != NULL)
+            write(1, " ", 1);
+        i++;
+    }
+    write(1, "\n", 1);
+}
+
+void ft_create_pipes(t_exec *in)
+{
+    in->i = 0;
+    while (in->i < in->n_cmds - 1)
+    {
+        if (pipe(in->pipes[in->i]) == -1)
+        {
+            perror("pipe creation failed");
+            free(in->pipes);
+            exit(1);
+        }
+        in->i++;
+    }
+}
+
+void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec *in)
+{
+    t_data *tmp;
+    pid_t pid;
+
+    tmp = data;
+    in->i = 0;
+    while (in->i < in->n_cmds)
+    {
+        pid = fork();
+        if (pid == -1)
+        {
+            ft_close_pipes(in->pipes, in->n_cmds - 1);
+            perror("fork failed");
+            free(in->pipes);
+            exit(1);
+        }
+        if (pid == 0)
+            ft_child_redir(tmp, line_env, env_here, *in);
+        tmp = tmp->next;
+        in->i++;
+    }
+}
+
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
 {
-	int status;
-	t_exec in;
-	t_data *curr;
-	pid_t pid;
+    int status;
+    t_exec in;
+    t_data *curr;
+    pid_t pid;
+    char **single_cmd;
+    int i;
 
-	curr = data;
-	in.n_cmds = ft_count_cmds(data);
-	if (in.n_cmds == 1)
-	{
-		if (curr->cmd == NULL)
-		{
-			if (curr->redir && curr->redir->target)
-			{
-				ft_fd_redirections(curr->redir);
-				write(1, "", 0);
-			}
-			return (0);
-		}
-		if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
-		{
-			int i = 1;
-			ft_fd_redirections(curr->redir);
-			while (curr->cmd[i] != NULL)
-			{
-				int j = 0;
-				while (curr->cmd[i][j] != '\0')
-				{
-					write(1, &curr->cmd[i][j], 1);
-					j++;
-				}
-				if (curr->cmd[i + 1] != NULL)
-					write(1, " ", 1);
-				i++;
-			}
-			write(1, "\n", 1);
-			return (0);
-		}
-		pid = fork();
-		if (pid == -1)
-			(perror("fork failed"), exit(1));
-		if (pid == 0)
-			ft_child_redir(curr, line_env, env_here, in);
-		while (wait(&status) > 0);
-		status = status / 256;
-		return (status);
-	}
-	else
-	{
-		in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
-		if (!in.pipes)
-			(perror("malloc"), exit(1));
-		in.i = 0;
-		while (in.i < in.n_cmds - 1)
-		{
-			if (pipe(in.pipes[in.i]) == -1)
-				return (perror("pipe creation failed"), free(in.pipes), 1);
-			in.i++;
-		}
-		t_data *tmp = data;
-		in.i = 0;
-		while (in.i < in.n_cmds)
-		{
-			pid = fork();
-			if (pid == -1)
-			{
-				ft_close_pipes(in.pipes, in.n_cmds - 1);
-				(perror("fork failed"), free(in.pipes), exit(1));
-			}
-			if (pid == 0)
-				ft_child_redir(tmp, line_env, env_here, in);
-			tmp = tmp->next;
-			in.i++;
-		}
-		ft_close_pipes(in.pipes, in.n_cmds);
-		free(in.pipes);
-		while (wait(&status) > 0);
-		status = status / 256;
-	}
-	return (status);
+    curr = data;
+    in.n_cmds = ft_count_cmds(data);
+    if (in.n_cmds == 1 && curr->cmd != NULL)
+    {
+        i = 0;
+        while (curr->cmd[i] != NULL)
+        {
+            if (curr->cmd[i + 1] == NULL)
+            {
+                single_cmd = malloc(sizeof(char *) * 2);
+                single_cmd[0] = curr->cmd[i];
+                single_cmd[1] = NULL;
+                curr->cmd = single_cmd;
+                if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
+                {
+                    ft_handle_echo_builtin(curr);
+                    free(single_cmd);
+                    return (0);
+                }
+                pid = fork();
+                if (pid == -1)
+                    (perror("fork failed"), exit(1));
+                if (pid == 0)
+                    ft_child_redir(curr, line_env, env_here, in);
+                while (wait(&status) > 0)
+                    ;
+                free(single_cmd);
+                status = status / 256;
+                return (status);
+            }
+            i++;
+        }
+    }
+    if (curr->cmd == NULL && curr->redir && curr->redir->target)
+    {
+        ft_fd_redirections(curr->redir);
+        write(1, "", 0);
+        return (0);
+    }
+    in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+    if (!in.pipes)
+        (perror("malloc"), exit(1));
+    ft_create_pipes(&in);
+    ft_fork_and_execute(data, line_env, env_here, &in);
+    ft_close_pipes(in.pipes, in.n_cmds);
+    free(in.pipes);
+    while (wait(&status) > 0)
+        ;
+    status = status / 256;
+    return (status);
 }

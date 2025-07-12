@@ -17,6 +17,7 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
     int pipe_fd[2];
     char *line;
     char *expnd;
+    char *tmp;
     
     if (pipe(pipe_fd) == -1)
         return (perror("pipe failed"), -1);
@@ -32,14 +33,13 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
         line = readline("> ");
         if (!line)
             break;
-
         if (ft_strcmp(line, del) == 0)
         {
             free(line);
             break;
         }
         expnd = expanding(line, line_env);
-        char *tmp = ft_expand_dollar(expnd, stat.status);
+        tmp = ft_expand_dollar(expnd, stat.status);
         free(expnd);
         if (tmp)
         {

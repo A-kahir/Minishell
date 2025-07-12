@@ -11,12 +11,17 @@
 /* ************************************************************************** */
 
 #include "../../../execution.h"
+
+
 void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
 {
     char **cmd_args;
-    int *hered_fd = (int *)in.status;
+    int *hered_fd;
     char *command;
+    char *tmp;
+    int i;
 
+    hered_fd = (int *)in.status;
     if (curr == NULL || curr->cmd == NULL || curr->cmd[0] == NULL)
         exit(0);
     if (hered_fd[in.i] != -1)
@@ -44,11 +49,15 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
     }
     if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
         exit(0);
-    int i = 0;
+    i = 0;
     while (curr->cmd[i] != NULL)
     {
-        free(curr->cmd[i]);
-        curr->cmd[i] = ft_expanding_exec(curr->cmd[i], line_env);
+        tmp = ft_expanding_exec(curr->cmd[i], line_env);
+        if (tmp)
+        {
+            free(curr->cmd[i]);
+            curr->cmd[i] = tmp;
+        }
         i++;
     }
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
