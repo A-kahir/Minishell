@@ -289,7 +289,7 @@ int main(int ac, char **av, char **env)
 			status = ft_exec(end, heredoc, line_env, in);
 		}
 		flag = 1;
-		// n_clean(end);
+		n_clean(end);
 		free(heredoc);
 		free(string);
 		string = NULL;

@@ -28,22 +28,53 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
 {
     char **cmd_args;
     char *command;
+    t_redir *redir;
 
-    ft_fd_redirections(curr->redir);
-    if (in.i > 0)
-        dup2(in.pipes[in.i - 1][0], 0);
-    if (in.i < in.n_cmds - 1)
-        dup2(in.pipes[in.i][1], 1);
-    ft_close_pipes(in.pipes, in.n_cmds);
+    redir = curr->redir;
+    ft_fd_redirections(redir);
+    if (in.n_cmds > 1)
+    {
+        int has_input_redir = 0;
+        while (redir)
+        {
+            if (redir->type == READ_F)
+            {
+                has_input_redir = 1;
+                break;
+            }
+            redir = redir->next;
+        }
+        if (!has_input_redir && in.i > 0)
+            dup2(in.pipes[in.i - 1][0], 0);
+        if (in.i < in.n_cmds - 1)
+            dup2(in.pipes[in.i][1], 1);
+        i = 0;
+        while (i < in.n_cmds - 1)
+        {
+            if (i != in.i - 1)
+                close(in.pipes[i][0]);
+            if (i != in.i)
+                close(in.pipes[i][1]);
+            i++;
+        }
+    }
     command = ft_check_built_cmd(curr);
     if (ft_strcmp(command, "built") == 0)
     {
         ft_is_builtins(curr, line_env, in);
         exit(0);
     }
-    if (curr->cmd[0] != NULL && curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
-        exit(0);
+    if (!curr->cmd || !curr->cmd[0])
+    {
+        write(2, "minishell: command not found\n", 28);
+        exit(127);
+    }
     ft_expand_all_args(curr, line_env);
+    if (!curr->cmd[0])
+    {
+        write(2, "minishell: command not found\n", 28);
+        exit(127);
+    }
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {
@@ -52,7 +83,7 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
         write(2, ": command not found\n", 21);
         exit(127);
     }
-    else if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
+    if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
         (perror("execve failed"), ft_free_split(cmd_args), exit(1));
 }
 

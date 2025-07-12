@@ -53,6 +53,7 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
 {
     t_data *tmp;
     pid_t pid;
+    int i;
 
     tmp = data;
     in->i = 0;
@@ -71,6 +72,13 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
         tmp = tmp->next;
         in->i++;
     }
+    i = 0;
+    while (i < in->n_cmds - 1)
+    {
+        close(in->pipes[i][0]);
+        close(in->pipes[i][1]);
+        i++;
+    }
 }
 
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
@@ -79,41 +87,28 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
     t_exec in;
     t_data *curr;
     pid_t pid;
-    char **single_cmd;
-    int i;
 
     curr = data;
     in.n_cmds = ft_count_cmds(data);
     if (in.n_cmds == 1 && curr->cmd != NULL)
     {
-        i = 0;
-        while (curr->cmd[i] != NULL)
+        if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
         {
-            if (curr->cmd[i + 1] == NULL)
-            {
-                single_cmd = malloc(sizeof(char *) * 2);
-                single_cmd[0] = curr->cmd[i];
-                single_cmd[1] = NULL;
-                curr->cmd = single_cmd;
-                if (ft_strcmp(curr->cmd[0], "echo") == 0 && curr->redir && curr->redir->target)
-                {
-                    ft_handle_echo_builtin(curr);
-                    free(single_cmd);
-                    return (0);
-                }
-                pid = fork();
-                if (pid == -1)
-                    (perror("fork failed"), exit(1));
-                if (pid == 0)
-                    ft_child_redir(curr, line_env, env_here, in);
-                while (wait(&status) > 0)
-                    ;
-                free(single_cmd);
-                status = status / 256;
-                return (status);
-            }
-            i++;
+            ft_handle_echo_builtin(curr);
+            return (0);
         }
+        pid = fork();
+        if (pid == -1)
+            (perror("fork failed"), exit(1));
+        if (pid == 0)
+        {
+            in.pipes = NULL;
+            ft_child_redir(curr, line_env, env_here, in);
+        }
+        while (wait(&status) > 0)
+            ;
+        status = status / 256;
+        return (status);
     }
     if (curr->cmd == NULL && curr->redir && curr->redir->target)
     {
@@ -126,7 +121,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here)
         (perror("malloc"), exit(1));
     ft_create_pipes(&in);
     ft_fork_and_execute(data, line_env, env_here, &in);
-    ft_close_pipes(in.pipes, in.n_cmds);
+    ft_close_pipes(in.pipes, in.n_cmds - 1);
     free(in.pipes);
     while (wait(&status) > 0)
         ;
