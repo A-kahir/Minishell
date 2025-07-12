@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 t_type_buil	get_b(char *s)
 {
 	if (ft_strcmp(s, "echo") == 0)
@@ -116,7 +117,7 @@ char **last_fix(char **s)
 	while (s[i])
 	{
 		if(semiflag(s[i]))
-			t[i] = ft_strdup(extract_quoates(s[i], 0));
+			t[i] = extract_quoates(s[i], 0);
 		else
 			t[i]= ft_strdup(s[i]);
 		i++;
@@ -136,6 +137,8 @@ t_redir *create_redir_node(t_type_redir type, char *target)
 	new->next = NULL;
 	return (new);
 }
+
+
 
 t_type_redir check_redirection(char *token)
 {
@@ -169,6 +172,7 @@ int	check_red(char **s, int i, int k)
 	return (j);
 }
 
+
 t_data *create_data_node(t_type_node t)
 {
 	t_data *node = malloc(sizeof(t_data));
@@ -180,7 +184,6 @@ t_data *create_data_node(t_type_node t)
 	node->next = NULL;
 	return (node);
 }
-
 t_redir	*creatn2(char **s, int i, int k)
 {
 	int	j;
@@ -271,24 +274,17 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 
 t_data	*loop(char **s, t_data *cmd, t_type_node t)
 {
-	int	i;
-	int	k;
-	t_data *curr;
-	t_data *node;
+	int		i = 0;
+	int		k = 0;
+	t_data	*curr = NULL;
+	t_data	*node = NULL;
 
-	k = 0;
-	i = 0;
-	curr = NULL;
-	node = NULL;
 	while (s[i])
 	{
 		if (!ft_strcmp(s[i], "|") || !ft_strcmp(s[i], "||") || !ft_strcmp(s[i], "&&"))
 		{
-			if (i != 0)
-				curr = creatn(s, k, (i - 1), t);
-			else
-				curr = creatn(s, k, i , t);
-			if(!cmd)
+			curr = creatn(s, k, i, t);
+			if (!cmd)
 				cmd = curr;
 			else
 				node->next = curr;

@@ -38,6 +38,63 @@ int ft_have_env(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
 	return (status);
 }
 
+void	debug_data(t_data *data)
+{
+	t_data *tmp = data;
+	t_redir *redir;
+	int i;
+
+	while (tmp)
+	{
+		printf("======== NEW t_data NODE ========\n");
+
+		// 1) Node type
+		printf("1) tmp->type ===> %d\n", tmp->type);
+
+		// 2) Builtin type (can be 0 if not builtin)
+		printf("2) tmp->builtin_type ===> %d\n", tmp->builtin_type);
+
+		// 3) Command array
+		if (tmp->cmd)
+		{
+			i = 0;
+			while (tmp->cmd[i])
+			{
+				printf("3.%d) tmp->cmd[%d] ===> %s\n", i + 1, i, tmp->cmd[i]);
+				i++;
+			}
+		}
+		else
+			printf("3) tmp->cmd ===> NULL\n");
+
+		// 4) Redirections
+		redir = tmp->redir;
+		if (redir)
+		{
+			printf("=======> REDIRECTIONS <=======\n");
+			while (redir)
+			{
+				printf("- redir->type ===> %d\n", redir->type);
+				if (redir->target)
+					printf("- redir->target ===> %s\n", redir->target);
+				else
+					printf("- redir->target ===> NULL\n");
+
+				if (redir->next)
+					printf("******* NEXT REDIR NODE ********\n");
+				redir = redir->next;
+			}
+		}
+		else
+			printf("No redirections for this node.\n");
+
+		if (tmp->next)
+			printf("******** NEXT DATA NODE ********\n");
+
+		tmp = tmp->next;
+	}
+}
+
 int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 {
 	t_ex_othr env_here;
@@ -47,41 +104,7 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	t_data *tmp;
 
 	env_here.heredoc = heredoc;
-	// tmp = data;
-	// while (tmp)
-	// {
-	// 	if (tmp->type)
-	// 		printf("1) tmp->type ===> %d\n", data->type);
-	// 	if (tmp && tmp->redir && tmp->redir->type)
-	// 		printf("2) tmp->redir->type ===> %d\n", tmp->redir->type);
-	// 	if (tmp && tmp->redir && tmp->redir->target)
-	// 		printf("3) tmp->redir->target ===> %s\n", tmp->redir->target);
-	// 	if (tmp && tmp->builtin_type)
-	// 		printf("4) tmp->builtins type ====> %d\n", tmp->builtin_type);
-	// 	if (tmp && tmp->cmd && tmp->cmd[0])
-	// 		printf("5) tmp->cmd[0] ===> %s\n", tmp->cmd[0]);
-	// 	if (tmp && tmp->cmd && tmp->cmd[1])
-	// 		printf("6) tmp->cmd[1] ===> %s\n", tmp->cmd[1]);
-	// 	if (tmp && tmp->next != NULL)
-	// 		printf("******** NEXT NODE ********\n");
-	// 	tmp = tmp->next;
-	// }
-	// t_redir *redir;
-	// redir = data->redir;
-	// if (redir)
-	// {
-	// 	printf("=======> NOW STRUCT REDIRECTIONS <=======\n");
-	// 	while (redir)
-	// 	{
-	// 		if (redir && redir->type)
-	// 			printf("redir->type ===> %d\n", redir->type);
-	// 		if (redir && redir->target)
-	// 			printf("redir->target ====> %s\n", redir->target);
-	// 		if (redir && redir->next != NULL)
-	// 			printf("******* NEXT NODE ********\n");
-	// 		redir = redir->next;
-	// 	}
-	// }
+	debug_data(data);
 	int count = 0;
 	while (curr)
 	{
