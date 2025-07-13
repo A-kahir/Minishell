@@ -109,7 +109,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat);
 
 // *****************builtins func**************
-void ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
+int ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
 void ft_echo(char **str, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env, int *flag_cd);
 void ft_pwd(t_built *line_env);
@@ -120,7 +120,7 @@ void ft_is_positif(t_built *line_env, char *cmd);
 
 t_built	*ft_unset(t_built *line_env, char **cmd);
 t_built	*ft_env(t_built *line_env);
-void ft_exit(char **str);
+char *ft_exit(t_data *data, t_exec in);
 
 
 // **************redirections func*************

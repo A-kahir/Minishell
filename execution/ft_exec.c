@@ -85,8 +85,8 @@ void	debug_data(t_data *data)
 				redir = redir->next;
 			}
 		}
-		else
-			printf("No redirections for this node.\n");
+		// else
+		// 	printf("No redirections for this node.\n");
 
 		if (tmp->next)
 			printf("******** NEXT DATA NODE ********\n");
