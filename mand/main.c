@@ -276,26 +276,14 @@ int main(int ac, char **av, char **env)
         char *tmp = ft_itoa(status);
         in.status = ft_strdup(tmp);
         free(tmp);
-		if (end && end->cmd[0] && (end->cmd[0][0] >= '0' && end->cmd[0][0] <= '9'))
+		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
 		{
-			printf("in main\n");
-			write(2, "minishell: ", 11);
-			write(2, end->cmd[0], ft_strlen(end->cmd[0]));
-			write(2, ": command not found\n", 21);
-			free(in.status);
-			in.status = ft_strdup("127");
+			ft_clean_env(&line_env);
 		}
 		else
 		{
-			if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-				ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
-			{
-				ft_clean_env(&line_env);
-			}
-			else
-			{
-				status = ft_exec(end, heredoc, line_env, in);
-			}
+			status = ft_exec(end, heredoc, line_env, in);
 		}
 		flag = 1;
 		n_clean(end);
