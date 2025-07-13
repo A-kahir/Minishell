@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "execution.h"
+
 int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 {
 	pid_t	pid;

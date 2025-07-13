@@ -12,26 +12,43 @@
 
 #include "../execution.h"
 
-static void	ft_print_env_vars(t_built *curr)
+static int	ft_chack_pth(t_built * curr)
 {
 	while (curr)
 	{
-		if (ft_strcmp(curr->var, "PATH") == 0
-			&& curr->next
-			&& curr->next->next
-			&& ft_strcmp(curr->next->var, "PWD") == 0
-			&& ft_strcmp(curr->next->next->var, "SHLVL") == 0)
+		if (ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
 		{
-			curr = curr->next;
-			continue ;
+			return (1);
 		}
-		if (ft_strcmp(curr->value, "/mnt/homes/akahir/Desktop/Minishell/./minishell") == 0)
-			curr = curr->next;
-		if (curr->var && curr->value)
+		curr = curr->next;
+	}
+	return (0);
+}
+
+static void	ft_print_env_vars(t_built *curr)
+{
+	int skip;
+
+	skip = ft_chack_pth(curr);
+	while (curr)
+	{
+		if (skip == 1)
 		{
-			printf("%s=", curr->var);
-			printf("%s\n", curr->value);
+			if (curr && ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
+			{
+				curr = curr->next;
+				continue ;
+			}
+			if (curr && ft_strcmp(curr->value, "/usr/bin/env") == 0)
+			{
+				curr = curr->next;
+				continue ;
+			}
 		}
+		if (curr && ft_strcmp(curr->value, "/mnt/homes/akahir/Desktop/Minishell/./minishell") == 0)
+			curr = curr->next;
+		if (curr && curr->var && curr->value)
+			printf("%s=%s\n", curr->var, curr->value);
 		curr = curr->next;
 	}
 }

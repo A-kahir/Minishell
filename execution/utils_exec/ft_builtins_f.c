@@ -28,7 +28,7 @@ static int	ft_save_oldpwd_f(t_built *temp, char *before_cd)
 	return (0);
 }
 
-static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
+static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in)
 {
 	t_built	*temp;
 	char	*before_cd;
@@ -44,7 +44,7 @@ static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd)
 		}
 		temp = temp->next;
 	}
-	line_env = ft_cd(data->cmd, line_env, flag_cd);
+	line_env = ft_cd(data->cmd, line_env, flag_cd, in.status);
 	if (*flag_cd == 1 && before_cd)
 	{
 		line_env = ft_add_front(line_env, "OLDPWD", ft_strdup(before_cd));
@@ -60,7 +60,7 @@ void	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 	static int	flag_cd;
 
 	if (data->builtin_type == 1)
-		line_env = ft_handle_cd(data, line_env, &flag_cd);
+		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
 	else if (data->builtin_type == 0)
 		ft_echo(data->cmd, in);
 	else if (data->builtin_type == 2)

@@ -12,24 +12,42 @@
 
 #include "../execution.h"
 
-t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd)
+t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, char *status)
 {
 	t_built	*curr;
 	char	*home;
 
 	curr = line_env;
+	if (str && str[0] && str[1] && str[2])
+	{
+		write(2, "minishell: cd: too many arguments\n", 35);
+		free(status);
+		status = ft_strdup("1");
+		return (line_env);
+	}
 	if (ft_strcmp(str[0], "cd") == 0 && !str[1])
 	{
 		while (curr)
 		{
 			if (ft_strcmp(curr->var, "HOME") == 0)
 			{
-				home = getenv("HOME");
+				home = curr->value;
 				if (!home || chdir(home) != 0)
+				{
 					perror("cd");
+					status = ft_strdup("1");
+					return (line_env);
+				}
+				break ;
 			}
-			else if (curr->next == NULL && ft_strcmp(curr->var, "HOME") == 0)
+			else if (curr->next == NULL && ft_strcmp(curr->var, "HOME") != 0)
+			{
 				write(2, "minishell: cd: HOME not set\n", 29);
+				if (status)
+					free(status);
+				status = ft_strdup("1");
+				return (line_env);
+			}
 			curr = curr->next;
 		}
 		*flag_cd = 1;
@@ -41,6 +59,11 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd)
 			write(2, "minishell: cd: ", 16);
 			write(2, str[1], ft_strlen(str[1]));
 			write(2, ": No such file or directory\n", 29);
+			if (status)
+				free(status);
+			status = ft_strdup("1");
+			return (line_env);
+
 		}
 		else
 		{
@@ -49,6 +72,11 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd)
 			free(home);
 			*flag_cd = 1;
 		}
+	}
+	if (status)
+	{
+		free(status);
+		status = ft_strdup("0");
 	}
 	return (line_env);
 }
