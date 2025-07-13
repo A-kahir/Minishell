@@ -25,7 +25,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
 	if (!in.pipes)
-		return (0);
+		return (free(in.status), 0);
 	int i = 0;
 	while (i < in.n_cmds - 1)
 		if (pipe(in.pipes[i++]) == -1)

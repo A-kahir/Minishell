@@ -27,7 +27,7 @@ static void	ft_save_oldpwd(t_built *temp, char *before_cd)
 	}
 }
 
-static t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in)
+t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in)
 {
 	t_built	*temp;
 	char	*before_cd;
@@ -64,6 +64,7 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 	if (data->builtin_type == 1)
 	{
 		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
+		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 0)
@@ -79,6 +80,7 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 	else if (data->builtin_type == 6)
 	{
 		in.status = ft_exit(data, in);
+		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}
 	line_env = ft_update_exp(line_env, flag_cd);

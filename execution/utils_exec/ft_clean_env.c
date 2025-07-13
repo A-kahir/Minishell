@@ -19,13 +19,19 @@ void ft_clean_env(t_built **line_env_ptr)
 
     while (curr)
     {
-        tmp = curr->next;
         if (ft_strcmp(curr->var, "PWD") != 0 &&
             ft_strcmp(curr->var, "SHLVL") != 0 &&
             ft_strcmp(curr->var, "OLDPWD") != 0)
         {
-            ft_rm_list_env(line_env_ptr, curr);
+            if (curr && curr->var && ft_strcmp(curr->var, "PATH") == 0)
+            {
+                if (curr->value)
+                    free(curr->value);
+                curr->value = ft_strdup(PATH_ENV);
+            }
+            else
+                ft_rm_list_env(line_env_ptr, curr);
         }
-        curr = tmp;
+        curr = curr->next;
     }
 }

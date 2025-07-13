@@ -14,10 +14,10 @@
 
 int ft_empty_env(char **env)
 {
-	int i;
-
-    i = 0;
-	while (env && env[i])
+	if (!env || !env[0])
+		return (1);
+	int i = 0;
+	while (env[i])
 	{
 		if (ft_strncmp(env[i], "PWD=", 4) == 0 ||
 			ft_strncmp(env[i], "SHLVL=", 6) == 0 ||

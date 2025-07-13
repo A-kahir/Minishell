@@ -22,7 +22,6 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 	int		i;
 
 	status = 0;
-	ft_no_full_env(line_env);
 	in.status = ft_strdup(stat.status);
 	if (!in.status)
 		return (1);
@@ -79,7 +78,7 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 			status = status / 256;
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-			ft_is_builtins(data, line_env, in);
+			status = ft_is_builtins(data, line_env, in);
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here, stat);
 	}

@@ -178,7 +178,6 @@ void re_do(t_data *end, t_built	*env)
 // 	return 0;
 // }
 
-
 int main(int ac, char **av, char **env)
 {
 		char	**s;
@@ -199,10 +198,8 @@ int main(int ac, char **av, char **env)
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{
-		if (env == NULL || env[0] == NULL)
-			line_env = NULL;
-		else if (ft_empty_env(env))
-			line_env = NULL;
+		if (!env || !env[0] || ft_empty_env(env))
+			line_env = ft_no_full_env(line_env);
 		else
 			line_env = ft_fill_struct(env);
 		if (line_env)
@@ -277,19 +274,32 @@ int main(int ac, char **av, char **env)
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
-		{
-			ft_clean_env(&line_env);
-		}
-		else
-		{
-			status = ft_exec(end, heredoc, line_env, in);
-		}
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
+			&& ft_strcmp(end->cmd[2], "./minishell") == 0)
+			{
+				ft_clean_env(&line_env);
+			}
+		else if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
+			&& ft_strcmp(end->cmd[2], "./minishell") != 0)
+			{
+				write(2, "env: ", 6);
+				write(2, end->cmd[2], ft_strlen(end->cmd[2]));
+				write(2, ": No such file or directory\n", 29);
+				if (in.status)
+					free(in.status);
+				status = 127;
+				in.status = ft_strdup("127");
+			}
+			else
+			{
+				status = ft_exec(end, heredoc, line_env, in);
+			}
 		flag = 1;
 		n_clean(end);
 		free(heredoc);
 		free(string);
 		string = NULL;
 	}
-	return 0;
+	return (0);
 }
