@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/07 14:51:44 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/13 16:24:03 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,49 @@
 // 	}
 // 	return (i);
 // }
+
+int	count_zmr(char **s)
+{
+	int	count_token;
+	int i;
+	int	len;
+
+	i = 0;
+	len = 0;
+	count_token = token_len(s);
+	while(s[i])
+	{
+		len = len + ft_strlen(s[i]);
+		i++;
+	}
+	return (len);
+}
+
+char    *ft_rejoin(int size, char **strs, char *sep)
+{
+    int        i;
+    int        j;
+    int        len;
+    int        k;
+    char    *s;
+
+    len = ft_strlen(sep);
+    k = 0;
+    i = 0;
+    s = malloc(sizeof(char) * (len + count_zmr(strs) + 1));
+    while (i < size)
+    {
+        j = 0;
+        while (strs[i][j])
+            s[k++] = strs[i][j++];
+        j = 0;
+        while (sep[j] && i != size - 1)
+            s[k++] = sep[j++];
+        i++;
+    }
+    s[k] = '\0';
+    return (s);
+}
 
 void	ft_bzero(void *s, size_t n)
 {
@@ -147,6 +190,8 @@ void	ft_putstr(char *str)
 
 int token_len(char **tokens)
 {
+	if (!tokens)
+		return 0;
 	int len = 0;
 	while (tokens[len])
 		len++;
@@ -301,73 +346,93 @@ char	*ft_strjoin_par(char *s1, char *s2)
 	return (t);
 }
 
-// static int	count_word(const char *str, char c)
-// {
-// 	int		i;
-// 	int		j;
-// 	size_t	f;
+static void	tfree(char **strs, int count)
+{
+	while (count-- > 0)
+		free(strs[count]);
+	free(strs);
+}
 
-// 	i = 0;
-// 	j = 0;
-// 	f = 0;
-// 	while (str[i])
-// 	{
-// 		if (str[i] == c)
-// 			j = 0;
-// 		else if (j == 0)
-// 		{
-// 			j = 1;
-// 			f++;
-// 		}
-// 		i++;
-// 	}
-// 	return (f);
-// }
+char	*extract_token2(char *str, char c, int *i)
+{
+	char	*token;
+	char	*in;
+	int		quote_len;
+	int		quote_start;
+	char	cha;
 
-// static void	tfree(char **strs, int count)
-// {
-// 	while (count-- > 0)
-// 		free(strs[count]);
-// 	free(strs);
-// }
+	token = NULL;
+	while (str[*i] && str[*i] != c)
+	{
+		if (str[*i] == '\'' || str[*i] == '\"')
+		{
+			quote_start = *i;
+			cha = str[(*i)++];
+			while (str[*i] && str[*i] != cha)
+				(*i)++;
+			if (str[*i] == cha)
+				(*i)++;
+			quote_len = *i - quote_start;
+			in = ft_substr_par(str, quote_start, quote_len);
+			token = ft_strjoin_par(token, in);
+			free(in);
+		}
+		else
+		{
+			quote_start = *i;
+			while (str[*i] && str[*i] != c && str[*i] != '\"' && str[*i] != '\'')
+				(*i)++;
+			quote_len = *i - quote_start;
+			in = ft_substr_par(str, quote_start, quote_len);
+			token = ft_strjoin_par(token, in);
+			free(in);
+		}
+	}
+	return (token);
+}
 
-// static char	**ft_loop(char **str, const char *s, char c)
-// {
-// 	size_t	u;
-// 	int		strnum;
-// 	int		i;
-// 	int		countw;
+static int	count_word(char *str, char c)
+{
+	int	i;
+	int	count;
 
-// 	i = -1;
-// 	u = 0;
-// 	strnum = 0;
-// 	countw = count_word(s, c);
-// 	while (strnum < countw && u <= ft_strlen(s))
-// 	{
-// 		if (s[u] != c && i == -1)
-// 			i = u;
-// 		else if ((s[u] == c || u == ft_strlen(s)) && i >= 0)
-// 		{
-// 			str[strnum] = ft_substr(s, i, u - i);
-// 			if (!str[strnum])
-// 				return (tfree(str, strnum), NULL);
-// 			strnum++;
-// 			i = -1;
-// 		}
-// 		u++;
-// 	}
-// 	str[strnum] = NULL;
-// 	return (str);
-// }
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		while (str[i] == c)
+			i++;
+		if (!str[i])
+			break ;
+		free(extract_token2(str, c, &i));
+		count++;
+	}
+	return (count);
+}
 
-// char	**ft_split(char const *s, char c)
-// {
-// 	char	**str;
+char	**ft_split_par(char *str, char c)
+{
+	int		count;
+	char	**tokens;
+	int		i;
+	int		j;
 
-// 	if (!s)
-// 		return (NULL);
-// 	str = malloc(sizeof(char *) * (count_word(s, c) + 1));
-// 	if (!str)
-// 		return (NULL);
-// 	return (ft_loop(str, s, c));
-// }
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	count = count_word(str, c);
+	tokens = malloc(sizeof(char *) * (count + 1));
+	if (!tokens)
+		f_clean(str);
+	while (str[i])
+	{
+		while (str[i] == c)
+			i++;
+		if (!str[i])
+			break ;
+		tokens[j++] = extract_token2(str, c, &i);
+	}
+	tokens[j] = NULL;
+	return (tokens);
+}

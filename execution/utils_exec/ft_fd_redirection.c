@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../execution.h"
 
-void ft_fd_redirections(t_redir *redir)
+int ft_fd_redirections(t_redir *redir)
 {
     int fd;
     int last_input = -1;
@@ -23,13 +22,13 @@ void ft_fd_redirections(t_redir *redir)
     while (current)
     {
         if (!current->target || current->target[0] == '\0')
-            exit(1);
+            return (1);
         if (current->target[0] == '$' && current->target[1])
         {
             write(2, "minishell: ", 12);
             write(2, current->target, ft_strlen(current->target));
             write(2, ": ambiguous redirect\n", 22);
-            exit(1);
+            return (1);
         }
         if (current->type == READ_F)
         {
@@ -39,7 +38,7 @@ void ft_fd_redirections(t_redir *redir)
             if (fd < 0)
             {
                 perror(current->target);
-                exit(1);
+                return (1);
             }
             last_input = fd;
         }
@@ -51,7 +50,7 @@ void ft_fd_redirections(t_redir *redir)
             if (fd < 0)
             {
                 perror(current->target);
-                exit(1);
+                return (1);
             }
             last_output = fd;
         }
@@ -63,7 +62,7 @@ void ft_fd_redirections(t_redir *redir)
             if (fd < 0)
             {
                 perror(current->target);
-                exit(1);
+                return (1);
             }
             last_output = fd;
         }
@@ -74,7 +73,7 @@ void ft_fd_redirections(t_redir *redir)
         if (dup2(last_input, STDIN_FILENO) == -1)
         {
             perror("dup2 infile");
-            exit(1);
+            return (1);
         }
         close(last_input);
     }
@@ -83,8 +82,9 @@ void ft_fd_redirections(t_redir *redir)
         if (dup2(last_output, STDOUT_FILENO) == -1)
         {
             perror("dup2 outfile");
-            exit(1);
+            return (1);
         }
         close(last_output);
     }
+    return (0);
 }

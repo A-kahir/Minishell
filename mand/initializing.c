@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   initializing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/11 15:19:13 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 14:36:05 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 t_type_buil	get_b(char *s)
 {
 	if (ft_strcmp(s, "echo") == 0)
@@ -93,45 +91,24 @@ char	*extract_quoates(char *str, int i)
 	}
 	return(token);
 }
-int	semiflag(char *s)
-{
-	int	i;
 
-	i = 0;
-	while (s[i])
-	{
-		if(s[i] == '\"' || s[i] == '\'')
-			return(1);
-		i++;
-	}
-	return(0);
-}
-
-char **last_fix(char **s)
-{
-	int	i;
-	char	**t;
-
-	i = 0;
-	t = malloc(sizeof(char *) * (token_len(s) + 1));
-	while (s[i])
-	{
-		if(semiflag(s[i]))
-			t[i] = extract_quoates(s[i], 0);
-		else
-			t[i]= ft_strdup(s[i]);
-		i++;
-	}
-	t[i] =  NULL;
-	return(t);
-}
-t_redir *create_redir_node(t_type_redir type, char *target)
+t_redir *create_redir_node(t_type_redir type, char *target, t_built *env)
 {
 	t_redir *new = malloc(sizeof(t_redir));
 	if (!new || !target) 
 		return (NULL);
 	new->type = type;
-	new->target = extract_quoates(target, 0);
+	if (type == HEREDOC)
+	{
+		if(semiflag(target))
+			new->target = extract_quoates(target, 1);
+		else
+			new->target = ft_strdup(target);
+	}
+	else if (semiflag(target))
+		new->target = extract_quoates(extract_target(target, 0, env), 0);
+	else
+		new->target = extract_target(target, 0, env);
 	if (!new->target) 
 		return (free(new), NULL);
 	new->next = NULL;
@@ -184,7 +161,7 @@ t_data *create_data_node(t_type_node t)
 	node->next = NULL;
 	return (node);
 }
-t_redir	*creatn2(char **s, int i, int k)
+t_redir	*creatn2(char **s, int i, int k, t_built *env)
 {
 	int	j;
 	t_redir *redir_node = NULL;
@@ -193,7 +170,7 @@ t_redir	*creatn2(char **s, int i, int k)
 	j = check_red(s, i, k);
 	while (j >= 0)
 	{
-		t_redir *new_redir = create_redir_node(check_redirection(s[j]), s[j + 1]);
+		t_redir *new_redir = create_redir_node(check_redirection(s[j]), s[j + 1], env);
 		if (!redir_node)
 			redir_node = new_redir;
 		else
@@ -247,7 +224,7 @@ char	**command(char **s, int i, int k)
 	return (tmp);
 }
 
-t_data	*creatn(char **s, int i, int k, t_type_node t)
+t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env)
 {
 	t_data	*cmd;
 	int	j = 0;
@@ -259,12 +236,12 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	j = check_red(s, i, k);
 	if (j >= 0)
 	{
-		cmd->redir= creatn2(s, i, k);
+		cmd->redir= creatn2(s, i, k, env);
 		cmd->cmd= command(s, i, k);
 	}
 	else
 	{
-		cmd->cmd = ft_subarray(last_fix(s), i, k);
+		cmd->cmd = ft_subarray(s, i, k);
 		cmd->redir = NULL;
 	}
 	if (cmd->cmd && cmd->cmd[0])
@@ -272,7 +249,7 @@ t_data	*creatn(char **s, int i, int k, t_type_node t)
 	return (cmd);
 }
 
-t_data	*loop(char **s, t_data *cmd, t_type_node t)
+t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env)
 {
 	int		i = 0;
 	int		k = 0;
@@ -283,7 +260,7 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t)
 	{
 		if (!ft_strcmp(s[i], "|") || !ft_strcmp(s[i], "||") || !ft_strcmp(s[i], "&&"))
 		{
-			curr = creatn(s, k, i, t);
+			curr = creatn(s, k, i, t, env);
 			if (!cmd)
 				cmd = curr;
 			else
@@ -295,7 +272,7 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t)
 	}
 	if (k < i)
 	{
-		curr = creatn(s, k, i, t);
+		curr = creatn(s, k, i, t, env);
 		if (!cmd)
 			cmd = curr;
 		else
@@ -304,25 +281,25 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t)
 	return (cmd);
 }
 
-t_data	*part2(char **s)
+t_data	*part2(char **s, t_built *env)
 {
 	t_data	*cmd;
 
 	cmd = NULL;
-	cmd = loop(s, cmd, CMD_NODE);
+	cmd = loop(s, cmd, CMD_NODE, env);
 	return (cmd);
 }
 
-t_data	*part1(char **s)
+t_data	*part1(char **s, t_built *env)
 {
 	t_data *cmd;
 
 	cmd = NULL;
 	if(!find_pipe(s))
-		return (part2(s));
+		return (part2(s, env));
 	else
 	{
-		cmd = loop(s, cmd, PIPE_NODE);
+		cmd = loop(s, cmd, PIPE_NODE, env);
 	}
 	return (cmd);
 }

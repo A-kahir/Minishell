@@ -65,6 +65,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     t_exec in;
     t_data *curr;
     pid_t pid;
+    int fd;
 
     curr = data;
     in.n_cmds = ft_count_cmds(data);
@@ -78,7 +79,9 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         }
         if (pid == 0)
         {
-            ft_fd_redirections(curr->redir);
+            fd = ft_fd_redirections(curr->redir);
+            if (fd == 1)
+                exit(1);
             if (ft_strcmp(curr->cmd[0], "echo") == 0)
             {
                 ft_echo(curr->cmd, stat);
@@ -94,7 +97,9 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     }
     if (curr->cmd == NULL && curr->redir && curr->redir->target)
     {
-        ft_fd_redirections(curr->redir);
+        fd = ft_fd_redirections(curr->redir);
+        if (fd == 1)
+            return (1);
         write(1, "", 0);
         return (0);
     }

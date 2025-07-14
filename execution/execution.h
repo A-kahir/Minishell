@@ -156,7 +156,7 @@ char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 t_built *ft_no_full_env(t_built *line_env);
 void ft_only_print(t_built *line, int flag_one_pth);
-int ft_open_outfile(t_data *data);
+// int ft_open_outfile(t_data *data);
 void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 char	*ft_check_built_cmd(t_data *data);
 void ft_clean_env(t_built **line_env_ptr);
@@ -165,8 +165,8 @@ int ft_check_this_var(char *str, t_built *line_env);
 char	*expanding(char *s, t_built *env);
 char *ft_expand_dollar(char *line, char *status);
 char	*ft_expanding_exec(char *s, t_built *env);
-int ft_open_infile(t_data *data);
-void ft_fd_redirections(t_redir *redir);
+// int ft_open_infile(t_data *data);
+int ft_fd_redirections(t_redir *redir);
 t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in);
 
 // ******************Libft func******************

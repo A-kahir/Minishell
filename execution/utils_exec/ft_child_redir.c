@@ -17,9 +17,14 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
     char *command;
     char **cmd_args;
     int i;
+    int fd;
 
     if (curr->redir)
-        ft_fd_redirections(curr->redir);
+    {
+        fd = ft_fd_redirections(curr->redir);
+        if (fd == 1)
+            exit(1);
+    }
     if (in.n_cmds > 1)
     {
         if (in.i > 0)

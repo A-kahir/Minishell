@@ -7,9 +7,12 @@ MAND_SRC = \
     mand/tokenize.c \
     mand/check.c \
     mand/initializing.c \
+    mand/expanding_target.c \
     mand/heredoc_position.c \
     mand/expanding.c \
-	mand/ft_expand.c \
+    mand/retokenize.c \
+    mand/token_target.c \
+    mand/ft_expand.c
 
 EXEC_SRC = \
 	execution/ft_exec.c \

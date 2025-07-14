@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 char *get_env_value(char *var, t_built *env)
 {
     while (env)
@@ -46,12 +47,6 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
         free(result);
         result = tmp2;
     }
-    // else // remove this
-    // {
-    //     tmp2 = ft_strjoin_par(result, ft_strjoin_par("$", var));
-    //     free(result);
-    //     result = tmp2;
-    // }
     free(tmp);
     free(var);
     return (result);

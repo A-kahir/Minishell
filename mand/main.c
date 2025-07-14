@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/12 15:25:41 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 14:41:23 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*getinput(char *s)
 {
 	char	*buff;
 	
-	buff = readline("minishell-3.2$~ ");
+	buff = readline("minishell-3.2$ ");
 	if (!buff)
 		f_clean(buff);
 	if (*buff)
@@ -54,137 +54,36 @@ int	semifflag(char *s)
 	i = 0;
 	while (s[i])
 	{
-		if(s[i] == '$')
+		if(s[i] == '$' && !ft_strchr(s, '=') && (!ft_strchr(s, '\"') || !ft_strchr(s, '\'')))
 		return(1);
 		i++;
 	}
 	return(0);
 }
-void re_do(t_data *end, t_built	*env)
+
+void handler()
 {
-	t_data *tmp = end;
-	while (tmp)
-	{
-		if (tmp->cmd)
-		{
-			int count = 0;
-			while (tmp->cmd[count])
-				count++;
-			int total_tokens = 0;
-			int j = 0;
-			while (j < count)
-			{
-				char *arg = tmp->cmd[j];
-				int has_quotes = (ft_strchr(arg, '\'') || ft_strchr(arg, '\"'));
-				if (has_quotes)
-				{
-					total_tokens++;
-				}
-				else
-				{
-					char **tokens = tokenize(arg, env);
-					int k = 0;
-					while (tokens && tokens[k])
-					{
-						total_tokens++;
-						k++;
-					}
-					freedp(tokens);
-				}
-				j++;
-			}
-			char **new_cmd = malloc((total_tokens + 1) * sizeof(char *));
-			int idx = 0;
-			j = 0;
-			while (j < count)
-			{
-				char *arg = tmp->cmd[j];
-				int has_quotes = (ft_strchr(arg, '\'') || ft_strchr(arg, '\"'));
-				if (has_quotes)
-				{
-					new_cmd[idx++] = ft_strdup(arg);
-				}
-				else
-				{
-					char **tokens = tokenize(arg, env);
-					int k = 0;
-					while (tokens && tokens[k])
-					{
-						new_cmd[idx++] = ft_strdup(tokens[k]);
-						k++;
-					}
-					freedp(tokens);
-				}
-				j++;
-			}
-			new_cmd[idx] = NULL;
-			freedp(tmp->cmd);
-			tmp->cmd = new_cmd;
-		}
-		tmp = tmp->next;
-	}
-}
-// int main(int ac, char **av, char **env)
-// {
-// 	char	**s;
-// 	t_data	*end;
-// 	char *string;
-// 	static t_built *line_env;
-// 	int i = 0;
-// 	t_heredoc *heredoc;
+	printf("\n");
+	// write(1, "\n", 1);
+ 	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+ }
+void handler2()
+{
+	printf("exit\n");
+	// write(1, "\n", 1);
+	exit(0);
+ 	// rl_on_new_line();
+ }
 
-// 	string = NULL;
-// 	end = NULL;
-// 	initsh();
-// 	// signal(SIGINT, handler);
-// 	if (!line_env)
-// 	{
-// 		line_env = ft_fill_struct(env);
-// 		line_env = ft_update_exp(line_env, 0); 
-// 	}
-// 	while(1)
-// 	{
-// 		string = getinput(string);
-// 		if(!string)
-// 			continue;
-// 		if(check_before(string))
-// 		{
-// 			string = NULL;
-// 			continue;
-// 		}
-// 		// string = expand_dollar(string, line_env);
-// 		// printf("%s\n", string);
-// 		s = tokenize(string, line_env);
-// 		if(!syntax_error(s))
-// 		{
-// 			string = NULL;
-// 			freedp(s);
-// 			continue;
-// 		}
-// 		end = part1(s);
-// 		// t_data *tmp = end;
-// 		// re_do(end, line_env);
-// 		freedp(s);
-// 		heredoc = malloc(sizeof(t_heredoc));
-// 		detect_heredoc_position(end, heredoc, string);
-// 		if (heredoc->middle_hered)
-// 			merge_middle_heredoc_cmd(end);
-// 		// ft_exec(end, env, heredoc, line_env);
-// 		n_clean(end);
-// 		free(heredoc);
-// 		free(string);
-// 		string = NULL;
-// 	}
-// 	return 0;
-// }
-
+ 
 int main(int ac, char **av, char **env)
 {
 		char	**s;
 		t_data	*end;
 		char *string;
 		static t_built *line_env;
-		// int i = 0;
 		t_heredoc *heredoc;
 		t_exec in;
     	static int status;
@@ -194,12 +93,15 @@ int main(int ac, char **av, char **env)
 	string = NULL;
 	end = NULL;
 	initsh();
-	// signal(SIGINT, handler);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler2);
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{
-		if (!env || !env[0] || ft_empty_env(env))
-			line_env = ft_no_full_env(line_env);
+		if (env == NULL || env[0] == NULL)
+			line_env = NULL;
+		else if (ft_empty_env(env))
+			line_env = NULL;
 		else
 			line_env = ft_fill_struct(env);
 		if (line_env)
@@ -216,27 +118,37 @@ int main(int ac, char **av, char **env)
 			string = NULL;
 			continue;
 		}
-		// string = expand_dollar(string, line_env);
-		// printf("%s\n", string);
-		// printf("im here\n");
-		s = tokenize(string, line_env);
+		s = tokenize(string);
 		if(!syntax_error(s))
 		{
 			string = NULL;
 			freedp(s);
 			continue;
 		}
-		// printf("im here2\n");
-		// printf("%s\n", s[0]);
-		// printf("%s\n", s[1]);
-		end = part1(s);
-		// t_data *tmp = end;
-		// re_do(end, line_env);
+		end = part1(s, line_env);
+		t_data *tmpa = retokenize(end, line_env);
+		// t_data *tmp22 = end;
+		// while (tmp22)
+		// {
+		// 	int i = 0;
+		// 	printf("START OF A NODE\n");
+		// 	printf("type_node === %d\n", tmp22->type);
+		// 	while(tmp22->redir)
+		// 	{
+		// 		printf("type=== %d\n", tmp22->redir->type);
+		// 		printf("target=== %s\n", tmp22->redir->target);
+		// 		tmp22->redir = tmp22->redir->next;
+		// 	}
+		// 	while (tmp22->cmd[i])
+		// 	{
+		// 		printf("cmd[%d]---> %s \n", i, tmp22->cmd[i]);
+		// 		i++;	
+		// 	}
+		// 	tmp22 = tmp22->next;
+		// }
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
-		detect_heredoc_position(end, heredoc, string);
-		if (heredoc->middle_hered)
-			merge_middle_heredoc_cmd(end);
+		detect_heredoc_position_with_pipes(end, heredoc);
 		t_data *curr = end;
         static int flag;
         static int flag_fd;
@@ -274,32 +186,19 @@ int main(int ac, char **av, char **env)
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
-			&& ft_strcmp(end->cmd[2], "./minishell") == 0)
-			{
-				ft_clean_env(&line_env);
-			}
-		else if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
-			&& ft_strcmp(end->cmd[2], "./minishell") != 0)
-			{
-				write(2, "env: ", 6);
-				write(2, end->cmd[2], ft_strlen(end->cmd[2]));
-				write(2, ": No such file or directory\n", 29);
-				if (in.status)
-					free(in.status);
-				status = 127;
-				in.status = ft_strdup("127");
-			}
-			else
-			{
-				status = ft_exec(end, heredoc, line_env, in);
-			}
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
+		{
+			ft_clean_env(&line_env);
+		}
+		else
+		{
+			status = ft_exec(end, heredoc, line_env, in);
+		}
 		flag = 1;
 		n_clean(end);
 		free(heredoc);
 		free(string);
 		string = NULL;
 	}
-	return (0);
+	return 0;
 }

@@ -28,9 +28,9 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
     char **cmd_args;
     int *hered_fd;
     char *command;
+    int fd;
 
     hered_fd = (int *)in.status;
-
     if (curr->cmd[0] == NULL)
         exit(0);
 
@@ -45,7 +45,9 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
         if (dup2(in.pipes[in.i - 1][0], STDIN_FILENO) == -1)
             (perror("dup2 pipe input"), exit(1));
     }
-    ft_fd_redirections(curr->redir);
+    fd = ft_fd_redirections(curr->redir);
+    if (fd == 1)
+        exit(1);
     if (in.i < in.n_cmds - 1 && !has_output_redir(curr->redir))
     {
         if (dup2(in.pipes[in.i][1], STDOUT_FILENO) == -1)

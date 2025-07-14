@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/07 14:53:56 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:28:20 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef struct s_cmd {
 } t_cmd;
 
 int		is_operator(char c);
-char	**tokenize(char *str, t_built *env);
+char	**tokenize(char *str);
 
 int	check_before(char *s);
 int	syntax_error(char **s);
@@ -92,13 +92,25 @@ char	*ft_strcpy(char *dest, const char *src);
 char	**ft_subarray(char **tokens, int start, int end);
 char	*ft_substr_par(char *s, unsigned int start, size_t len);
 char	**ft_strjoinarray(char **s1, char **s2);
+char    *ft_rejoin(int size, char **strs, char *sep);
+char	**ft_split_par(char *str, char c);
+char	**redo(char **s, t_built *env);
 // int		ft_strcmp(const char *s1, const char *s2);
 // int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
-void    detect_heredoc_position(t_data *d, t_heredoc *h, char *input);
+char *get_env_value(char *var, t_built *env);
+char	*expanding_target(char *s, t_built *env);
+char	*extract_target(char *str, int i, t_built *env);
+char	*extract_quoates(char *str, int i);
+
+void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h);
+void    detect_heredoc_position(t_data *d, t_heredoc *h);
 void    merge_middle_heredoc_cmd(t_data *d);
 
-t_data	*part1(char **s);
+t_data	*part1(char **s, t_built *env);
+int	semiflag(char *s);
+char	*extract_retoken(char *str, int i, t_built *env);
+t_data *retokenize(t_data *data, t_built *env);
 
 void	f_clean(char *s);
 void	n_clean(t_data *n);

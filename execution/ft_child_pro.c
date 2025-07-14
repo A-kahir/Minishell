@@ -31,7 +31,10 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 		exit(status);
 	}
 	if (flag_redir == 1)
-		(ft_is_redir(curr, line_env, env_here, in), exit(0));
+	{
+		int status = ft_is_redir(curr, line_env, env_here, in);
+		exit(status);
+	}
 	if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
 	{
 		exit(0);
