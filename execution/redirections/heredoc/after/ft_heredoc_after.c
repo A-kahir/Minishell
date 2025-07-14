@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_heredoc_aft.c                                   :+:      :+:    :+:   */
+/*   ft_heredoc_after.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 17:23:40 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/12 17:23:53 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 17:07:33 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
         tmp = tmp->next;
         in.i++;
     }
-
     in.status = (char *)hered_fd;
     curr = data;
     in.i = 0;
@@ -78,9 +77,7 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
         curr = curr->next;
         in.i++;
     }
-
     ft_close_pipes(in.pipes, in.n_cmds);
-
     in.i = 0;
     while (in.i < in.n_cmds)
     {
@@ -88,12 +85,10 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
             close(hered_fd[in.i]);
         in.i++;
     }
-
     while (wait(&status) > 0)
         ;
-
     status = status / 256;
     free(in.pipes);
     free(hered_fd);
-    return status;
+    return (status);
 }

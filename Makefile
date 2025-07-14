@@ -44,7 +44,8 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_check_this_var.c \
 	execution/utils_exec/ft_expand_dollar.c \
 	execution/utils_exec/ft_fd_redirection.c \
-	execution/utils_exec/ft_check_for_echo.c
+	execution/utils_exec/ft_check_for_echo.c \
+	execution/utils_exec/ft_status.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \

@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:53:01 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/06/26 20:15:33 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:32:13 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void free_redir(t_redir *redir)
 		tmp = redir->next;
 		if (redir->target)
 			free(redir->target);
+		redir->type = -1;
 		free(redir);
 		redir = tmp;
 	}

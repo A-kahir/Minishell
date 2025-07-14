@@ -53,14 +53,18 @@ t_built	*ft_env(t_built *line_env, int flag_one_pth)
 {
 	t_built		*curr;
 	t_built		*tmp;
+	static int flag_one;
 
 	if (line_env)
 	{
 		tmp = line_env;
 		while (tmp)
 		{
-			if (ft_strcmp(tmp->value, "/usr/bin/env") != 0 && tmp->next == NULL)
+			if (ft_strcmp(tmp->value, "/usr/bin/env") != 0 && tmp->next == NULL && flag_one == 0)
+			{
 				line_env = ft_add_back(line_env, "_", "/usr/bin/env");
+				flag_one = 1;
+			}
 			tmp = tmp->next;
 		}
 		curr = line_env;

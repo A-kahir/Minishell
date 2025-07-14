@@ -12,16 +12,11 @@
 
 #include "../../execution.h"
 
-t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
+t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec in)
 {
 	int i = 1;
 	int valid_var_found = 0;
 
-	if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
-	{
-		ft_only_print(line_env, flag_one_pth);
-		return (line_env);
-	}
 	while (cmd[i])
 	{
 		if (cmd[i][0] == '\0')
@@ -43,6 +38,8 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 		else if (check == -1)
 		{
 			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			ft_status(in, "1");
+			return (line_env);
 		}
 		else if (check == 0)
 		{
@@ -53,5 +50,6 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 	}
 	if (!valid_var_found)
 		ft_only_print(line_env, flag_one_pth);
+	ft_status(in, "0");
 	return (line_env);
 }

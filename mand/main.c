@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 16:05:29 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 18:49:15 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,16 +77,16 @@ void handler2()
  	// rl_on_new_line();
  }
 
- 
-int main(int ac, char **av, char **env)
+ int main(int ac, char **av, char **env)
 {
-		char	**s;
-		t_data	*end;
-		char *string;
-		static t_built *line_env;
-		t_heredoc *heredoc;
-		t_exec in;
-    	static int status;
+	char	**s;
+	t_data	*end;
+	char *string;
+	static t_built *line_env;
+	t_heredoc *heredoc;
+	t_exec in;
+    static int status;
+	static int flag;
 	
 	(void)ac;
 	(void)av;
@@ -113,42 +113,28 @@ int main(int ac, char **av, char **env)
 			continue;
 		if(check_before(string))
 		{
+			status = 258;
+			flag = 1;
+			free(string);
 			string = NULL;
 			continue;
 		}
 		s = tokenize(string);
-		if(!syntax_error(s))
+		if(syntax_error(s) != 1)
 		{
+			status = 258;
+			flag = 1;
+			free(string);
 			string = NULL;
 			freedp(s);
 			continue;
 		}
 		end = part1(s, line_env);
 		t_data *tmpa = retokenize(end, line_env);
-		// t_data *tmp22 = end;
-		// while (tmp22)
-		// {
-		// 	int i = 0;
-		// 	printf("START OF A NODE\n");
-		// 	printf("type_node === %d\n", tmp22->type);
-		// 	while(tmp22->redir)
-		// 	{
-		// 		printf("type=== %d\n", tmp22->redir->type);
-		// 		printf("target=== %s\n", tmp22->redir->target);
-		// 		tmp22->redir = tmp22->redir->next;
-		// 	}
-		// 	while (tmp22->cmd[i])
-		// 	{
-		// 		printf("cmd[%d]---> %s \n", i, tmp22->cmd[i]);
-		// 		i++;	
-		// 	}
-		// 	tmp22 = tmp22->next;
-		// }
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
 		t_data *curr = end;
-        static int flag;
         static int flag_fd;
         while (curr)
         {
@@ -180,7 +166,7 @@ int main(int ac, char **av, char **env)
 			}
             curr = curr->next;
         }
-        char *tmp = ft_itoa(status);
+        char *tmp = ft_strdup(ft_itoa(status));
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
@@ -196,6 +182,7 @@ int main(int ac, char **av, char **env)
 		n_clean(end);
 		free(heredoc);
 		free(string);
+		free(in.status);
 		string = NULL;
 	}
 	return 0;

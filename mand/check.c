@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 15:14:04 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/06/27 17:20:54 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/14 17:58:57 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ int	check_before(char *s)
 	if(check_unclosed_quotes(s))
 	{
 		i = check_unclosed_quotes(s);
-		printf("minishell: unexpected EOF while looking for matching `%c'\n", i);
-		printf("minishell: syntax error: unexpected end of file\n");
+		write(2, "minishell: unexpected EOF while looking for matching `", 55);
+		write(2, &i, 1);
+		write(2, "'\n", 3);
+		write(2, "minishell: syntax error: unexpected end of file\n", 49);
 		return(1);
 	}
 	return(0);
@@ -49,7 +51,12 @@ int	check_before(char *s)
 
 void	print_error(char *c)
 {
-	printf("minishell: syntax error near unexpected token `%s'\n", c);
+	t_exec in;
+	
+	write(2, "minishell: ", 12);
+	write(2, "syntax error near unexpected token `", 37);
+	write(2, c, ft_strlen(c));
+	write(2, "'\n", 3);
 }
 
 int	is_redirection(char *s)

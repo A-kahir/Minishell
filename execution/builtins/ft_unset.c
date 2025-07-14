@@ -12,15 +12,25 @@
 
 #include "../execution.h"
 
-t_built	*ft_unset(t_built *line_env, char **cmd)
+t_built	*ft_unset(t_built *line_env, char **cmd, t_exec in)
 {
 	t_built	*curr;
 	int		i;
+	int		flag;
 
 	i = 1;
+	flag = 0;
 	while (cmd[i])
 	{
 		curr = line_env;
+		if (ft_strchr(cmd[i], '/'))
+		{
+			write(2, "minishell: unset: `", 20);
+			write(2, cmd[i], ft_strlen(cmd[i]));
+			write(2, "': not a valid identifier\n", 27);
+			ft_status(in, "1");
+			flag = 1;
+		}
 		while (curr)
 		{
 			if (ft_strcmp(curr->var, cmd[i]) == 0)
@@ -32,5 +42,7 @@ t_built	*ft_unset(t_built *line_env, char **cmd)
 		}
 		i++;
 	}
+	if (flag == 0)
+		ft_status(in, "0");
 	return (line_env);
 }

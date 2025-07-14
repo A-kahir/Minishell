@@ -47,9 +47,15 @@ int	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 	else if (data->builtin_type == 2)
 		ft_pwd(line_env);
 	else if (data->builtin_type == 3)
-		line_env = ft_export(line_env, data->cmd, flag_one_pth);
+	{
+		line_env = ft_export(line_env, data->cmd, flag_one_pth, in);
+		return (ft_atoi(in.status));
+	}
 	else if (data->builtin_type == 4)
-		line_env = ft_unset(line_env, data->cmd);
+	{
+		line_env = ft_unset(line_env, data->cmd, in);
+		return (ft_atoi(in.status));
+	}
 	else if (data->builtin_type == 6)
 	{
 		in.status = ft_exit(data, in);
