@@ -50,6 +50,13 @@ void	ft_add_var(t_built *line_env, char *cmd)
 	}
 	else
 		var = ft_strdup(cmd);
+	if (!var || var[0] == '\0')
+	{
+		free(var);
+		if (value)
+			free(value);
+		return;
+	}
 	found = ft_update_existing_var(line_env, var, value);
 	if (!found)
 		ft_add_back(line_env, var, value);

@@ -36,18 +36,6 @@ void ft_child_pro(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in
 	{
 		exit(0);
 	}
-	t_data *tmp = curr;
-	while (tmp && tmp->cmd[0][0] == '$')
-	{
-		int i = 0;
-		while (tmp->cmd[i] != NULL)
-		{
-			free(tmp->cmd[i]);
-			tmp->cmd[i] = ft_expanding_exec(tmp->cmd[i], line_env);
-			i++;
-		}
-		tmp = tmp->next;
-	}
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
 	{
