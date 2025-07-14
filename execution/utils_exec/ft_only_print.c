@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:03 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/08 17:41:11 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 16:13:45 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_only_print(t_built *line, int flag_one_pth)
 				&& ft_strcmp(curr->next->var, "PWD") == 0
 				&& ft_strcmp(curr->next->next->var, "SHLVL") == 0) && flag_one_pth == 0
 			|| (ft_strcmp(curr->var, "_") == 0
-				&& curr->value && ft_strcmp(curr->value, "/usr/bin/env") == 0))
+				&& curr->value && ft_strcmp(curr->value, "/usr/bin/env") == 0) && (flag_one_pth == 1 || flag_one_pth == 0))
 		{
 			curr = curr->next;
 			continue ;

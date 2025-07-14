@@ -17,9 +17,12 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     char **cmd_args;
     char *command;
     t_redir *redir;
+    int fd;
 
     redir = curr->redir;
-    ft_fd_redirections(redir);
+    fd = ft_fd_redirections(redir);
+    if (fd == 1)
+       exit(1);
     if (in.n_cmds > 1)
     {
         int has_input_redir = 0;
@@ -54,18 +57,15 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     }
     if (!curr->cmd || !curr->cmd[0])
     {
-        write(2, "minishell: command not found\n", 28);
-        exit(127);
-    }
-    if (!curr->cmd[0])
-    {
-        write(2, "minishell: command not found\n", 28);
+        write(2, "minishell: ", 12);
+        write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
+        write(2, "command not found\n", 19);
         exit(127);
     }
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {
-        write(2, "minishell: ", 11);
+        write(2, "minishell: ", 12);
         write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
         write(2, ": command not found\n", 21);
         exit(127);

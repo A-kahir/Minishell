@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/12 15:36:57 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 15:53:22 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {
-        write(2, "minishell: ", 11);
+        write(2, "minishell: ", 12);
         write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
         write(2, ": command not found\n", 21);
         exit(127);

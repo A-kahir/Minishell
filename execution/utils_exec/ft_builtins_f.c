@@ -15,7 +15,27 @@
 int	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 {
 	static int	flag_cd;
+	static int flag_one_pth;
 
+	if (!data)
+		return (0);
+	t_built *curr = line_env;
+	if (ft_strcmp(data->cmd[0], "export") == 0)
+	{
+		if (ft_strcmp(data->cmd[1], "PATH") == 0)
+		{
+			while (curr)
+			{
+				if (ft_strcmp(curr->var, "PATH") == 0
+					&& ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
+				{
+					flag_one_pth = 1;
+					break;
+				}
+				curr = curr->next;
+			}
+		}
+	}
 	if (data->builtin_type == 1)
 	{
 		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
@@ -27,7 +47,7 @@ int	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 	else if (data->builtin_type == 2)
 		ft_pwd(line_env);
 	else if (data->builtin_type == 3)
-		line_env = ft_export(line_env, data->cmd);
+		line_env = ft_export(line_env, data->cmd, flag_one_pth);
 	else if (data->builtin_type == 4)
 		line_env = ft_unset(line_env, data->cmd);
 	else if (data->builtin_type == 6)

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:58 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 15:58:27 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/14 15:55:04 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,14 @@ char *ft_exit(t_data *data, t_exec in)
 	{
 		if (arg_count >= 2 && !is_numeric(data->cmd[1]))
 		{
-			write(2, "minishell: exit: ", 17);
+			write(2, "minishell: exit: ", 18);
 			write(2, data->cmd[1], ft_strlen(data->cmd[1]));
-			write(2, ": numeric argument required\n", 28);
+			write(2, ": numeric argument required\n", 29);
 			return (ft_strdup("2"));
 		}
 		if (arg_count > 2)
 		{
-			write(2, "minishell: exit: too many arguments\n", 36);
+			write(2, "minishell: exit: too many arguments\n", 37);
 			return (ft_strdup("1"));
 		}
 		if (arg_count == 2)
@@ -86,14 +86,14 @@ char *ft_exit(t_data *data, t_exec in)
 	write(1, "exit\n", 5);
 	if (arg_count >= 2 && !is_numeric(data->cmd[1]))
 	{
-		write(2, "minishell: exit: ", 17);
+		write(2, "minishell: exit: ", 18);
 		write(2, data->cmd[1], ft_strlen(data->cmd[1]));
-		write(2, ": numeric argument required\n", 28);
+		write(2, ": numeric argument required\n", 29);
 		exit(2);
 	}
 	if (arg_count > 2)
 	{
-		write(2, "minishell: exit: too many arguments\n", 36);
+		write(2, "minishell: exit: too many arguments\n", 37);
 		return (ft_strdup("1"));
 	}
 	if (arg_count == 2)

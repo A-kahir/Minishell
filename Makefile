@@ -38,13 +38,11 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_get_path.c \
 	execution/utils_exec/ft_no_full_env.c \
 	execution/utils_exec/ft_only_print.c \
-	execution/utils_exec/ft_open_outfile.c \
 	execution/utils_exec/ft_child_redir.c \
 	execution/utils_exec/ft_clean_env.c \
 	execution/utils_exec/ft_empty_env.c \
 	execution/utils_exec/ft_check_this_var.c \
 	execution/utils_exec/ft_expand_dollar.c \
-	execution/utils_exec/ft_open_infile.c \
 	execution/utils_exec/ft_fd_redirection.c \
 	execution/utils_exec/ft_check_for_echo.c
 

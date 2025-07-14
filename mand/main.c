@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 14:41:23 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:05:29 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void handler()
 	printf("\n");
 	// write(1, "\n", 1);
  	rl_on_new_line();
-	rl_replace_line("", 0);
+	// rl_replace_line("", 0);
 	rl_redisplay();
  }
 void handler2()
@@ -98,10 +98,8 @@ int main(int ac, char **av, char **env)
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{
-		if (env == NULL || env[0] == NULL)
-			line_env = NULL;
-		else if (ft_empty_env(env))
-			line_env = NULL;
+		if (!env || !env[0] || ft_empty_env(env))
+			line_env = ft_no_full_env(line_env);
 		else
 			line_env = ft_fill_struct(env);
 		if (line_env)

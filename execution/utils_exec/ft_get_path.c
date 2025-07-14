@@ -111,7 +111,7 @@ char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 		{
 			if (stat(cmd_args[0], &data) == 0 && S_ISDIR(data.st_mode))
 			{
-				write(2, "minishell: ", 11);
+				write(2, "minishell: ", 12);
 				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
 				write(2, ": is a directory\n", 18);
 				exit(126);
@@ -122,21 +122,21 @@ char	**ft_get_path(char *cmd, char **env, t_built *line_env)
 		{
 			if (errno == ENOTDIR)
 			{
-				write(2, "minishell: ", 11);
+				write(2, "minishell: ", 12);
 				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
 				write(2, ": Not a directory\n", 19);
 				exit(126);
 			}
 			else if (errno == ENOENT)
 			{
-				write(2, "minishell: ", 11);
+				write(2, "minishell: ", 12);
 				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
 				write(2, ": No such file or directory\n", 29);
 				exit(127);
 			}
 			else
 			{
-				write(2, "minishell: ", 11);
+				write(2, "minishell: ", 12);
 				write(2, cmd_args[0], ft_strlen(cmd_args[0]));
 				write(2, ": Permission denied\n", 21);
 				exit(126);

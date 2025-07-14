@@ -62,7 +62,7 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {
-        write(2, "minishell: ", 11);
+        write(2, "minishell: ", 12);
         write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
         write(2, ": command not found\n", 21);
         exit(127);
