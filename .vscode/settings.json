@@ -66,6 +66,7 @@
     "vector": "c",
     "readline.h": "c",
     "types.h": "c",
-    "ostream": "c"
+    "ostream": "c",
+    "unistd.h": "c"
   }
 }

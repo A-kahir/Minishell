@@ -46,7 +46,7 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
         free(result);
         result = tmp2;
     }
-    else
+    else // remove this
     {
         tmp2 = ft_strjoin_par(result, ft_strjoin_par("$", var));
         free(result);

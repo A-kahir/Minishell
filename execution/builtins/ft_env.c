@@ -25,7 +25,7 @@ static int	ft_chack_pth(t_built * curr)
 	return (0);
 }
 
-static void	ft_print_env_vars(t_built *curr)
+static void	ft_print_env_vars(t_built *curr, int flag_one_pth)
 {
 	int skip;
 
@@ -34,12 +34,8 @@ static void	ft_print_env_vars(t_built *curr)
 	{
 		if (skip == 1)
 		{
-			if (curr && ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
-			{
-				curr = curr->next;
-				continue ;
-			}
-			if (curr && ft_strcmp(curr->value, "/usr/bin/env") == 0)
+			if (curr && ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0
+				&& flag_one_pth == 0)
 			{
 				curr = curr->next;
 				continue ;
@@ -53,7 +49,7 @@ static void	ft_print_env_vars(t_built *curr)
 	}
 }
 
-t_built	*ft_env(t_built *line_env)
+t_built	*ft_env(t_built *line_env, int flag_one_pth)
 {
 	t_built		*curr;
 	t_built		*tmp;
@@ -68,7 +64,7 @@ t_built	*ft_env(t_built *line_env)
 			tmp = tmp->next;
 		}
 		curr = line_env;
-		ft_print_env_vars(curr);
+		ft_print_env_vars(curr, flag_one_pth);
 	}
 	return (line_env);
 }

@@ -113,13 +113,13 @@ int ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
 void ft_echo(char **str, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env, int *flag_cd, char *status);
 void ft_pwd(t_built *line_env);
-t_built *ft_export(t_built *line_env, char **cmd);
+t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth;);
 // -> func export :
 void ft_add_var(t_built *line_env, char *cmd);
 void ft_is_positif(t_built *line_env, char *cmd);
 
 t_built	*ft_unset(t_built *line_env, char **cmd);
-t_built	*ft_env(t_built *line_env);
+t_built	*ft_env(t_built *line_env, int flag_one_pth;);
 char *ft_exit(t_data *data, t_exec in);
 
 
@@ -155,7 +155,7 @@ int ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in);
 char *ft_check_built_redir_f(t_data *data);
 char **ft_fill_envp(t_built *line_env);
 t_built *ft_no_full_env(t_built *line_env);
-void ft_only_print(t_built *line);
+void ft_only_print(t_built *line, int flag_one_pth);
 int ft_open_outfile(t_data *data);
 void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 char	*ft_check_built_cmd(t_data *data);

@@ -35,10 +35,10 @@ int ft_add_vars(char **cmd)
     return count;
 }
 
-t_built *ft_export(t_built *line_env, char **cmd)
+t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 {
     if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] == NULL)
-        ft_only_print(line_env);
+        ft_only_print(line_env, flag_one_pth);
     else if (ft_strcmp(cmd[0], "export") == 0 && cmd[1] != NULL)
     {
         int i = 1;
@@ -47,7 +47,7 @@ t_built *ft_export(t_built *line_env, char **cmd)
 
         if (valid_count == 0)
         {
-            ft_only_print(line_env);
+            ft_only_print(line_env, flag_one_pth);
             return line_env;
         }
         while (cmd[i])
@@ -83,7 +83,7 @@ t_built *ft_export(t_built *line_env, char **cmd)
             i++;
         }
         if (print_export)
-            ft_only_print(line_env);
+            ft_only_print(line_env, flag_one_pth);
     }
     return (line_env);
 }

@@ -12,17 +12,31 @@
 
 #include "../execution.h"
 
-void	ft_only_print(t_built *line)
+void	ft_only_print(t_built *line, int flag_one_pth)
 {
 	t_built	*curr;
 
+	curr = line;
+	while (curr)
+	{
+		if (ft_strcmp(curr->var, "PATH")
+		&& ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
+		{
+			if (flag_one_pth == 1)
+			{
+				ft_add_back(line, curr->var, curr->value);
+				break ;
+			}
+		}
+		curr = curr->next;
+	}
 	curr = line;
 	curr = ft_sort_vars(curr);
 	while (curr)
 	{
 		if ((ft_strcmp(curr->var, "PATH") == 0
 				&& ft_strcmp(curr->next->var, "PWD") == 0
-				&& ft_strcmp(curr->next->next->var, "SHLVL") == 0)
+				&& ft_strcmp(curr->next->next->var, "SHLVL") == 0) && flag_one_pth == 0
 			|| (ft_strcmp(curr->var, "_") == 0
 				&& curr->value && ft_strcmp(curr->value, "/usr/bin/env") == 0))
 		{
