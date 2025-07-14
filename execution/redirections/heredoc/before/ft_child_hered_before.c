@@ -12,18 +12,6 @@
 
 #include "../../../execution.h"
 
-void ft_expand_cmd_args(t_data *curr, t_built *line_env)
-{
-    int i;
-
-    i = 0;
-    while (curr->cmd[i] != NULL)
-    {
-        curr->cmd[i] = ft_expanding_exec(curr->cmd[i], line_env);
-        i++;
-    }
-}
-
 void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
 {
     char **cmd_args;
@@ -56,7 +44,6 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
     }
     if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
         exit(0);
-    ft_expand_cmd_args(curr, line_env);
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {

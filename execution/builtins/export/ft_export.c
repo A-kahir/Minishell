@@ -12,30 +12,6 @@
 
 #include "../../execution.h"
 
-// int ft_add_vars(char **cmd)
-// {
-//     int i = 1;
-//     int count = 0;
-
-//     while (cmd[i])
-//     {
-//         if (cmd[i][0] == '$' && ft_strlen(cmd[i]) == 1)
-//         {
-//             i++;
-//             continue;
-//         }
-//         if (cmd[i][0] == '$' && getenv(cmd[i] + 1) == NULL)
-//         {
-//             i++;
-//             continue;
-//         }
-//         count++;
-//         i++;
-//     }
-//     return count;
-// }
-
-
 t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 {
 	int i = 1;
@@ -46,7 +22,6 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 		ft_only_print(line_env, flag_one_pth);
 		return (line_env);
 	}
-
 	while (cmd[i])
 	{
 		if (cmd[i][0] == '\0')
@@ -54,9 +29,7 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 			i++;
 			continue;
 		}
-
 		int check = ft_specify_var(cmd[i]);
-
 		if (check == 4)
 		{
 			i++;
@@ -80,6 +53,5 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth)
 	}
 	if (!valid_var_found)
 		ft_only_print(line_env, flag_one_pth);
-
-	return line_env;
+	return (line_env);
 }

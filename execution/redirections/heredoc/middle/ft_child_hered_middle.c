@@ -49,17 +49,6 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
     }
     if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
         exit(0);
-    i = 0;
-    while (curr->cmd[i] != NULL)
-    {
-        tmp = ft_expanding_exec(curr->cmd[i], line_env);
-        if (tmp)
-        {
-            free(curr->cmd[i]);
-            curr->cmd[i] = tmp;
-        }
-        i++;
-    }
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {

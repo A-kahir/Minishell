@@ -12,18 +12,6 @@
 
 #include "../execution.h"
 
-void ft_expand_all_args(t_data *curr, t_built *line_env)
-{
-    int i;
-
-    i = 0;
-    while (curr->cmd[i] != NULL)
-    {
-        curr->cmd[i] = ft_expanding_exec(curr->cmd[i], line_env);
-        i++;
-    }
-}
-
 void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
 {
     char **cmd_args;
@@ -69,7 +57,6 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
         write(2, "minishell: command not found\n", 28);
         exit(127);
     }
-    ft_expand_all_args(curr, line_env);
     if (!curr->cmd[0])
     {
         write(2, "minishell: command not found\n", 28);

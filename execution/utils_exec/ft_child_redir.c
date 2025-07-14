@@ -44,14 +44,6 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
         ft_is_builtins(curr, line_env, in);
         exit(0);
     }
-    i = 0;
-    while (curr->cmd[i] != NULL && curr->cmd[i][0] == '$')
-    {
-        char *expanded = ft_expanding_exec(curr->cmd[i], line_env);
-        free(curr->cmd[i]);
-        curr->cmd[i] = expanded;
-        i++;
-    }
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
     if (!cmd_args || !cmd_args[0])
     {
