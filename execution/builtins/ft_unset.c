@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../execution.h"
+
 t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 {
 	t_built	*curr;
@@ -39,7 +40,7 @@ t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 			if (ft_strcmp(curr->var, cmd[i]) == 0)
 			{
 				ft_rm_list(&line_env, curr);
-				break ;
+				break;
 			}
 			curr = next;
 		}

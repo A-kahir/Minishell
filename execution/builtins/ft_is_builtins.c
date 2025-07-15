@@ -101,6 +101,8 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 	else if (data->builtin_type == 4)
 	{
 		line_env = ft_unset(line_env, data->cmd, &in);
+		if (!line_env)
+			return (1);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 5)

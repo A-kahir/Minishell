@@ -38,9 +38,11 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 	while (i < in.n_cmds - 1)
 	{
 		if (pipe(in.pipes[i]) == -1)
+		{
 			return (perror("Pipe creation failed"),
 			free(in.status), ft_free_split(env_here.env),
 			free(in.pipes), exit(1), 1);
+		}
 		i++;
 	}
 	if (data->type == 0 && flag_redir == 0)
@@ -88,7 +90,6 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here, stat);
 	}
-	free(in.status);
 	ft_free_split(env_here.env);
 	free(in.pipes);
 	return (status);
