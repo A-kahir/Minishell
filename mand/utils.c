@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/13 16:24:03 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/15 13:25:50 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,29 @@
 // 	return (i);
 // }
 
+char	**join_zmr(char *s1, char *s2) 
+{
+	int	i;
+	char **t;
+
+	i = 0;
+	t = malloc(sizeof(char *) * 2);
+	if(!t)
+		return(NULL);
+	if(!s1 )
+		return NULL;
+	t[0]= s1;
+	t[1]= NULL;
+	return (t);
+}
+
 int	count_zmr(char **s)
 {
-	int	count_token;
 	int i;
 	int	len;
 
 	i = 0;
 	len = 0;
-	count_token = token_len(s);
 	while(s[i])
 	{
 		len = len + ft_strlen(s[i]);

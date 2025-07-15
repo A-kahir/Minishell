@@ -20,25 +20,22 @@ int	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 	if (!data)
 		return (0);
 	t_built *curr = line_env;
-	if (ft_strcmp(data->cmd[0], "export") == 0)
+	if (ft_strcmp(data->cmd[0], "export") == 0 && ft_strcmp(data->cmd[1], "PATH") == 0)
 	{
-		if (ft_strcmp(data->cmd[1], "PATH") == 0)
+		while (curr)
 		{
-			while (curr)
+			if (ft_strcmp(curr->var, "PATH") == 0
+				&& ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
 			{
-				if (ft_strcmp(curr->var, "PATH") == 0
-					&& ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
-				{
-					flag_one_pth = 1;
-					break;
-				}
-				curr = curr->next;
+				flag_one_pth = 1;
+				break;
 			}
+			curr = curr->next;
 		}
 	}
 	if (data->builtin_type == 1)
 	{
-		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
+		line_env = ft_handle_cd(data, line_env, &flag_cd, &in);
 		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}
@@ -48,17 +45,23 @@ int	ft_is_builtins_f(t_data *data, t_built *line_env, t_exec in)
 		ft_pwd(line_env);
 	else if (data->builtin_type == 3)
 	{
-		line_env = ft_export(line_env, data->cmd, flag_one_pth, in);
+		if (ft_strcmp(data->cmd[0], "export") == 0 && data->cmd[1] == NULL)
+		{
+			ft_only_print(line_env, flag_one_pth);
+			in.status = ft_strdup("0");
+			return (ft_atoi(in.status));
+		}
+		line_env = ft_export(line_env, data->cmd, flag_one_pth, &in);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 4)
 	{
-		line_env = ft_unset(line_env, data->cmd, in);
+		line_env = ft_unset(line_env, data->cmd, &in);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 6)
 	{
-		in.status = ft_exit(data, in);
+		in.status = ft_exit(data, &in);
 		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}

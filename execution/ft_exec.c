@@ -113,7 +113,22 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	if (count == 4 || no_env == 1 || count == 0)
 	{
 		no_env = 1;
-		status = ft_no_env(data, env_here, line_env, stat);
+		int flag_path = 0;
+		curr = line_env;
+		while (curr)
+		{
+			if (ft_strcmp(curr->var, "PATH") == 0)
+				flag_path = 1;
+			else if (curr->next == NULL && ft_strcmp(curr->var, "PATH") == 0 && ft_strcmp(curr->value, NULL) != 0)
+				flag_path = 0;
+			curr = curr->next;
+		}
+		if (flag_path == 1)
+			status = ft_no_env(data, env_here, line_env, stat);
+		else if (flag_path == 0)
+			status = ft_if_un_path(data, env_here, line_env, stat);
+		ft_close_fd_opening();
+		return (status);
 	}
 	else if (no_env == 0)
 	{

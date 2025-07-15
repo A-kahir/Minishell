@@ -12,7 +12,6 @@ MAND_SRC = \
     mand/expanding.c \
     mand/retokenize.c \
     mand/token_target.c \
-    mand/ft_expand.c
 
 EXEC_SRC = \
 	execution/ft_exec.c \
@@ -95,7 +94,7 @@ SRC = $(MAND_SRC) $(EXEC_SRC) $(UTILS_EXEC_SRC) $(REDIR_SRC) $(HEREDOC_SRC) $(LI
 
 OBJS = $(SRC:.c=.o)
 
-CC = cc #-fsanitize=address -g #-fsanitize=undefined -g -Wall -Wextra -Werror
+CC = cc -fsanitize=address -g #-fsanitize=undefined -g -Wall -Wextra -Werror
 RM = rm -f
  CFLAGS = -Wall -Wextra -Werror
 # READLINE_INC = -I$(shell brew --prefix readline)/include

@@ -62,7 +62,9 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 				if (pid == -1)
 					return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), 1);
 				else if (pid == 0)
+				{
 					ft_child_pro(data, line_env, env_here, in);
+				}
 				data = data->next;
 				in.i++;
 			}
@@ -71,13 +73,12 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 			status = status / 256;
 			free(in.pipes);
 		}
-		else
-			(ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes));
 		if (data && ((command && ft_strcmp(command, "cmd") == 0 && flag_redir == 0) || data->builtin_type == 5))
 		{
 			write(2, "minishell: ", 12);
 			write(2, data->cmd[0], ft_strlen(data->cmd[0]));
 			write(2, ": No such file or directory\n", 29);
+			return (127);
 		}
 		if (command && ft_strcmp(command, "built") == 0 && data->builtin_type != -1 && data->builtin_type != 5)
 			status = ft_is_builtins_f(data, line_env, in);

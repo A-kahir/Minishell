@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:53:01 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 15:32:13 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/15 10:25:47 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void    f_clean(char *s)
 {
 	if (s)
 		free(s);
-	printf("exit\n");
-	exit(0);
+	write(1, "exit\n", 6);
+	exit(1);
 }
 
 void free_redir(t_redir *redir)

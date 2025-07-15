@@ -47,12 +47,6 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
 		free(result);
 		result = tmp2;
 	}
-	else if (!ft_strcmp(var, "?"))
-	{
-		tmp2 = ft_strjoin_par(result, ft_strjoin_par(ft_strdup("$"), var));
-		free(result);
-		result = tmp2;
-	}
 	else if(!ft_strcmp(var, ""))
 	{
 		tmp2 = ft_strjoin_par(result, "$");
@@ -77,7 +71,7 @@ char	*expanding(char *s, t_built *env)
 		return (NULL);
 	while (s[i])
 	{
-		if (s[i] == '$')
+		if (s[i] == '$' && s[i + 1] != '?')
 		{
 			result = helper_func(result, s, start, i, env);
 			i++;

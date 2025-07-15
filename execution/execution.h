@@ -111,16 +111,16 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 // *****************builtins func**************
 int ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
 void ft_echo(char **str, t_exec in);
-t_built *ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec in);
+t_built *ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in);
 void ft_pwd(t_built *line_env);
-t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec in);
+t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec *in);
 // -> func export :
 void ft_add_var(t_built *line_env, char *cmd);
 void ft_is_positif(t_built *line_env, char *cmd);
 
-t_built	*ft_unset(t_built *line_env, char **cmd, t_exec in);
+t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in);
 t_built	*ft_env(t_built *line_env, int flag_one_pth);
-char *ft_exit(t_data *data, t_exec in);
+char *ft_exit(t_data *data, t_exec *in);
 
 
 // **************redirections func*************
@@ -163,9 +163,8 @@ int ft_empty_env(char **env);
 int ft_check_this_var(char *str, t_built *line_env);
 char	*expanding(char *s, t_built *env);
 char *ft_expand_dollar(char *line, char *status);
-char	*ft_expanding_exec(char *s, t_built *env);
 int ft_fd_redirections(t_redir *redir);
-t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in);
+t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in);
 void ft_status(t_exec in, char *value);
 int ft_has_output_redir(t_data *data);
 

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 18:49:15 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/15 17:35:05 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,21 +61,24 @@ int	semifflag(char *s)
 	return(0);
 }
 
-void handler()
+// static void handler()
+// {
+// 	printf("\n");
+// 	// write(1, "\n", 1);
+//  	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	rl_redisplay();
+// }
+
+void	disable_echoctl(void)
 {
-	printf("\n");
-	// write(1, "\n", 1);
- 	rl_on_new_line();
-	// rl_replace_line("", 0);
-	rl_redisplay();
- }
-void handler2()
-{
-	printf("exit\n");
-	// write(1, "\n", 1);
-	exit(0);
- 	// rl_on_new_line();
- }
+	struct termios	term;
+
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+		return ;
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
 
  int main(int ac, char **av, char **env)
 {
@@ -93,8 +96,9 @@ void handler2()
 	string = NULL;
 	end = NULL;
 	initsh();
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler2);
+	disable_echoctl();
+	// signal(SIGINT, handler);
+	// signal(SIGQUIT, SIG_IGN);
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{
@@ -131,6 +135,25 @@ void handler2()
 		}
 		end = part1(s, line_env);
 		t_data *tmpa = retokenize(end, line_env);
+		// t_data *tmp22 = end;
+        // while (tmp22)
+        // {
+        //     int i = 0;
+        //     printf("START OF A NODE\n");
+        //     printf("type_node === %d\n", tmp22->type);
+        //     while(tmp22->redir)
+        //     {
+        //         printf("type=== %d\n", tmp22->redir->type);
+        //         printf("target=== %s\n", tmp22->redir->target);
+        //         tmp22->redir = tmp22->redir->next;
+        //     }
+        //     while (tmp22->cmd[i])
+        //     {
+        //         printf("cmd[%d]---> %s \n", i, tmp22->cmd[i]);
+        //         i++;    
+        //     }
+        //     tmp22 = tmp22->next;
+        // }
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
@@ -170,9 +193,18 @@ void handler2()
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0)
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
+			&& ft_strcmp(end->cmd[2], "./minishell") == 0)
 		{
 			ft_clean_env(&line_env);
+		}
+		else if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
+			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
+			&& ft_strcmp(end->cmd[2], "./minishell") != 0)
+		{
+			write(2, "minishell: ", 12);
+			write(2, "env: No such file or directory\n", 32);
+			status = 127;
 		}
 		else
 		{

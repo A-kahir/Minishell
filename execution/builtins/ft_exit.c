@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:58 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/14 16:56:46 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/15 18:16:48 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char *update_status(char *old_status, char *new_status)
 	return (ft_strdup(new_status));
 }
 
-char *ft_exit(t_data *data, t_exec in)
+char *ft_exit(t_data *data, t_exec *in)
 {
 	int arg_count = 0;
 	unsigned long exit_code;
@@ -64,15 +64,16 @@ char *ft_exit(t_data *data, t_exec in)
 	while (data->cmd[arg_count])
 		arg_count++;
 	if (ft_strcmp(data->cmd[0], "exit") != 0)
-		return (ft_strdup(in.status));
-	if (in.n_cmds > 1)
+		return (ft_strdup(in->status));
+	if (in->n_cmds > 1)
 	{
 		if (arg_count >= 2 && !is_numeric(data->cmd[1]))
 		{
 			write(2, "minishell: exit: ", 18);
 			write(2, data->cmd[1], ft_strlen(data->cmd[1]));
 			write(2, ": numeric argument required\n", 29);
-			return (ft_strdup("2"));
+			in->status = ft_strdup("255");
+			return (in->status);
 		}
 		if (arg_count > 2)
 		{
@@ -81,7 +82,8 @@ char *ft_exit(t_data *data, t_exec in)
 		}
 		if (arg_count == 2)
 			return (ft_strdup(data->cmd[1]));
-		return (ft_strdup(in.status));
+		in->status = ft_strdup("0");
+		return (in->status);
 	}
 	write(1, "exit\n", 5);
 	if (arg_count >= 2 && !is_numeric(data->cmd[1]))
@@ -89,7 +91,7 @@ char *ft_exit(t_data *data, t_exec in)
 		write(2, "minishell: exit: ", 18);
 		write(2, data->cmd[1], ft_strlen(data->cmd[1]));
 		write(2, ": numeric argument required\n", 29);
-		exit(2);
+		exit(255);
 	}
 	if (arg_count > 2)
 	{
@@ -102,7 +104,7 @@ char *ft_exit(t_data *data, t_exec in)
 		exit_code %= 256;
 		exit((unsigned char)exit_code);
 	}
-	exit_code = ft_atoi(in.status);
+	exit_code = ft_atoi(in->status);
 	exit_code %= 256;
 	exit((unsigned char)exit_code);
 	return (NULL);

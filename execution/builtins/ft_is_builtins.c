@@ -27,7 +27,7 @@ static void	ft_save_oldpwd(t_built *temp, char *before_cd)
 	}
 }
 
-t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in)
+t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in)
 {
 	t_built	*temp;
 	char	*before_cd;
@@ -78,7 +78,8 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 	}
 	if (data->builtin_type == 1)
 	{
-		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
+		line_env = ft_handle_cd(data, line_env, &flag_cd, &in);
+		printf("in.status=> %s\n", in.status);
 		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}
@@ -94,19 +95,19 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 			in.status = ft_strdup("0");
 			return (ft_atoi(in.status));
 		}
-		line_env = ft_export(line_env, data->cmd, flag_one_pth, in);
+		line_env = ft_export(line_env, data->cmd, flag_one_pth, &in);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 4)
 	{
-		line_env = ft_unset(line_env, data->cmd, in);
+		line_env = ft_unset(line_env, data->cmd, &in);
 		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 5)
 		line_env = ft_env(line_env, flag_one_pth);
 	else if (data->builtin_type == 6)
 	{
-		in.status = ft_exit(data, in);
+		in.status = ft_exit(data, &in);
 		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}

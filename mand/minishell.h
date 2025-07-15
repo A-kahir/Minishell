@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 17:58:07 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/15 13:26:00 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include<sys/wait.h>
 #include<readline/readline.h>
 #include<readline/history.h>
+#include <termios.h>
 #include"../execution/execution.h"
 
 
@@ -111,6 +112,7 @@ t_data	*part1(char **s, t_built *env);
 int	semiflag(char *s);
 char	*extract_retoken(char *str, int i, t_built *env);
 t_data *retokenize(t_data *data, t_built *env);
+char	**join_zmr(char *s1, char *s2);
 
 void	f_clean(char *s);
 void	n_clean(t_data *n);
