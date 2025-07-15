@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:24:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 15:59:48 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/15 18:29:01 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@ void	ft_rm_list(t_built **head, t_built *target)
 			else
 				prv->next = temp->next;
 			free(temp->var);
+			temp->var = NULL;
 			free(temp->value);
+			temp->value = NULL;
 			free(temp);
+			temp = NULL;
 			return ;
 		}
 		prv = temp;
