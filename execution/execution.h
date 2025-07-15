@@ -167,6 +167,7 @@ char	*ft_expanding_exec(char *s, t_built *env);
 int ft_fd_redirections(t_redir *redir);
 t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec in);
 void ft_status(t_exec in, char *value);
+int ft_has_output_redir(t_data *data);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
