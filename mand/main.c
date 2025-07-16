@@ -199,8 +199,8 @@ void	disable_echoctl(void)
 			ft_clean_env(&line_env);
 		}
 		else if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
-			&& ft_strcmp(end->cmd[2], "./minishell") != 0)
+			ft_strcmp(end->cmd[0], "env") == 0 && (ft_strcmp(end->cmd[1], "-i") != 0
+			|| ft_strcmp(end->cmd[2], "./minishell") != 0))
 		{
 			write(2, "minishell: ", 12);
 			write(2, "env: No such file or directory\n", 32);
