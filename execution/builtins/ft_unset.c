@@ -14,15 +14,11 @@
 
 t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 {
-	t_built	*curr;
-	int		i;
-	int		flag;
+	int i = 1;
+	int flag = 0;
 
-	i = 1;
-	flag = 0;
 	while (cmd[i])
 	{
-		curr = line_env;
 		if (ft_strchr(cmd[i], '/'))
 		{
 			write(2, "minishell: unset: `", 20);
@@ -34,18 +30,19 @@ t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 			flag = 1;
 			return (line_env);
 		}
+		t_built *curr = line_env;
 		while (curr)
 		{
-			t_built *next = curr->next;
 			if (ft_strcmp(curr->var, cmd[i]) == 0)
 			{
 				ft_rm_list(&line_env, curr);
 				break;
 			}
-			curr = next;
+			curr = curr->next;
 		}
 		i++;
 	}
+
 	if (flag == 0)
 	{
 		if (in->status)

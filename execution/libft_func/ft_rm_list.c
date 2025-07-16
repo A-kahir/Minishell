@@ -6,19 +6,16 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:24:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/15 20:00:35 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/16 13:10:19 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
-
 void	ft_rm_list(t_built **head, t_built *target)
 {
-	t_built	*temp;
-	t_built	*prv;
+	t_built	*temp = *head;
+	t_built	*prv = NULL;
 
-	temp = *head;
-	prv = NULL;
 	while (temp)
 	{
 		if (temp == target)
@@ -27,13 +24,23 @@ void	ft_rm_list(t_built **head, t_built *target)
 				*head = temp->next;
 			else
 				prv->next = temp->next;
-			free(temp->var);
+
+			if (temp && temp->var)
+				free(temp->var);
 			temp->var = NULL;
+			if (temp && temp->value)
 			free(temp->value);
 			temp->value = NULL;
-			free(temp);
+			if (temp && temp->old_pwd)
+			free(temp->old_pwd);
+			temp->old_pwd = NULL;
+			if (temp && temp->pwd)
+			free(temp->pwd);
+			temp->pwd = NULL;
+			if (temp)
+				free(temp);
 			temp = NULL;
-			return ;
+			return;
 		}
 		prv = temp;
 		temp = temp->next;

@@ -79,7 +79,6 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 	if (data->builtin_type == 1)
 	{
 		line_env = ft_handle_cd(data, line_env, &flag_cd, &in);
-		printf("in.status=> %s\n", in.status);
 		line_env = ft_update_exp(line_env, flag_cd);
 		return (ft_atoi(in.status));
 	}
