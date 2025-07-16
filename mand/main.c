@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/15 17:35:05 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/16 21:11:23 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,11 @@ char	*getinput(char *s)
 	
 	buff = readline("minishell-3.2$ ");
 	if (!buff)
-		f_clean(buff);
+    {
+        write(1, "\033[1A\033[16C", 9);
+        write(1, "exit\n", 5);
+        exit(0);
+    } 
 	if (*buff)
 	{
 		add_history(buff);
@@ -61,14 +65,14 @@ int	semifflag(char *s)
 	return(0);
 }
 
-// static void handler()
-// {
-// 	printf("\n");
-// 	// write(1, "\n", 1);
-//  	rl_on_new_line();
-// 	rl_replace_line("", 0);
-// 	rl_redisplay();
-// }
+static void handler()
+{
+	printf("\n");
+	// write(1, "\n", 1);
+ 	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
 void	disable_echoctl(void)
 {
@@ -97,8 +101,8 @@ void	disable_echoctl(void)
 	end = NULL;
 	initsh();
 	disable_echoctl();
-	// signal(SIGINT, handler);
-	// signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, SIG_IGN);
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{

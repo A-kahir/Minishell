@@ -79,6 +79,8 @@ char	*expanding(char *s, t_built *env)
 				i++;
 			start = i;
 		}
+		else if(s[i] == '$' && s[i + 1] == '$')
+			i = +2;
 		else
 			i++;
 	}

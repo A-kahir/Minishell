@@ -49,6 +49,8 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 	int status = 0;
 	t_built *curr = line_env;
 
+	signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
 	env_here.heredoc = heredoc;
 	int count = 0;
 	while (curr)

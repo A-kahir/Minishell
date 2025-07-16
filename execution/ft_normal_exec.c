@@ -18,8 +18,10 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 	t_exec	in;
 	int		flag_redir;
 	int		status;
+	int		last_status;
 
 	status = 0;
+	g_status = 0;
 	in.status = ft_strdup(stat.status);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
@@ -39,13 +41,38 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			if (pid == -1)
 				(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 			else if (pid == 0)
+			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				ft_child_pro(data, line_env, env_here, in);
+			}
 			data = data->next;
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		while (wait(&status) > 0);
-		status = status / 256;
+		while (wait(&status) > 0)
+		{
+			if (status == 2 || status == 3)
+			{
+				if (WIFSIGNALED(status) && g_status == 0)
+				{
+					if (WTERMSIG(status) == SIGINT)
+					{
+						write(2, "\n", 2);
+					}
+					else if(WTERMSIG(status) == SIGQUIT)
+					{
+						status = 0;
+						break ;
+					}
+					status = 0;
+				}
+			}
+			else if (status != 2 || status != 3)
+			{
+				status = status / 256;
+			}
+		}
 		free(in.pipes);
 	}
 	else if (data->type == 1 || flag_redir == 1)
@@ -57,16 +84,46 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			while (in.i < in.n_cmds)
 			{
 				pid = fork();
+				
 				if (pid == -1)
 					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
+				{
+					signal(SIGINT, SIG_DFL);
+					signal(SIGQUIT, SIG_DFL);
 					ft_child_pro(data, line_env, env_here, in);
+				}
 				data = data->next;
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
-			while (wait(&status) > 0);
-			status = status / 256;
+			int last_status;
+			while (wait(&status) > 0)
+			{
+				if (status == 2 || status == 3)
+				{
+					printf("*) status ===> %d\n", status);
+					if (WIFSIGNALED(status) && g_status == 0)
+					{
+						printf("1) status ===> %d\n", status);
+						if (WTERMSIG(status) == SIGINT)
+						{
+							write(2, "\n", 2);
+						}
+						else if(WTERMSIG(status) == SIGQUIT)
+						{
+							write(2, "Quit:3\n", 8);
+						}
+						status = status + 128;
+						printf("4) status ===> %d\n", status);
+					}
+				}
+				else if (status != 2 || status != 3)
+				{
+					status = status / 256;
+					printf("5) status ===> %d\n", status);
+				}
+			}
 			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)

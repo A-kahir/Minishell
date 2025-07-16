@@ -32,7 +32,10 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
     {
         line = readline("> ");
         if (!line)
+        {
+            write(1, "\033[1A\033[2C", 9); 
             break;
+        }
         if (ft_strcmp(line, del) == 0)
         {
             free(line);

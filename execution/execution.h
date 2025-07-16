@@ -13,6 +13,9 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
+
+int g_status;
+
 #define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
 
 # include <stdio.h>
