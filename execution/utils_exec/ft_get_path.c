@@ -12,7 +12,7 @@
 
 #include "../execution.h"
 
-static int	is_only_spaces(char *cmd)
+int	is_only_spaces(char *cmd)
 {
 	int	i;
 

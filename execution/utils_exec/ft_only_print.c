@@ -48,13 +48,16 @@ void	ft_only_print(t_built *line, int flag_one_pth)
 			curr = curr->next;
 			continue ;
 		}
-		if (curr->var)
+		if (curr->var[0] != '\0')
 		{
-			write(1, "declare -x ", 11);
-			printf("%s", curr->var);
-			if (curr->value)
-				printf("=\"%s\"", curr->value);
-			printf("\n");
+			if (curr->var)
+			{
+				write(1, "declare -x ", 11);
+				printf("%s", curr->var);
+				if (curr->value)
+					printf("=\"%s\"", curr->value);
+				printf("\n");
+			}
 		}
 		curr = curr->next;
 	}

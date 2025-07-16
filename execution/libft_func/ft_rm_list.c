@@ -11,11 +11,15 @@
 /* ************************************************************************** */
 
 #include "../execution.h"
+
 void	ft_rm_list(t_built **head, t_built *target)
 {
-	t_built	*temp = *head;
+	t_built	*temp;
 	t_built	*prv = NULL;
 
+	if (!target || !head || !*head)
+		return ;
+	temp = *head;
 	while (temp)
 	{
 		if (temp == target)
@@ -29,13 +33,11 @@ void	ft_rm_list(t_built **head, t_built *target)
 				free(temp->var);
 			temp->var = NULL;
 			if (temp && temp->value)
-			free(temp->value);
+				free(temp->value);
 			temp->value = NULL;
 			if (temp && temp->old_pwd)
-			free(temp->old_pwd);
+				free(temp->old_pwd);
 			temp->old_pwd = NULL;
-			if (temp && temp->pwd)
-			free(temp->pwd);
 			temp->pwd = NULL;
 			if (temp)
 				free(temp);

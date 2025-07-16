@@ -167,6 +167,8 @@ int ft_fd_redirections(t_redir *redir);
 t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in);
 void ft_status(t_exec in, char *value);
 int ft_has_output_redir(t_data *data);
+void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
+int	is_only_spaces(char *cmd);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

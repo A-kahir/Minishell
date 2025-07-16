@@ -41,7 +41,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 			if (pid == -1)
 				return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), exit(1), 1);
 			else if (pid == 0)
-				ft_child_pro(data, line_env, env_here, in);
+				ft_child_pro_f(data, line_env, env_here, in);
 			data = data->next;
 			in.i++;
 		}
@@ -63,7 +63,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 					return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), 1);
 				else if (pid == 0)
 				{
-					ft_child_pro(data, line_env, env_here, in);
+					ft_child_pro_f(data, line_env, env_here, in);
 				}
 				data = data->next;
 				in.i++;

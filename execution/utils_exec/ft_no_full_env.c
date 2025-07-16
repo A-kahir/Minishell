@@ -30,6 +30,7 @@ t_built *ft_no_full_env(t_built *line_env)
 {
 	char *pwd;
 
+	line_env = NULL;
 	if (!ft_already_exists(line_env, "PATH"))
 		line_env = ft_add_back(line_env, "PATH", PATH_ENV);
 	if (!ft_already_exists(line_env, "PWD"))
