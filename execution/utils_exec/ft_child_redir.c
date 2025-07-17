@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_child_redir.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/17 12:23:32 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:32:26 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,19 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 		write(2, ": command not found\n", 21);
 		exit(127);
 	}
-	if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
+	else if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
 	{
-		perror("execve failed");
-		ft_free_split(cmd_args);
-		exit(1);
+		if (errno == ENOEXEC)
+		{
+			char *args[3];
+			args[0] = "/bin/sh";
+			args[1] = cmd_args[0];
+			args[2] = NULL;
+   			if (execve("/bin/sh", args, env_here.env) == -1)
+				(perror("execve failed"), ft_free_split(cmd_args), exit(1));
+			exit(127);
+		}
+		else
+			(perror("execve failed"), ft_free_split(cmd_args), exit(1));
 	}
 }

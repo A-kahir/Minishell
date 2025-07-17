@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_child_pro_f.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 12:15:06 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/17 12:23:19 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 19:30:14 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,18 @@ void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 		exit(127);
 	}
 	else if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
-		(perror("execve failed"), ft_free_split(cmd_args), exit(1));
+	{
+		if (errno == ENOEXEC)
+		{
+			char *args[3];
+			args[0] = "/bin/sh";
+			args[1] = cmd_args[0];
+			args[2] = NULL;
+   			if (execve("/bin/sh", args, env_here.env) == -1)
+				(perror("execve failed"), ft_free_split(cmd_args), exit(1));
+			exit(127);
+		}
+		else
+			(perror("execve failed"), ft_free_split(cmd_args), exit(1));
+	}
 } 

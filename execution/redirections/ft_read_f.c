@@ -23,6 +23,8 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     fd = ft_fd_redirections(redir);
     if (fd == 1)
        exit(1);
+    if (!curr->cmd || !curr->cmd[0])
+        exit(0);
     if (in.n_cmds > 1)
     {
         int has_input_redir = 0;
@@ -71,7 +73,20 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
         exit(127);
     }
     if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
-        (perror("execve failed"), ft_free_split(cmd_args), exit(1));
+    {
+        if (errno == ENOEXEC)
+		{
+			char *args[3];
+			args[0] = "/bin/sh";
+			args[1] = cmd_args[0];
+			args[2] = NULL;
+   			if (execve("/bin/sh", args, env_here.env) == -1)
+				(perror("execve failed"), ft_free_split(cmd_args), exit(1));
+			exit(127);
+		}
+        else
+            (perror("execve failed"), ft_free_split(cmd_args), exit(1));
+    }
 }
 
 int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
