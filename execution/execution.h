@@ -14,7 +14,7 @@
 # define EXECUTION_H
 
 
-int g_status;
+// int g_status;
 
 #define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
 
@@ -112,7 +112,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat);
 
 // *****************builtins func**************
-int ft_is_builtins(t_data *data, t_built *line_env, t_exec in);
+int ft_is_builtins(t_data *data, t_built *line_env, t_exec *in);
 void ft_echo(char **str, t_exec in);
 t_built *ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in);
 void ft_pwd(t_built *line_env);
@@ -175,7 +175,7 @@ int	is_only_spaces(char *cmd);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
-char	**ft_split(const char *s, char c);
+char	**ft_split(char *s, char c);
 char	*ft_strchr(const char *s, int c);
 int	ft_strcmp(char *s1, char *s2);
 int ft_strlen(char *str);

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "execution.h"
-
 int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 {
 	pid_t	pid;
@@ -21,17 +20,20 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 	int		last_status;
 
 	status = 0;
-	g_status = 0;
-	in.status = ft_strdup(stat.status);
+	// g_status = 0;
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
-	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
-	if (!in.pipes)
-		return (free(in.status), 0);
-	int i = 0;
-	while (i < in.n_cmds - 1)
-		if (pipe(in.pipes[i++]) == -1)
-			(perror("Pipe creation failed"), exit(1));
+	in.pipes = NULL;
+	if (in.n_cmds > 1)
+	{
+		in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
+		if (!in.pipes)
+			return (free(in.status), 0);
+		int i = 0;
+		while (i < in.n_cmds - 1)
+			if (pipe(in.pipes[i++]) == -1)
+				(perror("Pipe creation failed"), exit(1));
+	}
 	if (data->type == 0 && flag_redir == 0)
 	{
 		in.i = 0;
@@ -50,30 +52,34 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
+		if (in.pipes)
+		{
+			free(in.pipes);
+			in.pipes = NULL;
+		}
 		while (wait(&status) > 0)
 		{
-			if (status == 2 || status == 3)
-			{
-				if (WIFSIGNALED(status) && g_status == 0)
-				{
-					if (WTERMSIG(status) == SIGINT)
-					{
-						write(2, "\n", 2);
-					}
-					else if(WTERMSIG(status) == SIGQUIT)
-					{
-						status = 0;
-						break ;
-					}
-					status = 0;
-				}
-			}
-			else if (status != 2 || status != 3)
-			{
-				status = status / 256;
-			}
+			// if (status == 2 || status == 3)
+			// {
+			// 	if (WIFSIGNALED(status) && g_status == 0)
+			// 	{
+			// 		if (WTERMSIG(status) == SIGINT)
+			// 		{
+			// 			write(2, "\n", 2);
+			// 		}
+			// 		else if(WTERMSIG(status) == SIGQUIT)
+			// 		{
+			// 			status = 0;
+			// 			break ;
+			// 		}
+			// 		status = 0;
+			// 	}
+			// }
+			// else if (status != 2 || status != 3)
+			// {
+			// }
 		}
-		free(in.pipes);
+		status = status / 256;
 	}
 	else if (data->type == 1 || flag_redir == 1)
 	{
@@ -84,7 +90,6 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			while (in.i < in.n_cmds)
 			{
 				pid = fork();
-				
 				if (pid == -1)
 					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
 				else if (pid == 0)
@@ -97,34 +102,38 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
+			if (in.pipes)
+			{
+				free(in.pipes);
+				in.pipes = NULL;
+			}
 			int last_status;
 			while (wait(&status) > 0)
 			{
-				if (status == 2 || status == 3)
-				{
-					printf("*) status ===> %d\n", status);
-					if (WIFSIGNALED(status) && g_status == 0)
-					{
-						printf("1) status ===> %d\n", status);
-						if (WTERMSIG(status) == SIGINT)
-						{
-							write(2, "\n", 2);
-						}
-						else if(WTERMSIG(status) == SIGQUIT)
-						{
-							write(2, "Quit:3\n", 8);
-						}
-						status = status + 128;
-						printf("4) status ===> %d\n", status);
-					}
-				}
-				else if (status != 2 || status != 3)
-				{
-					status = status / 256;
-					printf("5) status ===> %d\n", status);
-				}
+				// if (status == 2 || status == 3)
+				// {
+				// 	printf("*) status ===> %d\n", status);
+				// 	if (WIFSIGNALED(status) && g_status == 0)
+				// 	{
+				// 		printf("1) status ===> %d\n", status);
+				// 		if (WTERMSIG(status) == SIGINT)
+				// 		{
+				// 			write(2, "\n", 2);
+				// 		}
+				// 		else if(WTERMSIG(status) == SIGQUIT)
+				// 		{
+				// 			write(2, "Quit:3\n", 8);
+				// 		}
+				// 		status = status + 128;
+				// 		printf("4) status ===> %d\n", status);
+				// 	}
+				// }
+				// else if (status != 2 || status != 3)
+				// {
+				// 	printf("5) status ===> %d\n", status);
+				// }
 			}
-			free(in.pipes);
+			status = status / 256;
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{
@@ -133,5 +142,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here, stat);
 	}
+	if (in.pipes)
+		in.pipes = NULL;
 	return (status);
 }

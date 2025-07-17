@@ -17,10 +17,12 @@ char	**ft_get_path_f(char *cmd, char **env, t_built *line_env)
 	char			**cmd_args;
 	struct stat		data;
 
+	if (!cmd)
+		return (NULL);
 	if (is_only_spaces(cmd))
 		return (NULL);
 	cmd_args = ft_split(cmd, ' ');
-	if (cmd_args[1])
+	if (cmd_args &&  cmd_args[1])
 		return (NULL);
 	if (!cmd_args || !cmd_args[0])
 		return (NULL);
@@ -83,7 +85,7 @@ void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 	ft_close_pipes(in.pipes, in.n_cmds);
 	if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 	{
-		int status = ft_is_builtins(curr, line_env, in);
+		int status = ft_is_builtins(curr, line_env, &in);
 		exit(status);
 	}
 	if (flag_redir == 1)

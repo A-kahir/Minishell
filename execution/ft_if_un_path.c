@@ -22,7 +22,6 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 	int i;
 
 	status = 0;
-	in.status = ft_strdup(stat.status);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
@@ -85,6 +84,5 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here, stat);
 	}
-	free(in.status);
 	return (status);
 }

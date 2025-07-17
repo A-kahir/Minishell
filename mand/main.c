@@ -193,9 +193,11 @@ void	disable_echoctl(void)
 			}
             curr = curr->next;
         }
-        char *tmp = ft_strdup(ft_itoa(status));
-        in.status = ft_strdup(tmp);
-        free(tmp);
+        char *itoa_str = ft_itoa(status);
+		// if (!itoa_str)
+		// 	itoa_str = ft_strdup("0");
+		in.status = ft_strdup(itoa_str);
+		free(itoa_str);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
 			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
 			&& ft_strcmp(end->cmd[2], "./minishell") == 0)

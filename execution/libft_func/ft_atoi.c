@@ -35,9 +35,9 @@ int	ft_atoi(const char *str)
 	i = 0;
 	result = 0;
 	max = 9223372036854775807;
-	while (((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
+	while (str && str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
 		i++;
-	if ((str[i] == '-') || (str[i] == '+'))
+	if (str && (str[i] == '-') || (str[i] == '+'))
 	{
 		if (str[i] == '-')
 			signe = -1;
