@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/15 13:25:50 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:00:18 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,14 +229,20 @@ char	**ft_strjoinarray(char **s1, char **s2)
 	i = 0;
 	j = 0;
 	l1 = token_len(s1);
-	l2 = token_len(s2);
-	t = malloc(sizeof(char *) * (l1 + l2 + 1));
+	l2 = token_len(s1);
+	t = malloc(sizeof(char *) * (token_len(s1) + token_len(s1) + 1));
 	if (!t)
 		return (NULL);
-	while (i < l1)
-		t[i++] = ft_strdup(*s1++);
-	while (j < l2)
-		t[i + j++] = ft_strdup(*s2++);
+	while (i < token_len(s1))
+	{
+		t[i] = ft_strdup(s1[i]);
+		i++;
+	}
+	while (j < token_len(s2))
+	{
+		t[i + j] = ft_strdup(s2[j]);
+		j++;
+	}
 	t[i + j] = NULL;
 	return (t);
 }

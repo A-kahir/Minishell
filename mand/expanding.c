@@ -81,8 +81,7 @@ char	*expanding(char *s, t_built *env)
 		}
 		else if(s[i] == '$' && s[i + 1] == '$')
 			i = +2;
-		else
-			i++;
+		i++;
 	}
 	if (start < i)
 	{

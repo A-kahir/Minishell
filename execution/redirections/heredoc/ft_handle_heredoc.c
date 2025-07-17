@@ -18,6 +18,7 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
     char *line;
     char *expnd;
     char *tmp;
+    int k = 0;
     
     if (pipe(pipe_fd) == -1)
         return (perror("pipe failed"), -1);

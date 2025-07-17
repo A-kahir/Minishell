@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/15 13:26:00 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:06:23 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ char	**join_zmr(char *s1, char *s2);
 
 void	f_clean(char *s);
 void	n_clean(t_data *n);
-void	freedp(char **s);
+void freedp(char **tokens);
 void	freenod(t_data *n);
 
 int		token_len(char **tokens);

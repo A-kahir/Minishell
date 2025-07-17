@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/17 11:56:41 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/17 18:47:14 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,32 @@ void	initsh(void)
 	clear();
 }
 
-char	*getinput(char *s)
+void	disable_echoctl(void)
+{
+	struct termios	term;
+
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+		return ;
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+char	*getinput(char *s, int *status, int *flag)
 {
 	char	*buff;
-	
 	buff = readline("minishell-3.2$ ");
 	if (!buff)
     {
         write(1, "\033[1A\033[16C", 9);
         write(1, "exit\n", 5);
-        exit(0);
-    } 
+        exit(*status);
+    }
+	if (g_status)
+	{
+		*status = 1;
+		*flag = 1;
+		g_status = 0;
+	}
 	if (*buff)
 	{
 		add_history(buff);
@@ -65,23 +80,14 @@ int	semifflag(char *s)
 	return(0);
 }
 
-static void handler()
+static void handler(int signum)
 {
+	(void)signum;
 	printf("\n");
-	// write(1, "\n", 1);
  	rl_on_new_line();
 	// rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-void	disable_echoctl(void)
-{
-	struct termios	term;
-
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
-		return ;
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	g_status = 1;
 }
 
  int main(int ac, char **av, char **env)
@@ -100,9 +106,6 @@ void	disable_echoctl(void)
 	string = NULL;
 	end = NULL;
 	initsh();
-	disable_echoctl();
-	signal(SIGINT, handler);
-	signal(SIGQUIT, SIG_IGN);
 	static int one_time;
 	if (!line_env && one_time == 0)
 	{
@@ -114,9 +117,13 @@ void	disable_echoctl(void)
 			line_env = ft_update_exp(line_env, 0);
 		one_time = 1;
 	}
+	disable_echoctl();
 	while(1)
 	{
-		string = getinput(string);
+		signal(SIGINT, handler);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGTSTP, SIG_IGN);
+		string = getinput(string, &status, &flag);
 		if(!string)
 			continue;
 		if(check_before(string))
@@ -138,8 +145,7 @@ void	disable_echoctl(void)
 			continue;
 		}
 		end = part1(s, line_env);
-		t_data *tmpa = retokenize(end, line_env);
-		// t_data *tmp22 = end;
+		t_data *tmpa = retokenize(end, line_env);		// t_data *tmp22 = end;
         // while (tmp22)
         // {
         //     int i = 0;
@@ -193,11 +199,9 @@ void	disable_echoctl(void)
 			}
             curr = curr->next;
         }
-        char *itoa_str = ft_itoa(status);
-		// if (!itoa_str)
-		// 	itoa_str = ft_strdup("0");
-		in.status = ft_strdup(itoa_str);
-		free(itoa_str);
+        char *tmp = ft_strdup(ft_itoa(status));
+        in.status = ft_strdup(tmp);
+        free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
 			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
 			&& ft_strcmp(end->cmd[2], "./minishell") == 0)

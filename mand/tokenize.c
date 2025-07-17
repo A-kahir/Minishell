@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:46:38 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/13 00:24:25 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/17 18:10:30 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*extract_token(char *str, int *i)
 	char	cha;
 
 	token = NULL;
-	while (str[*i] && (str[*i] != ' ' || str[*i] == '\t') && !is_operator(str[*i]))
+	while (str[*i] && (str[*i] != ' ' && str[*i] != '\t') && !is_operator(str[*i]))
 	{
 		if (str[*i] == '\'' || str[*i] == '\"')
 		{
@@ -38,18 +38,22 @@ char	*extract_token(char *str, int *i)
 				(*i)++;
 			quote_len = *i - quote_start;
 			in = ft_substr_par(str, quote_start, quote_len);
+			char *tmp = token;
 			token = ft_strjoin_par(token, in);
+			free(tmp);
 			free(in);
 		}
 		else
 		{
 			quote_start = *i;
-			while (str[*i] && (str[*i] != ' ' || str[*i] == '\t') && str[*i] != '\"'
+			while (str[*i] && (str[*i] != ' ' && str[*i] != '\t') && str[*i] != '\"'
 				&& str[*i] != '\'' && !is_operator(str[*i]))
 				(*i)++;
 			quote_len = *i - quote_start;
 			in = ft_substr_par(str, quote_start, quote_len);
+			char *tmp = token;
 			token = ft_strjoin_par(token, in);
+			free(tmp);
 			free(in);
 		}
 	}
@@ -64,6 +68,12 @@ char	*get_token(char *str, int *i)
 		(*i)++;
 	if (is_operator(str[*i]))
 	{
+		if (str[*i] == '>' && str[*i + 1] == '|')
+		{
+			op = ft_substr_par(str, *i, 1);
+			*i += 2;
+			return (op);
+		}
 		if ((str[*i] == '<' && str[*i + 1] == '<')
 			|| (str[*i] == '>' && str[*i + 1] == '>')
 			|| (str[*i] == '|' && str[*i + 1] == '|')

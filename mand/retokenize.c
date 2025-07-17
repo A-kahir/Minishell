@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/15 13:55:14 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:30:39 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ t_data *retokenize(t_data *data, t_built *env)
 	char **new_data = NULL;
 	int i;
     char *quoted;
+    char    **t;
 
 	while (curr)
 	{
@@ -60,7 +61,9 @@ t_data *retokenize(t_data *data, t_built *env)
                 else
                     quoted = ft_strdup(token);
                 char *arr[] = {quoted, NULL};
-                new_data = ft_strjoinarray(new_data, arr);
+                t = ft_strjoinarray(new_data, arr);
+                freedp(new_data);
+                new_data = t;
                 free(token);
                 free(quoted);
             }
@@ -68,7 +71,9 @@ t_data *retokenize(t_data *data, t_built *env)
             {
                 token = expanding(curr->cmd[i], env);
                 char **split = ft_split_par(token, ' ');
-                new_data = ft_strjoinarray(new_data, split);
+                t = ft_strjoinarray(new_data, split);
+                freedp(new_data);
+                new_data = t;
                 free(token);
                 freedp(split);
             }

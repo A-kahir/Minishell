@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:53:01 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/15 10:25:47 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:06:05 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,19 @@ void free_redir(t_redir *redir)
 	}
 }
 
-void	freedp(char **s)
+void freedp(char **tokens)
 {
-	int	i;
-	int	k;
-
-	if (!s)
-		return ;
-	i = token_len(s);
-	k = 0;
-	while (k < i)
-	{
-		free(s[k]);
-		k++;
-	}
-	free(s);
+    int i = 0;
+    if (!tokens)
+        return;
+    while (tokens[i])
+    {
+        free(tokens[i]);
+        i++;
+    }
+    free(tokens);
 }
+
 
 void freenod(t_data *n)
 {

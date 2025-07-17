@@ -13,7 +13,6 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
-
 int g_status;
 
 #define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
@@ -29,6 +28,7 @@ int g_status;
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
 
 typedef struct s_exec
 {
@@ -175,7 +175,7 @@ int	is_only_spaces(char *cmd);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
-char	**ft_split(const char *s, char c);
+char	**ft_split(char *s, char c);
 char	*ft_strchr(const char *s, int c);
 int	ft_strcmp(char *s1, char *s2);
 int ft_strlen(char *str);

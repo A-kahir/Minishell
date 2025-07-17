@@ -81,7 +81,7 @@ static int	handle_word(const char *s, size_t *i, char **ptr, char c)
 	return (0);
 }
 
-char	**ft_split(const char *s, char c)
+char	**ft_split(char *s, char c)
 {
 	char	**ptr;
 	size_t	i;
