@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 12:15:06 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/16 12:16:21 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/17 11:57:34 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 	ft_close_pipes(in.pipes, in.n_cmds);
 	if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 	{
-		int status = ft_is_builtins(curr, line_env, &in);
+		int status = ft_is_builtins(curr, line_env, in);
 		exit(status);
 	}
 	if (flag_redir == 1)

@@ -20,7 +20,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 	int		last_status;
 
 	status = 0;
-	// g_status = 0;
+	g_status = 0;
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = NULL;
@@ -59,27 +59,27 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		}
 		while (wait(&status) > 0)
 		{
-			// if (status == 2 || status == 3)
-			// {
-			// 	if (WIFSIGNALED(status) && g_status == 0)
-			// 	{
-			// 		if (WTERMSIG(status) == SIGINT)
-			// 		{
-			// 			write(2, "\n", 2);
-			// 		}
-			// 		else if(WTERMSIG(status) == SIGQUIT)
-			// 		{
-			// 			status = 0;
-			// 			break ;
-			// 		}
-			// 		status = 0;
-			// 	}
-			// }
-			// else if (status != 2 || status != 3)
-			// {
-			// }
+			if (status == 2 || status == 3)
+			{
+				if (WIFSIGNALED(status) && g_status == 0)
+				{
+					if (WTERMSIG(status) == SIGINT)
+					{
+						write(2, "\n", 2);
+					}
+					else if(WTERMSIG(status) == SIGQUIT)
+					{
+						status = 0;
+						break ;
+					}
+					status = 0;
+				}
+			}
+			else if (status != 2 || status != 3)
+			{
+				status = status / 256;
+			}
 		}
-		status = status / 256;
 	}
 	else if (data->type == 1 || flag_redir == 1)
 	{
@@ -110,30 +110,24 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			int last_status;
 			while (wait(&status) > 0)
 			{
-				// if (status == 2 || status == 3)
-				// {
-				// 	printf("*) status ===> %d\n", status);
-				// 	if (WIFSIGNALED(status) && g_status == 0)
-				// 	{
-				// 		printf("1) status ===> %d\n", status);
-				// 		if (WTERMSIG(status) == SIGINT)
-				// 		{
-				// 			write(2, "\n", 2);
-				// 		}
-				// 		else if(WTERMSIG(status) == SIGQUIT)
-				// 		{
-				// 			write(2, "Quit:3\n", 8);
-				// 		}
-				// 		status = status + 128;
-				// 		printf("4) status ===> %d\n", status);
-				// 	}
-				// }
-				// else if (status != 2 || status != 3)
-				// {
-				// 	printf("5) status ===> %d\n", status);
-				// }
+				if (status == 2 || status == 3)
+				{
+					if (WIFSIGNALED(status) && g_status == 0)
+					{
+						if (WTERMSIG(status) == SIGINT)
+						{
+							write(2, "\n", 2);
+						}
+						else if(WTERMSIG(status) == SIGQUIT)
+						{
+							write(2, "Quit:3\n", 8);
+						}
+						status = status + 128;
+					}
+				}
+				else if (status != 2 || status != 3)
+					status = status / 256;
 			}
-			status = status / 256;
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 		{

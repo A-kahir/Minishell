@@ -55,16 +55,14 @@ t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in)
 	return (line_env);
 }
 
-int	ft_is_builtins(t_data *data, t_built *line_env, t_exec *in)
+int	ft_is_builtins(t_data *data, t_built *line_env, t_exec in)
 {
 	static int	flag_cd;
-	static int	flag_one_pth;
-	t_built		*curr = line_env;
+	static int flag_one_pth;
 
 	if (!data)
 		return (0);
-
-	// Detect if only one PATH is set
+	t_built *curr = line_env;
 	if (ft_strcmp(data->cmd[0], "export") == 0 && ft_strcmp(data->cmd[1], "PATH") == 0)
 	{
 		while (curr)
@@ -78,16 +76,14 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec *in)
 			curr = curr->next;
 		}
 	}
-
-	// Handle each builtin
 	if (data->builtin_type == 1)
 	{
-		line_env = ft_handle_cd(data, line_env, &flag_cd, in);
+		line_env = ft_handle_cd(data, line_env, &flag_cd, &in);
 		line_env = ft_update_exp(line_env, flag_cd);
-		return (ft_atoi(in->status));
+		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 0)
-		ft_echo(data->cmd, *in);
+		ft_echo(data->cmd, in);
 	else if (data->builtin_type == 2)
 		ft_pwd(line_env);
 	else if (data->builtin_type == 3)
@@ -95,32 +91,28 @@ int	ft_is_builtins(t_data *data, t_built *line_env, t_exec *in)
 		if (ft_strcmp(data->cmd[0], "export") == 0 && data->cmd[1] == NULL)
 		{
 			ft_only_print(line_env, flag_one_pth);
-			free(in->status);
-			in->status = ft_strdup("0");
-			return (ft_atoi(in->status));
+			in.status = ft_strdup("0");
+			return (ft_atoi(in.status));
 		}
-		line_env = ft_export(line_env, data->cmd, flag_one_pth, in);
-		return (ft_atoi(in->status));
+		line_env = ft_export(line_env, data->cmd, flag_one_pth, &in);
+		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 4)
 	{
-		line_env = ft_unset(line_env, data->cmd, in);
+		line_env = ft_unset(line_env, data->cmd, &in);
 		if (!line_env)
 			return (1);
-		return (ft_atoi(in->status));
+		return (ft_atoi(in.status));
 	}
 	else if (data->builtin_type == 5)
 		line_env = ft_env(line_env, flag_one_pth);
 	else if (data->builtin_type == 6)
 	{
-		in->status = ft_exit(data, in);
+		in.status = ft_exit(data, &in);
 		line_env = ft_update_exp(line_env, flag_cd);
-		return (ft_atoi(in->status));
+		return (ft_atoi(in.status));
 	}
-
-	// Reset flag and update export list
 	line_env = ft_update_exp(line_env, flag_cd);
 	flag_cd = 0;
-
 	return (0);
 }
