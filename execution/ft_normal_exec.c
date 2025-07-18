@@ -19,8 +19,12 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 	int		flag_redir;
 	int		status;
 	int		last_status;
+	t_data *tmp;
 
+	tmp = data;
 	status = 0;
+	if (isatty(STDIN_FILENO))
+		tcgetattr(STDIN_FILENO, &g_orig_term);
 	in.status = ft_strdup(stat.status);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
@@ -58,21 +62,50 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		pid_t ch_pid;
 		int f_status = 0;
 		int nb = 0;
+		int t = 0;
+		int flag_top = 0;
+		while (tmp)
+		{
+			if (tmp->next == NULL)
+			{
+				if (ft_strcmp(tmp->cmd[0], "top") == 0 || ft_strcmp(tmp->cmd[0], "wc") == 0)
+					flag_top = 1;
+			}
+			tmp = tmp->next;
+		}
+		static int q_one;
 		while ((ch_pid = wait(&status)) > 0)
 		{
+			if (isatty(STDIN_FILENO))
+					tcsetattr(STDIN_FILENO, TCSANOW, &g_orig_term);
 			if (WIFSIGNALED(status) && ch_pid != last_pid)
 			{
 				if (WTERMSIG(status) == SIGINT)
 				{
-					write(1, "^C\n", 4);
+					if (flag_top == 1)
+					{
+						write(1, "\n", 2);
+					}
+					else
+						write(1, "^C\n", 4);
 					f_status = 0;
 				}
-				else if(WTERMSIG(status) == SIGQUIT)
+				else if(WTERMSIG(status) == SIGQUIT && q_one == 0)
 				{
-					write(1, "^\\", 3);
-					f_status = 0;
+					if (flag_top == 1 && q_one == 0)
+					{
+						write(1, "^\\Quit: 3\n", 11);
+						f_status = 131;
+						q_one = 1;
+					}
+					else
+					{
+						write(1, "^\\", 3);
+						f_status = 0;
+						q_one = 0;
+					}
 				}
-				if (nb)
+				if (nb && flag_top == 0)
 					f_status = nb;
 			}
 			else if (ch_pid == last_pid)
@@ -82,6 +115,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				nb = f_status;
 			}
 		}
+		q_one = 0;
 		status = f_status;
 		free(in.pipes);
 	}
@@ -116,6 +150,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			int f_status = 0;
 			while ((ch_pid = wait(&status)) > 0)
 			{
+				if (isatty(STDIN_FILENO))
+					tcsetattr(STDIN_FILENO, TCSANOW, &g_orig_term);
 				if (ch_pid == last_pid)
 				{
 					if (WIFSIGNALED(status))

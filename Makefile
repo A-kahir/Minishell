@@ -98,7 +98,7 @@ OBJS = $(SRC:.c=.o)
 CC = cc  #-g -fsanitize=address #-g -Wall -Wextra -Werror
 RM = rm -f
  CFLAGS = -Wall -Wextra -Werror
-# READLINE_INC = -I$(shell brew --prefix readline)/include
+READLINE_INC = -I$(shell brew --prefix readline)/include
 READLINE_LIB = -L$(shell brew --prefix readline)/lib -lreadline
 
 %.o: %.c mand/minishell.h

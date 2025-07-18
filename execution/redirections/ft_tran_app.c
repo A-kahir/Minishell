@@ -12,7 +12,6 @@
 
 #include "../execution.h"
 
-
 void ft_create_pipes(t_exec *in)
 {
 	in->i = 0;
@@ -27,6 +26,7 @@ void ft_create_pipes(t_exec *in)
 		in->i++;
 	}
 }
+
 void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec *in)
 {
 	t_data *tmp;
@@ -66,6 +66,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     t_data *curr = data;
 
     in.n_cmds = ft_count_cmds(data);
+    char *command = ft_check_built_cmd(data);
     if (curr->cmd == NULL && curr->redir && curr->redir->target)
     {
         int fd = ft_fd_redirections(curr, curr->redir);
@@ -74,7 +75,6 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         write(1, "", 0);
         return 0;
     }
-
     if (in.n_cmds > 1)
     {
         in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
@@ -88,6 +88,10 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         ft_close_pipes(in.pipes, in.n_cmds - 1);
         free(in.pipes);
     }
+    // else if (ft_strcmp(command, "built") == 0)
+    // {
+    //     status = ft_is_
+    // }
     else
     {
         pid_t pid = fork();
@@ -102,7 +106,6 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
             exit(0);
         }
     }
-
     while (wait(&status) > 0)
         ;
     status = status / 256;

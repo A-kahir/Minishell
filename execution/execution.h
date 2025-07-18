@@ -16,6 +16,9 @@
 int g_status;
 
 #define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
+struct termios g_orig_term;
+
+# include <termios.h>
 
 # include <stdio.h>
 # include <unistd.h>
