@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:24:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/16 13:10:19 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 20:48:45 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	ft_rm_list(t_built **head, t_built *target)
 			if (temp && temp->value)
 				free(temp->value);
 			temp->value = NULL;
-			if (temp && temp->old_pwd)
-				free(temp->old_pwd);
+			// if (temp && temp->old_pwd)
+			// 	free(temp->old_pwd);
 			temp->old_pwd = NULL;
 			temp->pwd = NULL;
 			if (temp)

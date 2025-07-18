@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   retokenize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/17 12:30:39 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/18 20:46:32 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,16 @@ int stayalone(char *s)
 
 t_data *retokenize(t_data *data, t_built *env)
 {
-	t_data *curr = data;
-	char **new_data = NULL;
-	int i;
+    t_data *curr = data;
+    char **new_data = NULL;
+    int i;
     char *quoted;
-    char    **t;
 
-	while (curr)
-	{
-		new_data = NULL;
-		i = 0;
-		while (curr->cmd[i])
+    while (curr)
+    {
+        new_data = NULL;
+        i = 0;
+        while (curr->cmd[i])
         {
             char *token;
             if (semiflag(curr->cmd[i]) || !stayalone(curr->cmd[i]))
@@ -61,9 +60,7 @@ t_data *retokenize(t_data *data, t_built *env)
                 else
                     quoted = ft_strdup(token);
                 char *arr[] = {quoted, NULL};
-                t = ft_strjoinarray(new_data, arr);
-                freedp(new_data);
-                new_data = t;
+                new_data = ft_strjoinarray(new_data, arr);
                 free(token);
                 free(quoted);
             }
@@ -71,17 +68,15 @@ t_data *retokenize(t_data *data, t_built *env)
             {
                 token = expanding(curr->cmd[i], env);
                 char **split = ft_split_par(token, ' ');
-                t = ft_strjoinarray(new_data, split);
-                freedp(new_data);
-                new_data = t;
+                new_data = ft_strjoinarray(new_data, split);
                 free(token);
                 freedp(split);
             }
             i++;
         }
-		freedp(curr->cmd);
-		curr->cmd = new_data;
-		curr = curr->next;
-	}
-	return data;
+        freedp(curr->cmd);
+        curr->cmd = new_data;
+        curr = curr->next;
+    }
+    return data;
 }

@@ -6,16 +6,46 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:28:26 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/15 18:02:16 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 22:19:54 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
+char	*get_parent_directory(char *current_path)
+{
+	char	*parent_path;
+	char	*last_slash;
+	int		len;
+
+	if (!current_path || ft_strcmp(current_path, "/") == 0)
+		return (ft_strdup("/"));
+	len = ft_strlen(current_path);
+	parent_path = ft_strdup(current_path);
+	if (len > 1 && parent_path[len - 1] == '/')
+		parent_path[len - 1] = '\0';
+	last_slash = ft_strchr(parent_path, '/');
+	if (last_slash)
+	{
+		if (last_slash == parent_path)
+			*(last_slash + 1) = '\0';
+		else
+			*last_slash = '\0';
+	}
+	else
+	{
+		free(parent_path);
+		return (ft_strdup("."));
+	}
+	return (parent_path);
+}
+
 t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in)
 {
 	t_built	*curr;
 	char	*home;
+	char	*current_pwd;
+	char	*parent_path;
 
 	curr = line_env;
 	if (str && str[0] && str[1] && str[2])
@@ -54,22 +84,75 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in)
 	}
 	else if (ft_strcmp(str[0], "cd") == 0)
 	{
-		if (chdir(str[1]) == -1)
+		if (ft_strcmp(str[1], "..") == 0)
 		{
-			write(2, "minishell: cd: ", 16);
-			write(2, str[1], ft_strlen(str[1]));
-			write(2, ": No such file or directory\n", 29);
-			in->status = NULL;
-			in->status = ft_strdup("1");
-			return (line_env);
-
+			if (chdir(str[1]) == -1)
+			{
+				current_pwd = getcwd(NULL, 0);
+				if (!current_pwd)
+					current_pwd = ft_strdup(line_env->pwd);
+				if (current_pwd)
+				{
+					parent_path = get_parent_directory(current_pwd);
+					if (parent_path)
+					{
+						if (chdir(parent_path) == 0)
+						{
+							free(current_pwd);
+							home = getcwd(NULL, 0);
+							if (home)
+							{
+								line_env->pwd = ft_strdup(home);
+								free(home);
+							}
+							else
+							{
+								line_env->pwd = ft_strdup(parent_path);
+							}
+							free(parent_path);
+							*flag_cd = 1;
+							in->status = ft_strdup("0");
+							return (line_env);
+						}
+						free(parent_path);
+					}
+					free(current_pwd);
+				}
+				perror("minishell: cd");
+				in->status = NULL;
+				in->status = ft_strdup("1");
+				return (line_env);
+			}
+			else
+			{
+				home = getcwd(NULL, 0);
+				line_env->pwd = ft_strdup(home);
+				free(home);
+				*flag_cd = 1;
+			}
 		}
 		else
 		{
-			home = getcwd(NULL, 0);
-			line_env->pwd = ft_strdup(home);
-			free(home);
-			*flag_cd = 1;
+			if (chdir(str[1]) == -1)
+			{
+				perror("minishell: cd");
+				home = getcwd(NULL, 0);
+				if (home)
+				{
+					line_env->old_pwd = ft_strdup(home);
+					free(home);
+				}
+				in->status = NULL;
+				in->status = ft_strdup("1");
+				return (line_env);
+			}
+			else
+			{
+				home = getcwd(NULL, 0);
+				line_env->pwd = ft_strdup(home);
+				free(home);
+				*flag_cd = 1;
+			}
 		}
 	}
 	in->status = ft_strdup("0");
