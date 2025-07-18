@@ -20,7 +20,7 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     int fd;
 
     redir = curr->redir;
-    fd = ft_fd_redirections(redir);
+    fd = ft_fd_redirections(curr, redir);
     if (fd == 1)
        exit(1);
     if (!curr->cmd || !curr->cmd[0])

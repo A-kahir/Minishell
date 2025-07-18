@@ -87,7 +87,7 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         return ft_read_f(data, line_env, env_here);
     if (ft_has_output_redir(data))
         return ft_tran_app(data, line_env, env_here, stat);
-    return 0;
+    return (0);
 }
 
 

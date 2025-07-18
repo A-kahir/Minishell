@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/17 20:32:26 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 12:33:09 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 
 	if (curr->redir)
 	{
-		fd = ft_fd_redirections(curr->redir);
+		fd = ft_fd_redirections(curr, curr->redir);
 		if (fd == 1)
 			exit(1);
 		has_output = ft_has_output_redir(curr);

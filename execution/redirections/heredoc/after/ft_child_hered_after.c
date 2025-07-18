@@ -45,7 +45,7 @@ void ft_child_hered_aft(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
         if (dup2(in.pipes[in.i - 1][0], STDIN_FILENO) == -1)
             (perror("dup2 pipe input"), exit(1));
     }
-    fd = ft_fd_redirections(curr->redir);
+    fd = ft_fd_redirections(curr, curr->redir);
     if (fd == 1)
         exit(1);
     if (!curr->cmd || !curr->cmd[0])

@@ -166,7 +166,7 @@ int ft_empty_env(char **env);
 int ft_check_this_var(char *str, t_built *line_env);
 char	*expanding(char *s, t_built *env);
 char *ft_expand_dollar(char *line, char *status);
-int ft_fd_redirections(t_redir *redir);
+int ft_fd_redirections(t_data *data, t_redir *redir);
 t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in);
 void ft_status(t_exec in, char *value);
 int ft_has_output_redir(t_data *data);

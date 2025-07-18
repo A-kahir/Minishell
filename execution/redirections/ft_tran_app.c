@@ -67,7 +67,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     in.n_cmds = ft_count_cmds(data);
     if (curr->cmd == NULL && curr->redir && curr->redir->target)
     {
-        int fd = ft_fd_redirections(curr->redir);
+        int fd = ft_fd_redirections(curr, curr->redir);
         if (fd == 1)
             return 1;
         write(1, "", 0);
