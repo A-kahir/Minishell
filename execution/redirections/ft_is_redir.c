@@ -82,60 +82,14 @@ int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         && (env_here.heredoc->after_hered
             || env_here.heredoc->before_hered
             || env_here.heredoc->middle_hered))
-        return ft_is_heredoc(data, line_env, env_here, &status, stat);
+        return (ft_is_heredoc(data, line_env, env_here, &status, stat));
     if (ft_has_input_redir(data))
-        return ft_read_f(data, line_env, env_here);
+	{
+        return (ft_read_f(data, line_env, env_here));
+	}
     if (ft_has_output_redir(data))
-        return ft_tran_app(data, line_env, env_here, stat);
+	{
+        return (ft_tran_app(data, line_env, env_here, stat));
+	}
     return (0);
 }
-
-
-
-/*
-		
-int ft_is_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
-{
-	t_data *curr = data;
-	int status = 0;
-
-	while (curr)
-	{
-		t_redir *redir = curr->redir;
-		while (redir)
-		{
-			if (redir->type == HEREDOC)
-			{
-				if (!curr->cmd || !curr->cmd[0])
-				{
-					redir = redir->next;
-					continue;
-				}
-				if (env_here.heredoc->after_hered)
-					status = ft_heredoc_after(data, line_env, env_here, stat);
-				else if (env_here.heredoc->before_hered)
-					status = ft_heredoc_before(data, line_env, env_here, stat);
-				else if (env_here.heredoc->middle_hered)
-					status = ft_handle_middle(data, line_env, env_here, stat);
-			}
-			else if (redir->type == READ_F)
-			{
-				if (!curr->cmd || !curr->cmd[0])
-				{
-					redir = redir->next;
-					continue;
-				}
-				status = ft_read_f(data, line_env, env_here);
-			}
-			else if (redir->type == TRUNCATE || redir->type == APPEND)
-			{
-				status = ft_tran_app(data, line_env, env_here, stat);
-			}
-			redir = redir->next;
-		}
-		curr = curr->next;
-	}
-	return status;
-}
-
-*/

@@ -58,6 +58,7 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
 		i++;
 	}
 }
+
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
 {
     int status;

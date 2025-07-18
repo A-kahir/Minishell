@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:09:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/17 19:48:58 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 13:09:47 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void ft_child_hered_midd(t_data *curr, t_built *line_env, t_ex_othr env_here, t_
     }
     ft_close_pipes(in.pipes, in.n_cmds);
     command = ft_check_built_cmd(curr);
-    if (command && ft_strcmp(command, "built") == 0)
-    {
-        ft_is_builtins(curr, line_env, in);
-        exit(0);
-    }
+    if (ft_strcmp(command, "built") == 0)
+	{
+		int status = ft_is_builtins(curr, line_env, in);
+		exit(status);
+	}
     if (curr->cmd[0][0] == '$' && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
         exit(0);
     cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);

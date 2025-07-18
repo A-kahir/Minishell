@@ -53,10 +53,10 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     }
     command = ft_check_built_cmd(curr);
     if (ft_strcmp(command, "built") == 0)
-    {
-        ft_is_builtins(curr, line_env, in);
-        exit(0);
-    }
+	{
+		int status = ft_is_builtins(curr, line_env, in);
+		exit(status);
+	}
     if (!curr->cmd || !curr->cmd[0])
     {
         write(2, "minishell: ", 12);

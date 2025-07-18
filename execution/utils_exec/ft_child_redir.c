@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 14:13:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/18 12:33:09 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 13:26:08 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void ft_child_redir(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 	command = ft_check_built_cmd(curr);
 	if (ft_strcmp(command, "built") == 0)
 	{
-		ft_is_builtins(curr, line_env, in);
-		exit(0);
+		int status = ft_is_builtins(curr, line_env, in);
+		exit(status);
 	}
 	cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
