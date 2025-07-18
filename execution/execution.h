@@ -173,11 +173,6 @@ int ft_has_output_redir(t_data *data);
 void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 int	is_only_spaces(char *cmd);
 
-int ft_handle_mixed_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
-int ft_execute_with_redir(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat);
-int ft_has_output_redir(t_data *data);
-int ft_has_input_redir(t_data *data);
-
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
 char	**ft_split(char *s, char c);

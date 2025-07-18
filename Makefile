@@ -45,13 +45,12 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_expand_dollar.c \
 	execution/utils_exec/ft_fd_redirection.c \
 	execution/utils_exec/ft_check_for_echo.c \
-	execution/utils_exec/ft_status.c
+	execution/utils_exec/ft_status.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \
 	execution/redirections/ft_read_f.c \
-	execution/redirections/ft_is_redir.c \
-	execution/redirections/ft_handle_redir.c
+	execution/redirections/ft_is_redir.c
 
 HEREDOC_SRC = \
 	execution/redirections/heredoc/ft_handle_heredoc.c \
@@ -98,8 +97,8 @@ OBJS = $(SRC:.c=.o)
 
 CC = cc  #-g -fsanitize=address #-g -Wall -Wextra -Werror
 RM = rm -f
-#  CFLAGS = -Wall -Wextra -Werror
-READLINE_INC = -I$(shell brew --prefix readline)/include
+ CFLAGS = -Wall -Wextra -Werror
+# READLINE_INC = -I$(shell brew --prefix readline)/include
 READLINE_LIB = -L$(shell brew --prefix readline)/lib -lreadline
 
 %.o: %.c mand/minishell.h
