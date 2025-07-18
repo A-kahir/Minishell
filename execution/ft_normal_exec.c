@@ -76,8 +76,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		static int q_one;
 		while ((ch_pid = wait(&status)) > 0)
 		{
-			if (isatty(STDIN_FILENO))
-					tcsetattr(STDIN_FILENO, TCSANOW, &g_orig_term);
+			if (isatty(0))
+					tcsetattr(0, TCSANOW, &g_orig_term);
 			if (WIFSIGNALED(status) && ch_pid != last_pid)
 			{
 				if (WTERMSIG(status) == SIGINT)
@@ -150,8 +150,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			int f_status = 0;
 			while ((ch_pid = wait(&status)) > 0)
 			{
-				if (isatty(STDIN_FILENO))
-					tcsetattr(STDIN_FILENO, TCSANOW, &g_orig_term);
+				if (isatty(0))
+					tcsetattr(0, TCSANOW, &g_orig_term);
 				if (ch_pid == last_pid)
 				{
 					if (WIFSIGNALED(status))

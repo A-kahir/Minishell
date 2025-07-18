@@ -16,7 +16,6 @@
 int g_status;
 
 #define PATH_ENV "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
-struct termios g_orig_term;
 
 # include <termios.h>
 
@@ -32,6 +31,8 @@ struct termios g_orig_term;
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
+
+struct termios g_orig_term;
 
 typedef struct s_exec
 {
@@ -175,6 +176,7 @@ void ft_status(t_exec in, char *value);
 int ft_has_output_redir(t_data *data);
 void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 int	is_only_spaces(char *cmd);
+void ft_check_hered(t_redir *redir);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
