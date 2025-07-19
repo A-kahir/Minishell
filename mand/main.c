@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 14:22:02 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 17:51:53 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ char	*getinput(char *s, int *status, int *flag)
 	return(s);
 }
 
-int	semifflag(char *s)
+int	semifflag(char **s)
 {
 	int	i;
 	
 	i = 0;
 	while (s[i])
 	{
-		if(s[i] == '$' && !ft_strchr(s, '=') && (!ft_strchr(s, '\"') || !ft_strchr(s, '\'')))
-		return(1);
+		if (!ft_strcmp(s[i], "|"))
+			return(1);
 		i++;
 	}
 	return(0);
@@ -147,7 +147,9 @@ static void handler(int signum)
 			continue;
 		}
 		end = part1(s, line_env);
-		t_data *tmpa = retokenize(end, line_env);		// t_data *tmp22 = end;
+		t_data *tmpa = retokenize(end, line_env);	// t_data *tmp22 = end;
+		printf("s[0] ===> %s\n", s[0]);
+		printf("s[1] ===> %s\n", s[1]);
         // while (tmp22)
         // {
         //     int i = 0;
@@ -169,6 +171,8 @@ static void handler(int signum)
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
+		
+		
 		t_data *curr = end;
         static int flag_fd;
         while (curr)

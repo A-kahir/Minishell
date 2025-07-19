@@ -6,31 +6,11 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 14:36:05 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:35:42 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-t_type_buil	get_b(char *s)
-{
-	if (ft_strcmp(s, "echo") == 0)
-		return (IS_ECHO);
-	else if (ft_strcmp(s, "cd") == 0)
-		return (IS_CD);
-	else if (ft_strcmp(s, "pwd") == 0)
-		return (IS_PWD);
-	else if (ft_strcmp(s, "export") == 0)
-		return (IS_EXPORT);
-	else if (ft_strcmp(s, "unset") == 0)
-		return (IS_UNSET);
-	else if (ft_strcmp(s, "env") == 0)
-		return (IS_ENV);
-	else if (ft_strcmp(s, "exit") == 0)
-		return (IS_EXIT);
-	else
-		return (NOT_BUILTIN);
-}
-
 
 int	find_pipe(char **s)
 {
@@ -244,8 +224,6 @@ t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env)
 		cmd->cmd = ft_subarray(s, i, k);
 		cmd->redir = NULL;
 	}
-	if (cmd->cmd && cmd->cmd[0])
-		cmd->builtin_type = get_b(cmd->cmd[0]);
 	return (cmd);
 }
 

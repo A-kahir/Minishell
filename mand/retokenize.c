@@ -3,16 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   retokenize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/18 20:46:32 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 17:52:40 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int stayalone(char *s)
+static t_type_buil	get_b(char *s)
+{
+	if (ft_strcmp(s, "echo") == 0)
+		return (IS_ECHO);
+	else if (ft_strcmp(s, "cd") == 0)
+		return (IS_CD);
+	else if (ft_strcmp(s, "pwd") == 0)
+		return (IS_PWD);
+	else if (ft_strcmp(s, "export") == 0)
+		return (IS_EXPORT);
+	else if (ft_strcmp(s, "unset") == 0)
+		return (IS_UNSET);
+	else if (ft_strcmp(s, "env") == 0)
+		return (IS_ENV);
+	else if (ft_strcmp(s, "exit") == 0)
+		return (IS_EXIT);
+	else
+		return (NOT_BUILTIN);
+}
+
+static int stayalone(char *s)
 {
     int i = 0;
     int j = 0;
@@ -40,16 +60,16 @@ int stayalone(char *s)
 
 t_data *retokenize(t_data *data, t_built *env)
 {
-    t_data *curr = data;
-    char **new_data = NULL;
-    int i;
+	t_data *curr = data;
+	char **new_data = NULL;
+	int i;
     char *quoted;
 
-    while (curr)
-    {
-        new_data = NULL;
-        i = 0;
-        while (curr->cmd[i])
+	while (curr)
+	{
+		new_data = NULL;
+		i = 0;
+		while (curr->cmd[i])
         {
             char *token;
             if (semiflag(curr->cmd[i]) || !stayalone(curr->cmd[i]))
@@ -74,9 +94,12 @@ t_data *retokenize(t_data *data, t_built *env)
             }
             i++;
         }
-        freedp(curr->cmd);
-        curr->cmd = new_data;
-        curr = curr->next;
-    }
-    return data;
+		freedp(curr->cmd);
+		curr->cmd = new_data;
+        ft_last();
+        if (curr->cmd && curr->cmd[0])
+		    curr->builtin_type = get_b(curr->cmd[0]);
+		curr = curr->next;
+	}
+	return data;
 }
