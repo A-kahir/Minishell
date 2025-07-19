@@ -30,7 +30,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 	i = 0;
 	while (i < in.n_cmds - 1)
 		if (pipe(in.pipes[i++]) == -1)
-			return (perror("Pipe creation failed"), free(in.pipes), free(in.status), exit(1), 1);
+			return (perror("Pipe creation failed"), free(in.pipes), free(in.status), 1);
 	if (data->type == 0 && flag_redir == 0)
 	{
 		in.i = 0;
@@ -38,7 +38,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 		{
 			pid = fork();
 			if (pid == -1)
-				return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), exit(1), 1);
+				return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), 1);
 			else if (pid == 0)
 				ft_child_pro_f(data, line_env, env_here, in);
 			data = data->next;

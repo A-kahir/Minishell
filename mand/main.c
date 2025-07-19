@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/18 22:33:25 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 14:22:02 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ static void handler(int signum)
 	(void)av;
 	string = NULL;
 	end = NULL;
+	if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
+        exit(1); 
 	initsh();
 	static int one_time;
 	if (!line_env && one_time == 0)

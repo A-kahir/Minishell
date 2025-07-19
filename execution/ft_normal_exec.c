@@ -43,7 +43,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		{
 			pid = fork();
 			if (pid == -1)
-				(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
+				return (ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), 1);
 			else if (pid == 0)
 			{
 				signal(SIGINT, SIG_DFL);
@@ -53,70 +53,72 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			else
 			{
 				if (in.i == in.n_cmds - 1)
-            		last_pid = pid;
+					last_pid = pid;
 			}
 			data = data->next;
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		pid_t ch_pid;
-		int f_status = 0;
-		int nb = 0;
-		int t = 0;
-		int flag_top = 0;
-		while (tmp)
+		tmp = data;
+		for (int j = 0; j < in.n_cmds - 1; j++)
 		{
-			if (tmp->next == NULL)
-			{
-				if (ft_strcmp(tmp->cmd[0], "top") == 0 || ft_strcmp(tmp->cmd[0], "wc") == 0)
-					flag_top = 1;
-			}
-			tmp = tmp->next;
+			if (tmp && tmp->next)
+				tmp = tmp->next;
 		}
-		static int q_one;
+		int flag_interactive = 0;
+		if (tmp && tmp->cmd && tmp->cmd[0])
+		{
+			if (ft_strcmp(tmp->cmd[0], "top") == 0 || ft_strcmp(tmp->cmd[0], "wc") == 0)
+				flag_interactive = 1;
+		}
+		pid_t ch_pid;
+		int final_status = 0;
+		int signal_printed = 0;
 		while ((ch_pid = wait(&status)) > 0)
 		{
 			if (isatty(0))
-					tcsetattr(0, TCSANOW, &g_orig_term);
-			if (WIFSIGNALED(status) && ch_pid != last_pid)
+				tcsetattr(0, TCSANOW, &g_orig_term);
+			if (WIFSIGNALED(status))
 			{
-				if (WTERMSIG(status) == SIGINT)
+				int sig = WTERMSIG(status);
+				if (sig == SIGINT)
 				{
-					if (flag_top == 1)
+					if (!signal_printed)
 					{
-						write(1, "\n", 2);
+						if (flag_interactive)
+							write(1, "\n", 1);
+						else
+							write(1, "^C\n", 3);
+						signal_printed = 1;
 					}
-					else
-						write(1, "^C\n", 4);
-					f_status = 0;
+					if (ch_pid == last_pid)
+						final_status = 130;
 				}
-				else if(WTERMSIG(status) == SIGQUIT && q_one == 0)
+				else if (sig == SIGQUIT)
 				{
-					if (flag_top == 1 && q_one == 0)
+					if (!signal_printed)
 					{
-						write(1, "^\\Quit: 3\n", 11);
-						f_status = 131;
-						q_one = 1;
+						if (flag_interactive)
+							write(1, "^\\\n", 4);
+						else
+							write(1, "^\\Quit: 3\n", 11);
+						signal_printed = 1;
 					}
-					else
-					{
-						write(1, "^\\", 3);
-						f_status = 0;
-						q_one = 0;
-					}
+					if (ch_pid == last_pid)
+						final_status = 131;
 				}
-				if (nb && flag_top == 0)
-					f_status = nb;
+				else
+				{
+					if (ch_pid == last_pid)
+						final_status = 128 + sig;
+				}
 			}
-			else if (ch_pid == last_pid)
+			else if (WIFEXITED(status) && ch_pid == last_pid)
 			{
-				if (WIFEXITED(status))
-					f_status = WEXITSTATUS(status);
-				nb = f_status;
+				final_status = WEXITSTATUS(status);
 			}
 		}
-		q_one = 0;
-		status = f_status;
+		status = final_status;
 		free(in.pipes);
 	}
 	else if (data->type == 1 || flag_redir == 1)
@@ -130,7 +132,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				pid = fork();
 				
 				if (pid == -1)
-					(ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), exit(1));
+					return (ft_close_pipes(in.pipes, in.n_cmds), perror("Fork failed"), 1);
 				else if (pid == 0)
 				{
 					signal(SIGINT, SIG_DFL);

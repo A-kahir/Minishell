@@ -98,7 +98,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         if (pid == -1)
         {
             perror("fork failed");
-            exit(1);
+            return (1);
         }
         if (pid == 0)
         {

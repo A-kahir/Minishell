@@ -122,6 +122,7 @@ int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
             ft_close_pipes(in.pipes, in.n_cmds);
             free(in.pipes);
             perror("Fork failed");
+            status = 1;
         }
         else if (pid == 0)
             ft_child_read_f(curr, line_env, env_here, in);
