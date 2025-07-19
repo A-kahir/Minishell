@@ -6,11 +6,24 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 12:15:06 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/17 19:30:14 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 15:05:25 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./execution.h"
+
+int	ft_check_path(t_built *list)
+{
+	t_built *curr = list;
+	int		i = 0;
+	while (curr)
+	{
+		if (curr->var && ft_strcmp(curr->var, "PATH") == 0)
+			return(0);
+		curr = curr->next;
+	}
+	return (1);
+}
 
 char	**ft_get_path_f(char *cmd, char **env, t_built *line_env)
 {
@@ -26,6 +39,11 @@ char	**ft_get_path_f(char *cmd, char **env, t_built *line_env)
 		return (NULL);
 	if (!cmd_args || !cmd_args[0])
 		return (NULL);
+	if (ft_check_path(line_env) && !ft_strchr(cmd_args[0], '/'))
+	{
+		if (access(cmd_args[0], X_OK) == 0)
+			return (cmd_args);
+	}
 	if (ft_strchr(cmd_args[0], '/'))
 	{
 		errno = 0;
