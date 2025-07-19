@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:23:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/08 20:42:18 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 19:38:48 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,10 @@ t_built	*ft_fill_struct(char **env)
 		next = temp->next;
 		if (temp->value && ft_strcmp(temp->value, "./minishell") == 0)
 			ft_rm_list(&head, temp);
+		if (temp && ft_strcmp(temp->var, "_") == 0 && ft_strstr(temp->value, "./minishell") == 0)
+        {
+            ft_rm_list(&head, temp);
+        }
 		temp = next;
 	}
 	return (head);

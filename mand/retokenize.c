@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   retokenize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 17:52:40 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/19 17:58:54 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ t_data *retokenize(t_data *data, t_built *env)
         }
 		freedp(curr->cmd);
 		curr->cmd = new_data;
-        ft_last();
         if (curr->cmd && curr->cmd[0])
 		    curr->builtin_type = get_b(curr->cmd[0]);
 		curr = curr->next;

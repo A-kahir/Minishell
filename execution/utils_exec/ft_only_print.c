@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:03 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/14 20:29:26 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 19:37:43 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,6 @@ void	ft_only_print(t_built *line, int flag_one_pth)
 			continue ;
 		}
 		if (ft_strcmp(curr->value, "/usr/bin/env") == 0)
-		{
-			curr = curr->next;
-			continue ;
-		}
-		if (curr->next && ft_strcmp(curr->value, "/mnt/homes/akahir/Desktop/Minishell/./minishell") == 0)
 		{
 			curr = curr->next;
 			continue ;

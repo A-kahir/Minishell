@@ -177,6 +177,7 @@ int ft_has_output_redir(t_data *data);
 void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in);
 int	is_only_spaces(char *cmd);
 void ft_check_hered(t_redir *redir);
+int	ft_check(char **str, int *i);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);
@@ -197,6 +198,8 @@ char	*ft_strnstr(char *haystack, char *needle, int len);
 char	*ft_itoa(int n);
 void ft_rm_list_env(t_built **head, t_built *rm_node);
 void ft_close_fd_opening(void);
-int	ft_check(char **str, int *i);
+char	*ft_strrchr(const char *s, int c);
+char    *ft_strnstr(char *haystack, char *needle, int len);
+int ft_strstr(const char *haystack, const char *needle);
 
 #endif

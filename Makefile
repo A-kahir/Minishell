@@ -79,7 +79,9 @@ LIBFT_FUNC_SRC = \
 	execution/libft_func/ft_substr.c \
 	execution/libft_func/ft_itoa.c \
 	execution/libft_func/ft_rm_list_env.c \
-	execution/libft_func/ft_close_fd_opening.c
+	execution/libft_func/ft_close_fd_opening.c \
+	execution/libft_func/ft_strrchr.c \
+	execution/libft_func/ft_strstr.c \
 
 BUILTINS_SRC = \
 	execution/builtins/ft_unset.c \

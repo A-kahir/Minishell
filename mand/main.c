@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 17:51:53 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/19 17:58:37 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,8 +148,6 @@ static void handler(int signum)
 		}
 		end = part1(s, line_env);
 		t_data *tmpa = retokenize(end, line_env);	// t_data *tmp22 = end;
-		printf("s[0] ===> %s\n", s[0]);
-		printf("s[1] ===> %s\n", s[1]);
         // while (tmp22)
         // {
         //     int i = 0;

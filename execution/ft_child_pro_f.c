@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 12:15:06 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/19 15:05:25 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/19 19:45:44 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 		int status = ft_is_redir(curr, line_env, env_here, in);
 		exit(status);
 	}
-	if (curr->cmd[0] == NULL && ft_check_this_var(curr->cmd[0] + 1, line_env) == 1)
+	if (curr->cmd[0] == NULL)
 		exit(0);
 	cmd_args = ft_get_path_f(curr->cmd[0], env_here.env, line_env);
 	if (!cmd_args || !cmd_args[0])
