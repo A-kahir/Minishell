@@ -23,8 +23,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 
 	tmp = data;
 	status = 0;
-	if (isatty(STDIN_FILENO))
-		tcgetattr(STDIN_FILENO, &g_orig_term);
+	if (isatty(0))
+		tcgetattr(0, &g_orig_term);
 	in.status = ft_strdup(stat.status);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
@@ -60,10 +60,12 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
 		tmp = data;
-		for (int j = 0; j < in.n_cmds - 1; j++)
+		int j = 0;
+		while (j < in.n_cmds - 1)
 		{
 			if (tmp && tmp->next)
 				tmp = tmp->next;
+			j++;
 		}
 		int flag_interactive = 0;
 		if (tmp && tmp->cmd && tmp->cmd[0])
