@@ -14,13 +14,10 @@
 
 static void handler(int signum)
 {
-    printf("***********\n");
-	(void)signum;
-	printf("\n");
- 	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_status = 1;
+    (void)signum;
+    printf("\n");
+    g_status = 4;
+    close (0);
 }
 
 int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
@@ -43,15 +40,18 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
         return (-1);
     }
     int status = 0;
+    g_status = 3;
+    k = dup(0);
     while (1)
     {
         signal(SIGINT, handler);
-		signal(SIGQUIT, SIG_IGN); // keep it hadi (cntrl + \\) *
-		signal(SIGTSTP, SIG_IGN); // keep it hadi (cntrl + z)
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGTSTP, SIG_IGN);
         line = readline("> ");
         if (!line)
         {
-            write(1, "\033[1A\033[2C", 9); 
+            if (g_status == 3)
+                write(1, "\033[1A\033[2C", 9); 
             break;
         }
         if (ft_strcmp(line, del) == 0)
@@ -59,7 +59,7 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
             free(line);
             break;
         }
-        expnd = expanding(line, line_env);
+        expnd = expanding(line, line_env, stat.last_cmd);
         tmp = ft_expand_dollar(expnd, stat.status);
         free(expnd);
         if (tmp)
@@ -70,6 +70,10 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
         }
         free(line);
     }
+    if (dup2(k, 0) == -1)
+        return (-1);
+    if (g_status == 4)
+        return (-1);
     close(pipe_fd[1]);
     return (pipe_fd[0]);
 }

@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 16:35:42 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/20 15:12:56 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	*extract_quoates(char *str, int i)
 	return(token);
 }
 
-t_redir *create_redir_node(t_type_redir type, char *target, t_built *env)
+t_redir *create_redir_node(t_type_redir type, char *target, t_built *env, char *last_cmd)
 {
 	t_redir *new = malloc(sizeof(t_redir));
 	if (!new || !target) 
@@ -86,9 +86,9 @@ t_redir *create_redir_node(t_type_redir type, char *target, t_built *env)
 			new->target = ft_strdup(target);
 	}
 	else if (semiflag(target))
-		new->target = extract_quoates(extract_target(target, 0, env), 0);
+		new->target = extract_quoates(extract_target(target, 0, env, last_cmd), 0);
 	else
-		new->target = extract_target(target, 0, env);
+		new->target = extract_target(target, 0, env, last_cmd);
 	if (!new->target) 
 		return (free(new), NULL);
 	new->next = NULL;
@@ -141,7 +141,7 @@ t_data *create_data_node(t_type_node t)
 	node->next = NULL;
 	return (node);
 }
-t_redir	*creatn2(char **s, int i, int k, t_built *env)
+t_redir	*creatn2(char **s, int i, int k, t_built *env, char *last_cmd)
 {
 	int	j;
 	t_redir *redir_node = NULL;
@@ -150,7 +150,7 @@ t_redir	*creatn2(char **s, int i, int k, t_built *env)
 	j = check_red(s, i, k);
 	while (j >= 0)
 	{
-		t_redir *new_redir = create_redir_node(check_redirection(s[j]), s[j + 1], env);
+		t_redir *new_redir = create_redir_node(check_redirection(s[j]), s[j + 1], env, last_cmd);
 		if (!redir_node)
 			redir_node = new_redir;
 		else
@@ -204,7 +204,7 @@ char	**command(char **s, int i, int k)
 	return (tmp);
 }
 
-t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env)
+t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env, char *last_cmd)
 {
 	t_data	*cmd;
 	int	j = 0;
@@ -216,7 +216,7 @@ t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env)
 	j = check_red(s, i, k);
 	if (j >= 0)
 	{
-		cmd->redir= creatn2(s, i, k, env);
+		cmd->redir= creatn2(s, i, k, env, last_cmd);
 		cmd->cmd= command(s, i, k);
 	}
 	else
@@ -227,7 +227,7 @@ t_data	*creatn(char **s, int i, int k, t_type_node t, t_built *env)
 	return (cmd);
 }
 
-t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env)
+t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env, char *last_cmd)
 {
 	int		i = 0;
 	int		k = 0;
@@ -238,7 +238,7 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env)
 	{
 		if (!ft_strcmp(s[i], "|") || !ft_strcmp(s[i], "||") || !ft_strcmp(s[i], "&&"))
 		{
-			curr = creatn(s, k, i, t, env);
+			curr = creatn(s, k, i, t, env, last_cmd);
 			if (!cmd)
 				cmd = curr;
 			else
@@ -250,7 +250,7 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env)
 	}
 	if (k < i)
 	{
-		curr = creatn(s, k, i, t, env);
+		curr = creatn(s, k, i, t, env, last_cmd);
 		if (!cmd)
 			cmd = curr;
 		else
@@ -259,25 +259,25 @@ t_data	*loop(char **s, t_data *cmd, t_type_node t, t_built *env)
 	return (cmd);
 }
 
-t_data	*part2(char **s, t_built *env)
+t_data	*part2(char **s, t_built *env, char *last_cmd)
 {
 	t_data	*cmd;
 
 	cmd = NULL;
-	cmd = loop(s, cmd, CMD_NODE, env);
+	cmd = loop(s, cmd, CMD_NODE, env, last_cmd);
 	return (cmd);
 }
 
-t_data	*part1(char **s, t_built *env)
+t_data	*part1(char **s, t_built *env, char *last_cmd)
 {
 	t_data *cmd;
 
 	cmd = NULL;
 	if(!find_pipe(s))
-		return (part2(s, env));
+		return (part2(s, env, last_cmd));
 	else
 	{
-		cmd = loop(s, cmd, PIPE_NODE, env);
+		cmd = loop(s, cmd, PIPE_NODE, env, last_cmd);
 	}
 	return (cmd);
 }

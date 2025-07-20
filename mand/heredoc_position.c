@@ -6,13 +6,13 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:57:59 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 14:28:40 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/20 15:06:19 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*helper_func(char *result, char *s, int start, int end, t_built *env)
+static char	*helper_func(char *result, char *s, int start, int end, t_built *env, char *last_cmd)
 {
     int	i;
     char	*tmp;
@@ -35,6 +35,13 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
         free(result);
         result = tmp2;
     }
+    else if(!ft_strcmp(var, "_") && last_cmd && !ft_strchr(last_cmd, ' ') && !ft_strchr(last_cmd, '\t'))
+    {
+        tmp2 = ft_strjoin_par(result, last_cmd);
+        printf("-----> %s\n", tmp2);
+        free(result);
+        result = tmp2;
+    }
     else
     {
         tmp2 = ft_strjoin_par(result, ft_strjoin_par("$", var));
@@ -46,7 +53,7 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
     return (result);
 }
 
-char	*expanding_target(char *s, t_built *env)
+char	*expanding_target(char *s, t_built *env, char *last_cmd)
 {
     int	i;
     int	start;
@@ -61,7 +68,7 @@ char	*expanding_target(char *s, t_built *env)
     {
         if (s[i] == '$')
         {
-            result = helper_func(result, s, start, i, env);
+            result = helper_func(result, s, start, i, env, last_cmd);
             i++;
             while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
                 i++;

@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 17:23:40 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/15 16:31:17 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/20 17:37:54 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
                 if (hered_fd[in.i] != -1)
                     close(hered_fd[in.i]);
                 hered_fd[in.i] = ft_handle_heredoc(redir->target, line_env, stat);
+                if (hered_fd[in.i] == -1)
+                    return (1);
             }
             redir = redir->next;
         }

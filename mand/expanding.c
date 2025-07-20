@@ -12,18 +12,30 @@
 
 #include "minishell.h"
 
+// char *get_env_value(char *var, t_built *env)
+// {
+//     while (env)
+//     {
+//         if (ft_strcmp(env->var, var) == 0)
+//             return env->value;
+//         env = env->next;
+//     }
+//     return NULL;
+// }
 char *get_env_value(char *var, t_built *env)
 {
     while (env)
     {
-        if (ft_strcmp(env->var, var) == 0)
+        if (ft_strcmp(env->var, var) == 0 && ft_strcmp(env->var, "_") != 0)
+        {
             return env->value;
+        }
         env = env->next;
     }
     return NULL;
 }
 
-static char    *helper_func(char *result, char *s, int start, int end, t_built *env)
+static char    *helper_func(char *result, char *s, int start, int end, t_built *env, char *last_cmd)
 {
     int        i;
     char    *tmp;
@@ -58,12 +70,18 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
         free(result);
         result = tmp2;
     }
+    else if(!ft_strcmp(var, "_"))
+    {
+        tmp2 = ft_strjoin_par(result, last_cmd);
+        free(result);
+        result = tmp2;
+    }
     free(tmp);
     free(var);
     return (result);
 }
 
-char    *expanding(char *s, t_built *env)
+char    *expanding(char *s, t_built *env, char *last_cmd)
 {
     int    i;
     int    start;
@@ -78,7 +96,7 @@ char    *expanding(char *s, t_built *env)
     {
         if (s[i] == '$')
         {
-            result = helper_func(result, s, start, i, env);
+            result = helper_func(result, s, start, i, env, last_cmd);
             i++;
             while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
                 i++;

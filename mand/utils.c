@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 18:21:17 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/18 20:44:02 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,6 @@ char	*ft_strcpy(char *dest, const char *src)
 {
 	size_t	i;
 
-	if (!dest || !src)
-		return (NULL);
 	i = 0;
 	while(src[i])
     {

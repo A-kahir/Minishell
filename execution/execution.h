@@ -40,6 +40,7 @@ typedef struct s_exec
 	int n_cmds;
 	int (*pipes)[2];
 	char *status;
+	char *last_cmd;
 } t_exec;
 
 // this working just for builtins.
@@ -168,7 +169,7 @@ char	*ft_check_built_cmd(t_data *data);
 void ft_clean_env(t_built **line_env_ptr);
 int ft_empty_env(char **env);
 int ft_check_this_var(char *str, t_built *line_env);
-char	*expanding(char *s, t_built *env);
+char	*expanding(char *s, t_built *env, char *last_cmd);
 char *ft_expand_dollar(char *line, char *status);
 int ft_fd_redirections(t_data *data, t_redir *redir);
 t_built	*ft_handle_cd(t_data *data, t_built *line_env, int *flag_cd, t_exec *in);

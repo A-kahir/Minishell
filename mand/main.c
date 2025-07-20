@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/19 17:58:37 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/20 18:13:33 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,19 @@ int	semifflag(char **s)
 	}
 	return(0);
 }
+char	*get_last_cmd(char **s)
+{
+	int	i;
+
+	i = 0;
+	while(s[i])
+	{
+		if (s[i + 1] == NULL)
+			break ;
+		i++;
+	}
+	return(ft_strdup(s[i]));
+}
 
 static void handler(int signum)
 {
@@ -100,13 +113,15 @@ static void handler(int signum)
 	t_exec in;
     static int status;
 	static int flag;
+	static char	*last_cmd;
 	
+	if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
+        exit(1); 
+	last_cmd = ft_strdup("mini");
 	(void)ac;
 	(void)av;
 	string = NULL;
 	end = NULL;
-	if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
-        exit(1); 
 	initsh();
 	static int one_time;
 	if (!line_env && one_time == 0)
@@ -146,8 +161,18 @@ static void handler(int signum)
 			freedp(s);
 			continue;
 		}
-		end = part1(s, line_env);
-		t_data *tmpa = retokenize(end, line_env);	// t_data *tmp22 = end;
+		end = part1(s, line_env, last_cmd);
+		t_data *tmpa = retokenize(end, line_env, last_cmd);
+		t_data *tmp22 = end;
+		in.last_cmd = last_cmd;
+		if(semifflag(s) || !tmp22->cmd)
+		{
+			if(last_cmd)
+				free(last_cmd);
+			last_cmd = ft_strdup("");
+		}
+		else
+			last_cmd = get_last_cmd(tmp22->cmd);
         // while (tmp22)
         // {
         //     int i = 0;

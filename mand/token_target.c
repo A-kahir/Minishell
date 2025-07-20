@@ -6,13 +6,13 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:46:38 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/13 17:51:13 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/20 15:07:04 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*extract_target(char *str, int i, t_built *env)
+char	*extract_target(char *str, int i, t_built *env, char *last_cmd)
 {
 	char	*token;
 	char	*in;
@@ -33,7 +33,7 @@ char	*extract_target(char *str, int i, t_built *env)
 				i++;
 			quote_len = i - quote_start;
             if(cha == '\"')
-				in = expanding_target(ft_substr_par(str, quote_start, quote_len), env);
+				in = expanding_target(ft_substr_par(str, quote_start, quote_len), env, last_cmd);
 			else
 				in = ft_substr_par(str, quote_start, quote_len);
 			token = ft_strjoin_par(token, in);
@@ -46,7 +46,7 @@ char	*extract_target(char *str, int i, t_built *env)
 				&& str[i] != '\'')
 				i++;
 			quote_len = i - quote_start;
-			in = expanding_target(ft_substr_par(str, quote_start, quote_len), env);
+			in = expanding_target(ft_substr_par(str, quote_start, quote_len), env, last_cmd);
 			token = ft_strjoin_par(token, in);
 			free(in);
 		}
@@ -54,7 +54,7 @@ char	*extract_target(char *str, int i, t_built *env)
 	return (token);
 }
 
-char	*extract_retoken(char *str, int i, t_built *env)
+char	*extract_retoken(char *str, int i, t_built *env, char *last_cmd)
 {
 	char	*token;
 	char	*in;
@@ -75,7 +75,7 @@ char	*extract_retoken(char *str, int i, t_built *env)
 				i++;
 			quote_len = i - quote_start;
             if(cha == '\"')
-				in = expanding(ft_substr_par(str, quote_start, quote_len), env);
+				in = expanding(ft_substr_par(str, quote_start, quote_len), env, last_cmd);
 			else
 				in = ft_substr_par(str, quote_start, quote_len);
 			token = ft_strjoin_par(token, in);
@@ -88,7 +88,7 @@ char	*extract_retoken(char *str, int i, t_built *env)
 				&& str[i] != '\'')
 				i++;
 			quote_len = i - quote_start;
-			in = expanding(ft_substr_par(str, quote_start, quote_len), env);
+			in = expanding(ft_substr_par(str, quote_start, quote_len), env, last_cmd);
 			token = ft_strjoin_par(token, in);
 			free(in);
 		}
