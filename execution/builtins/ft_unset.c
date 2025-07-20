@@ -35,22 +35,16 @@ t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 		{
 			if (ft_strcmp(curr->var, cmd[i]) == 0)
 			{
-				if (ft_strcmp(curr->var, "PATH") == 0 && ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
-				{
-					curr->var = NULL;
-					curr->var = ft_strdup("\0");
-					curr->value = NULL;
-					curr->value = ft_strdup("\0");
-				}
-				else
-					ft_rm_list(&line_env, curr);
+				curr->var = NULL;
+				curr->var = ft_strdup("\0");
+				curr->value = NULL;
+				curr->value = ft_strdup("\0");
 				break;
 			}
 			curr = curr->next;
 		}
 		i++;
 	}
-
 	if (flag == 0)
 	{
 		if (in->status)
