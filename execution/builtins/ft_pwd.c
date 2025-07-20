@@ -12,7 +12,7 @@
 
 #include "../execution.h"
 
-void	ft_pwd(t_built *line_env)
+char	*ft_pwd(t_built *line_env)
 {
 	char	*path;
 
@@ -21,6 +21,7 @@ void	ft_pwd(t_built *line_env)
 	{
 		printf("%s\n", path);
 		free(path);
+		return (ft_strdup("0"));
 	}
 	else
 	{
@@ -30,14 +31,35 @@ void	ft_pwd(t_built *line_env)
 			if (ft_strcmp(curr->var, "PWD") == 0)
 			{
 				printf("%s\n", curr->value);
-				return ;
+				return ft_strdup("0");
 			}
 			curr = curr->next;
 		}
 		if (line_env->pwd)
+		{
 			printf("%s\n", line_env->pwd);
-		else if (line_env->old_pwd)
+		}
+		else if (line_env && line_env->old_pwd)
+		{
+
 			printf("%s\n", line_env->old_pwd);
-		return ;
+		}
+		else
+		{
+			t_built *curr;
+
+			curr = line_env;
+			while (curr)
+			{
+				if (ft_strcmp(curr->var, "PWD") != 0 && curr->next == NULL)
+				{
+					write(2, "pwd: error retrieving current directory: getcwd: cannot \
+access parent directories: No such file or directory\n", 110);
+					return (ft_strdup("1"));
+				}
+				curr = curr->next;
+			}
+		}
+		return (ft_strdup("0"));
 	}
 }

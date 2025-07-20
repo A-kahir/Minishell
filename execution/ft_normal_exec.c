@@ -12,6 +12,43 @@
 
 #include "execution.h"
 
+
+int ft_signle_wait(int status, pid_t last_pid)
+{
+	pid_t ch_pid;
+	int f_status = 0;
+	while ((ch_pid = wait(&status)) > 0)
+	{
+		if (isatty(0))
+			tcsetattr(0, TCSANOW, &g_orig_term);
+		if (ch_pid == last_pid)
+		{
+			if (WIFSIGNALED(status))
+			{
+				if (WTERMSIG(status) == SIGINT)
+				{
+					write(1, "^C\n", 4);
+					f_status = 128 + SIGINT;
+				}
+				else if(WTERMSIG(status) == SIGQUIT)
+				{
+					write(1, "^\\Quit: 3\n", 11);
+					f_status = 128 + SIGQUIT;
+				}
+				else
+				{
+					f_status = 128 + WTERMSIG(status);
+				}
+			}
+			else if (WIFEXITED(status))
+			{
+				f_status = WEXITSTATUS(status);
+			}
+		}
+	}
+	return (f_status);
+}
+
 int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 {
 	pid_t	pid;
@@ -150,38 +187,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
-			pid_t ch_pid;
-			int f_status = 0;
-			while ((ch_pid = wait(&status)) > 0)
-			{
-				if (isatty(0))
-					tcsetattr(0, TCSANOW, &g_orig_term);
-				if (ch_pid == last_pid)
-				{
-					if (WIFSIGNALED(status))
-					{
-						if (WTERMSIG(status) == SIGINT)
-						{
-							write(1, "^C\n", 4);
-							f_status = 128 + SIGINT;
-						}
-						else if(WTERMSIG(status) == SIGQUIT)
-						{
-							write(1, "^\\Quit: 3\n", 11);
-							f_status = 128 + SIGQUIT;
-						}
-						else
-						{
-							f_status = 128 + WTERMSIG(status);
-						}
-					}
-					else if (WIFEXITED(status))
-					{
-						f_status = WEXITSTATUS(status);
-					}
-				}
-			}
-			status = f_status;
+			status = ft_signle_wait(status, last_pid);
 			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
