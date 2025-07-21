@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 11:45:48 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/21 11:46:17 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/21 14:52:28 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,10 @@ int ft_signle_wait(int status, pid_t last_pid)
 					f_status = 128 + SIGQUIT;
 				}
 				else
-				{
 					f_status = 128 + WTERMSIG(status);
-				}
 			}
 			else if (WIFEXITED(status))
-			{
 				f_status = WEXITSTATUS(status);
-			}
 		}
 	}
 	return (f_status);

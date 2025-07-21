@@ -19,6 +19,8 @@ void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec
     t_redir *redir;
     int fd;
 
+    if (isatty(0))
+		tcgetattr(0, &g_orig_term);
     redir = curr->redir;
     fd = ft_fd_redirections(curr, redir);
     if (fd == 1)
@@ -114,6 +116,7 @@ int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
     }
     curr = data;
     in.i = 0;
+    pid_t last_pid;
     while (in.i < in.n_cmds)
     {
         pid_t pid = fork();
@@ -125,14 +128,19 @@ int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
             status = 1;
         }
         else if (pid == 0)
+        {
+            signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
             ft_child_read_f(curr, line_env, env_here, in);
+        }
+        else
+            if (in.i == in.n_cmds - 1)
+                last_pid = pid;
         curr = curr->next;
         in.i++;
     }
     ft_close_pipes(in.pipes, in.n_cmds);
-    while (wait(&status) > 0)
-        ;
-    status = status / 256;
+    status = ft_signle_wait(status, last_pid);
     free(in.pipes);
     return (status);
 }

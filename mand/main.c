@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/20 18:13:33 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/21 14:12:28 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,6 @@ static void handler(int signum)
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
 		
-		
 		t_data *curr = end;
         static int flag_fd;
         while (curr)
@@ -257,5 +256,5 @@ static void handler(int signum)
 		free(in.status);
 		string = NULL;
 	}
-	return 0;
+	return (0);
 }

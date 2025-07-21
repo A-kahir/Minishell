@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 17:23:40 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/20 17:37:54 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/21 16:15:14 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,9 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
             (perror("pipe failed"), exit(1));
         in.i++;
     }
-
     hered_fd = malloc(sizeof(int) * in.n_cmds);
     if (!hered_fd)
         exit(1);
-
     in.i = 0;
     tmp = data;
     while (in.i < in.n_cmds)
@@ -70,9 +68,8 @@ int ft_heredoc_after(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec
         pid = fork();
         if (pid == -1)
         {
-            perror("fork failed");
-            ft_close_pipes(in.pipes, in.n_cmds);
-            exit(1);
+            return (perror("fork failed"),
+            ft_close_pipes(in.pipes, in.n_cmds), 1);
         }
         else if (pid == 0)
             ft_child_hered_aft(curr, line_env, env_here, in);

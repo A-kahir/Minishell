@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 11:21:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/18 12:47:48 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/21 17:33:19 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,20 @@ int ft_fd_redirections(t_data *data, t_redir *redir)
     int last_input = -1;
     int last_output = -1;
     t_redir *curr = redir;
+    int heredoc_found = 0;
 
+    // First pass: detect heredoc
+    while (curr)
+    {
+        if (curr->type == 3) // heredoc type
+        {
+            heredoc_found = 1;
+            break;
+        }
+        curr = curr->next;
+    }
+
+    curr = redir;
     while (curr)
     {
         if (!curr->target)
@@ -39,6 +52,11 @@ int ft_fd_redirections(t_data *data, t_redir *redir)
         }
         if (curr->type == READ_F)
         {
+            if (heredoc_found)
+            {
+                curr = curr->next;
+                continue; // skip input redirection if heredoc exists
+            }
             if (last_input != -1)
                 close(last_input);
             fd = open(curr->target, O_RDONLY);

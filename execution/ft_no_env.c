@@ -47,7 +47,7 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 		}
 		i++;
 	}
-	pid_t last_pid;
+	pid_t last_pid = 0;
 	if (data->type == 0 && flag_redir == 0)
 	{
 		in.i = 0;

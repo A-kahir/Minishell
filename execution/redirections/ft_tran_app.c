@@ -27,10 +27,11 @@ void ft_create_pipes(t_exec *in)
 	}
 }
 
-void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec *in)
+pid_t ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec *in)
 {
 	t_data *tmp;
 	pid_t pid;
+    pid_t last_pid = 0;
 	int i;
 
 	tmp = data;
@@ -46,7 +47,13 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
 			exit(1);
 		}
 		if (pid == 0)
+        {
+            signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			ft_child_redir(tmp, line_env, env_here, *in);
+        }
+        else
+		    last_pid = pid;
 		tmp = tmp->next;
 		in->i++;
 	}
@@ -57,6 +64,7 @@ void ft_fork_and_execute(t_data *data, t_built *line_env, t_ex_othr env_here, t_
 		close(in->pipes[i][1]);
 		i++;
 	}
+    return (last_pid);
 }
 
 int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat)
@@ -64,7 +72,10 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     int status;
     t_exec in;
     t_data *curr = data;
+    pid_t last_pid;
 
+    if (isatty(0))
+		tcgetattr(0, &g_orig_term);
     in.n_cmds = ft_count_cmds(data);
     char *command = ft_check_built_cmd(data);
     if (curr->cmd == NULL && curr->redir && curr->redir->target)
@@ -73,7 +84,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         if (fd == 1)
             return 1;
         write(1, "", 0);
-        return 0;
+        return (0);
     }
     if (in.n_cmds > 1)
     {
@@ -84,7 +95,7 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
             exit(1);
         }
         ft_create_pipes(&in);
-        ft_fork_and_execute(data, line_env, env_here, &in);
+        last_pid = ft_fork_and_execute(data, line_env, env_here, &in);
         ft_close_pipes(in.pipes, in.n_cmds - 1);
         free(in.pipes);
     }
@@ -96,18 +107,18 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
     {
         pid_t pid = fork();
         if (pid == -1)
-        {
-            perror("fork failed");
-            return (1);
-        }
+            return (perror("fork failed"), 1);
         if (pid == 0)
         {
+            signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
             ft_child_redir(curr, line_env, env_here, in);
-            exit(0);
         }
+        else
+			last_pid = pid;
     }
-    while (wait(&status) > 0)
-        ;
-    status = status / 256;
-    return status;
+    t_data *tmp;
+    tmp = data;
+    status = ft_multiple_wait(tmp, in, status, last_pid);
+    return (status);
 }

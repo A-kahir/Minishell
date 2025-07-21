@@ -22,6 +22,8 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 	int i;
 
 	status = 0;
+	if (isatty(0))
+		tcgetattr(0, &g_orig_term);
 	flag_redir = ft_flag_redir(data);
 	in.n_cmds = ft_count_cmds(data);
 	in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
@@ -31,6 +33,7 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 	while (i < in.n_cmds - 1)
 		if (pipe(in.pipes[i++]) == -1)
 			return (perror("Pipe creation failed"), free(in.pipes), free(in.status), 1);
+	pid_t last_pid = 0;
 	if (data->type == 0 && flag_redir == 0)
 	{
 		in.i = 0;
@@ -40,13 +43,20 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 			if (pid == -1)
 				return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), 1);
 			else if (pid == 0)
+			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				ft_child_pro_f(data, line_env, env_here, in);
+			}
+			else
+				if (in.i == in.n_cmds - 1)
+					last_pid = pid;
 			data = data->next;
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		while (wait(&status) > 0);
-		status = status / 256;
+		t_data *tmp = data;
+		status = ft_multiple_wait(tmp, in, status, last_pid);
 		free(in.pipes);
 	}
 	else if (data->type == 1 || flag_redir == 1)
@@ -62,14 +72,19 @@ int ft_if_un_path(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec st
 					return (ft_close_pipes(in.pipes, in.n_cmds), free(in.pipes), free(in.status), perror("Fork failed"), 1);
 				else if (pid == 0)
 				{
+					signal(SIGINT, SIG_DFL);
+					signal(SIGQUIT, SIG_DFL);
 					ft_child_pro_f(data, line_env, env_here, in);
 				}
+				else
+					if (in.i == in.n_cmds - 1)
+						last_pid = pid;
 				data = data->next;
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
-			while (wait(&status) > 0);
-			status = status / 256;
+			t_data *tmp = data;
+			status = ft_signle_wait(status, last_pid);
 			free(in.pipes);
 		}
 		if (data && ((command && ft_strcmp(command, "cmd") == 0 && flag_redir == 0) || data->builtin_type == 5))
