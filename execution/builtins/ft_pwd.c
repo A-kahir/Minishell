@@ -15,7 +15,9 @@
 char	*ft_pwd(t_built *line_env)
 {
 	char	*path;
+	int flag;
 
+	flag = 1;
 	path = getcwd(NULL, 0);
 	if (path)
 	{
@@ -30,21 +32,18 @@ char	*ft_pwd(t_built *line_env)
 		{
 			if (ft_strcmp(curr->var, "PWD") == 0)
 			{
-				printf("%s\n", curr->value);
+				write(1, line_env->pwd, ft_strlen(line_env->pwd));
 				return ft_strdup("0");
 			}
+			else if (ft_strcmp(curr->var, "PWD") != 0 && curr->next == NULL)
+				flag = 1;
 			curr = curr->next;
 		}
-		if (line_env->pwd)
-		{
+		if (line_env && line_env->pwd && flag == 0)
 			printf("%s\n", line_env->pwd);
-		}
-		else if (line_env && line_env->old_pwd)
-		{
-
+		else if (line_env && line_env->old_pwd && flag == 0)
 			printf("%s\n", line_env->old_pwd);
-		}
-		else
+		else if (flag == 1)
 		{
 			t_built *curr;
 

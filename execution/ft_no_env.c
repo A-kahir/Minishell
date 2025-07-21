@@ -22,6 +22,8 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 	int		i;
 
 	status = 0;
+	if (isatty(0))
+		tcgetattr(0, &g_orig_term);
 	in.status = ft_strdup(stat.status);
 	if (!in.status)
 		return (1);
@@ -45,6 +47,7 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 		}
 		i++;
 	}
+	pid_t last_pid;
 	if (data->type == 0 && flag_redir == 0)
 	{
 		in.i = 0;
@@ -56,13 +59,20 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 				perror("Fork failed"), free(in.status),
 				ft_free_split(env_here.env), free(in.pipes), 1);
 			else if (pid == 0)
+			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				ft_child_pro(data, line_env, env_here, in);
+			}
+			else
+				if (in.i == in.n_cmds - 1)
+					last_pid = pid;
 			data = data->next;
 			in.i++;
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
-		while (wait(&status) > 0);
-		status = status / 256;
+		t_data *tmp = data;
+		status = ft_multiple_wait(tmp, in, status, last_pid);
 	}
 	else if (data->type == 1 || flag_redir == 1)
 	{
@@ -77,13 +87,19 @@ int ft_no_env(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 					perror("Fork failed"), free(in.status),
 					ft_free_split(env_here.env), free(in.pipes), 1);
 				else if (pid == 0)
+				{
+					signal(SIGINT, SIG_DFL);
+					signal(SIGQUIT, SIG_DFL);
 					ft_child_pro(data, line_env, env_here, in);
+				}
+				else
+					if (in.i == in.n_cmds - 1)
+						last_pid = pid;
 				data = data->next;
 				in.i++;
 			}
 			ft_close_pipes(in.pipes, in.n_cmds);
-			while (wait(&status) > 0);
-			status = status / 256;
+			status = ft_signle_wait(status, last_pid);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
 			status = ft_is_builtins(data, line_env, in);

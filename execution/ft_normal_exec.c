@@ -51,10 +51,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 				ft_child_pro(data, line_env, env_here, in);
 			}
 			else
-			{
 				if (in.i == in.n_cmds - 1)
 					last_pid = pid;
-			}
 			data = data->next;
 			in.i++;
 		}
@@ -82,10 +80,8 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 					ft_child_pro(data, line_env, env_here, in);
 				}
 				else
-				{
 					if (in.i == in.n_cmds - 1)
 						last_pid = pid;
-				}
 				data = data->next;
 				in.i++;
 			}
