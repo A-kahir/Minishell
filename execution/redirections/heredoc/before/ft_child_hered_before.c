@@ -19,7 +19,7 @@ void ft_child_hered_bef(t_data *curr, t_built *line_env, t_ex_othr env_here, t_e
     char *command;
 
     hered_fd = (int *)in.status;
-    if (hered_fd[in.i] != -1)
+    if (hered_fd && hered_fd[in.i] != -1)
     {
         if (dup2(hered_fd[in.i], 0) == -1)
             (perror("dup2 input from heredoc failed"), exit(1));

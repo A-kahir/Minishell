@@ -99,10 +99,6 @@ int ft_tran_app(t_data *data, t_built *line_env, t_ex_othr env_here, t_exec stat
         ft_close_pipes(in.pipes, in.n_cmds - 1);
         free(in.pipes);
     }
-    // else if (ft_strcmp(command, "built") == 0)
-    // {
-    //     status = ft_is_
-    // }
     else
     {
         pid_t pid = fork();
