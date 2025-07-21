@@ -28,28 +28,26 @@ t_built	*ft_unset(t_built *line_env, char **cmd, t_exec *in)
 				free(in->status);
 			in->status = ft_strdup("1");
 			flag = 1;
-			return (line_env);
 		}
-		t_built *curr = line_env;
-		while (curr)
+		else
 		{
-			if (ft_strcmp(curr->var, cmd[i]) == 0)
+			t_built *curr = line_env;
+			while (curr)
 			{
-				curr->var = NULL;
-				curr->var = ft_strdup("\0");
-				curr->value = NULL;
-				curr->value = ft_strdup("\0");
-				break;
+				if (ft_strcmp(curr->var, cmd[i]) == 0)
+				{
+					curr->var = NULL;
+					curr->var = ft_strdup("\0");
+					curr->value = NULL;
+					curr->value = ft_strdup("\0");
+					break;
+				}
+				curr = curr->next;
 			}
-			curr = curr->next;
 		}
 		i++;
 	}
 	if (flag == 0)
-	{
-		if (in->status)
-			free(in->status);
 		in->status = ft_strdup("0");
-	}
 	return (line_env);
 }

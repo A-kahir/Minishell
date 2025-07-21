@@ -179,6 +179,8 @@ void ft_child_pro_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec 
 int	is_only_spaces(char *cmd);
 void ft_check_hered(t_redir *redir);
 int	ft_check(char **str, int *i);
+int ft_signle_wait(int status, pid_t last_pid);
+int ft_multiple_wait(t_data *tmp, t_exec in, int status, pid_t last_pid);
 
 // ******************Libft func******************
 char	*ft_strjoin(char *s1, char *s2);

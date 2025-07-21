@@ -12,43 +12,6 @@
 
 #include "execution.h"
 
-
-int ft_signle_wait(int status, pid_t last_pid)
-{
-	pid_t ch_pid;
-	int f_status = 0;
-	while ((ch_pid = wait(&status)) > 0)
-	{
-		if (isatty(0))
-			tcsetattr(0, TCSANOW, &g_orig_term);
-		if (ch_pid == last_pid)
-		{
-			if (WIFSIGNALED(status))
-			{
-				if (WTERMSIG(status) == SIGINT)
-				{
-					write(1, "^C\n", 4);
-					f_status = 128 + SIGINT;
-				}
-				else if(WTERMSIG(status) == SIGQUIT)
-				{
-					write(1, "^\\Quit: 3\n", 11);
-					f_status = 128 + SIGQUIT;
-				}
-				else
-				{
-					f_status = 128 + WTERMSIG(status);
-				}
-			}
-			else if (WIFEXITED(status))
-			{
-				f_status = WEXITSTATUS(status);
-			}
-		}
-	}
-	return (f_status);
-}
-
 int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec stat)
 {
 	pid_t	pid;
@@ -97,67 +60,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 		}
 		ft_close_pipes(in.pipes, in.n_cmds);
 		tmp = data;
-		int j = 0;
-		while (j < in.n_cmds - 1)
-		{
-			if (tmp && tmp->next)
-				tmp = tmp->next;
-			j++;
-		}
-		int flag_interactive = 0;
-		if (tmp && tmp->cmd && tmp->cmd[0])
-		{
-			if (ft_strcmp(tmp->cmd[0], "top") == 0 || ft_strcmp(tmp->cmd[0], "wc") == 0)
-				flag_interactive = 1;
-		}
-		pid_t ch_pid;
-		int final_status = 0;
-		int signal_printed = 0;
-		while ((ch_pid = wait(&status)) > 0)
-		{
-			if (isatty(0))
-				tcsetattr(0, TCSANOW, &g_orig_term);
-			if (WIFSIGNALED(status))
-			{
-				int sig = WTERMSIG(status);
-				if (sig == SIGINT)
-				{
-					if (!signal_printed)
-					{
-						if (flag_interactive)
-							write(1, "\n", 1);
-						else
-							write(1, "^C\n", 3);
-						signal_printed = 1;
-					}
-					if (ch_pid == last_pid)
-						final_status = 130;
-				}
-				else if (sig == SIGQUIT)
-				{
-					if (!signal_printed)
-					{
-						if (flag_interactive)
-							write(1, "^\\\n", 4);
-						else
-							write(1, "^\\Quit: 3\n", 11);
-						signal_printed = 1;
-					}
-					if (ch_pid == last_pid)
-						final_status = 131;
-				}
-				else
-				{
-					if (ch_pid == last_pid)
-						final_status = 128 + sig;
-				}
-			}
-			else if (WIFEXITED(status) && ch_pid == last_pid)
-			{
-				final_status = WEXITSTATUS(status);
-			}
-		}
-		status = final_status;
+		status = ft_multiple_wait(tmp, in, status, last_pid);
 		free(in.pipes);
 	}
 	else if (data->type == 1 || flag_redir == 1)
@@ -191,9 +94,7 @@ int ft_exec_normal(t_data *data, t_ex_othr env_here, t_built *line_env, t_exec s
 			free(in.pipes);
 		}
 		if (ft_strcmp(command, "built") == 0 && flag_redir == 0)
-		{
 			status = ft_is_builtins(data, line_env, in);
-		}
 		if (flag_redir == 1)
 			status = ft_is_redir(data, line_env, env_here, stat);
 	}
