@@ -59,7 +59,7 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
             free(line);
             break;
         }
-        expnd = expanding(line, line_env, stat.last_cmd);
+        expnd = expanding(line, line_env, &stat);
         tmp = ft_expand_dollar(expnd, stat.status);
         free(expnd);
         if (tmp)

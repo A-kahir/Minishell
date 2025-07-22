@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/20 15:17:38 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/22 14:36:38 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,18 +100,18 @@ char	**redo(char **s, t_built *env);
 // int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 char *get_env_value(char *var, t_built *env);
-char	*expanding_target(char *s, t_built *env, char *last_cmd);
-char	*extract_target(char *str, int i, t_built *env, char *last_cmd);
+char	*expanding_target(char *s, t_built *env, t_exec *in);
+char	*extract_target(char *str, int i, t_built *env, t_exec *in);
 char	*extract_quoates(char *str, int i);
 
 void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h);
 void    detect_heredoc_position(t_data *d, t_heredoc *h);
 void    merge_middle_heredoc_cmd(t_data *d);
 
-t_data	*part1(char **s, t_built *env, char *last_cmd);
+t_data	*part1(char **s, t_built *env, t_exec *in);
 int	semiflag(char *s);
-char	*extract_retoken(char *str, int i, t_built *env, char *last_cmd);
-t_data *retokenize(t_data *data, t_built *env, char *last_cmd);
+char	*extract_retoken(char *str, int i, t_built *env, t_exec *in);
+t_data *retokenize(t_data *data, t_built *env, t_exec *in);
 char	**join_zmr(char *s1, char *s2);
 
 void	f_clean(char *s);
@@ -125,7 +125,7 @@ char	*ft_strjoin_par(char *s1, char *s2);
 int	does_it_exist(char *s, t_built *env);
 // char *get_value_from_env(const char *key, t_built *env);
 // char *expand_dollar(char *input, t_built *env);
-char	*expanding(char *s, t_built *env, char *last_cmd);
+char    *expanding(char *s, t_built *env, t_exec *in);
 
 
 

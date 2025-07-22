@@ -67,6 +67,8 @@
     "readline.h": "c",
     "types.h": "c",
     "ostream": "c",
-    "unistd.h": "c"
+    "unistd.h": "c",
+    "__locale": "c",
+    "ios": "c"
   }
 }

@@ -6,13 +6,13 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:57:59 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/20 15:06:19 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/22 14:52:29 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*helper_func(char *result, char *s, int start, int end, t_built *env, char *last_cmd)
+static char	*helper_func(char *result, char *s, int start, int end, t_built *env, t_exec *in)
 {
     int	i;
     char	*tmp;
@@ -22,7 +22,7 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
 
     tmp = ft_substr_par(s, start, end - start);
     i = end + 1;
-    while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
+    while (s[i] && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?'))
         i++;
     var = ft_substr_par(s, end + 1, i - (end + 1));
     val = get_env_value(var, env);
@@ -35,10 +35,15 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
         free(result);
         result = tmp2;
     }
-    else if(!ft_strcmp(var, "_") && last_cmd && !ft_strchr(last_cmd, ' ') && !ft_strchr(last_cmd, '\t'))
+    else if (!ft_strcmp(var, "?"))
     {
-        tmp2 = ft_strjoin_par(result, last_cmd);
-        printf("-----> %s\n", tmp2);
+        tmp2 = ft_strjoin_par(result, in->status);
+        free(result);
+        result = tmp2;
+    }
+    else if(!ft_strcmp(var, "_") && in->last_cmd && !ft_strchr(in->last_cmd, ' ') && !ft_strchr(in->last_cmd, '\t'))
+    {
+        tmp2 = ft_strjoin_par(result, in->last_cmd);
         free(result);
         result = tmp2;
     }
@@ -53,7 +58,7 @@ static char	*helper_func(char *result, char *s, int start, int end, t_built *env
     return (result);
 }
 
-char	*expanding_target(char *s, t_built *env, char *last_cmd)
+char	*expanding_target(char *s, t_built *env, t_exec *in)
 {
     int	i;
     int	start;
@@ -68,9 +73,9 @@ char	*expanding_target(char *s, t_built *env, char *last_cmd)
     {
         if (s[i] == '$')
         {
-            result = helper_func(result, s, start, i, env, last_cmd);
+            result = helper_func(result, s, start, i, env, in);
             i++;
-            while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
+            while (s[i] && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?'))
                 i++;
             start = i;
         }

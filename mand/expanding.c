@@ -35,7 +35,7 @@ char *get_env_value(char *var, t_built *env)
     return NULL;
 }
 
-static char    *helper_func(char *result, char *s, int start, int end, t_built *env, char *last_cmd)
+static char    *helper_func(char *result, char *s, int start, int end, t_built *env, t_exec *in)
 {
     int        i;
     char    *tmp;
@@ -60,7 +60,7 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
     }
     else if (!ft_strcmp(var, "?"))
     {
-        tmp2 = ft_strjoin_par(result, ft_strjoin_par(ft_strdup("$"), var));
+        tmp2 = ft_strjoin_par(result, in->status);
         free(result);
         result = tmp2;
     }
@@ -72,8 +72,7 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
     }
     else if(!ft_strcmp(var, "_"))
     {
-        tmp2 = ft_strjoin_par(result, last_cmd);
-        printf("-----> %s\n", tmp2);
+        tmp2 = ft_strjoin_par(result, in->last_cmd);
         free(result);
         result = tmp2;
     }
@@ -82,7 +81,7 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
     return (result);
 }
 
-char    *expanding(char *s, t_built *env, char *last_cmd)
+char    *expanding(char *s, t_built *env, t_exec *in)
 {
     int    i;
     int    start;
@@ -97,7 +96,7 @@ char    *expanding(char *s, t_built *env, char *last_cmd)
     {
         if (s[i] == '$')
         {
-            result = helper_func(result, s, start, i, env, last_cmd);
+            result = helper_func(result, s, start, i, env, in);
             i++;
             while (s[i]&& s[i] != '$' && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?'))
                 i++;

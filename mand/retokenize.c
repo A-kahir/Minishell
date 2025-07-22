@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   retokenize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/22 12:16:51 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/22 14:05:57 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int stayalone(char *s)
     return (1);
 }
 
-t_data *retokenize(t_data *data, t_built *env, char *last_cmd)
+t_data *retokenize(t_data *data, t_built *env, t_exec *in)
 {
 	t_data *curr = data;
 	char **new_data = NULL;
@@ -74,7 +74,7 @@ t_data *retokenize(t_data *data, t_built *env, char *last_cmd)
             char *token;
             if (semiflag(curr->cmd[i]) || !stayalone(curr->cmd[i]))
             {
-                token = extract_retoken(curr->cmd[i], 0, env, last_cmd);
+                token = extract_retoken(curr->cmd[i], 0, env, in);
                 if(semiflag(token))
                     quoted = extract_quoates(token, 0);
                 else
@@ -86,7 +86,7 @@ t_data *retokenize(t_data *data, t_built *env, char *last_cmd)
             }
             else
             {
-                token = expanding(curr->cmd[i], env, last_cmd);
+                token = expanding(curr->cmd[i], env, in);
                 char **split = ft_split_par(token, ' ');
                 new_data = ft_strjoinarray(new_data, split);
                 free(token);
