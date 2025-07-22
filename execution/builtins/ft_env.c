@@ -41,7 +41,7 @@ static void	ft_print_env_vars(t_built *curr, int flag_one_pth)
 				continue ;
 			}
 		}
-		if (curr && curr->var && curr->value)
+		if (curr && curr->var && curr->value && curr->value[0] != '\0')
 			printf("%s=%s\n", curr->var, curr->value);
 		curr = curr->next;
 	}
