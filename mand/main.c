@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/21 14:12:28 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/22 12:26:17 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ static void handler(int signum)
 	g_status = 1;
 }
 
- int main(int ac, char **av, char **env)
+int main(int ac, char **av, char **env)
 {
 	char	**s;
 	t_data	*end;
@@ -172,7 +172,9 @@ static void handler(int signum)
 			last_cmd = ft_strdup("");
 		}
 		else
+		{
 			last_cmd = get_last_cmd(tmp22->cmd);
+		}
         // while (tmp22)
         // {
         //     int i = 0;
@@ -194,7 +196,6 @@ static void handler(int signum)
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
-		
 		t_data *curr = end;
         static int flag_fd;
         while (curr)
@@ -208,9 +209,7 @@ static void handler(int signum)
                     flag = 1;
                 }
                 else if (flag == 1)
-                {
                     curr->cmd[0] = ft_strdup(ft_itoa(status));
-                }
             }
 			else if (curr->redir && curr->redir->type != 3 &&  curr->redir->target && ft_strcmp(curr->redir->target, "$?") == 0)
 			{
@@ -221,13 +220,11 @@ static void handler(int signum)
 					flag_fd = 1;
 				}
 				else if (flag_fd == 1)
-				{
-					curr->redir->target = ft_strdup(ft_itoa(status));
-				}
+					curr->redir->target = ft_itoa(status);
 			}
             curr = curr->next;
         }
-        char *tmp = ft_strdup(ft_itoa(status));
+        char *tmp = ft_itoa(status);
         in.status = ft_strdup(tmp);
         free(tmp);
 		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
@@ -254,6 +251,7 @@ static void handler(int signum)
 		free(heredoc);
 		free(string);
 		free(in.status);
+		free(last_cmd);
 		string = NULL;
 	}
 	return (0);

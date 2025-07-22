@@ -83,9 +83,7 @@ int ft_exec(t_data *data, t_heredoc *heredoc, t_built *line_env, t_exec stat)
 		return (status);
 	}
 	else if (no_env == 0)
-	{
 		status = ft_have_env(data, line_env, env_here, stat);
-	}
 	ft_close_fd_opening();
 	return (status);
 }

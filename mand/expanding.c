@@ -45,7 +45,7 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
 
     tmp = ft_substr_par(s, start, end - start);
     i = end + 1;
-    while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
+    while (s[i]&& s[i] != '$' && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?'))
         i++;
     var = ft_substr_par(s, end + 1, i - (end + 1));
     val = get_env_value(var, env);
@@ -73,6 +73,7 @@ static char    *helper_func(char *result, char *s, int start, int end, t_built *
     else if(!ft_strcmp(var, "_"))
     {
         tmp2 = ft_strjoin_par(result, last_cmd);
+        printf("-----> %s\n", tmp2);
         free(result);
         result = tmp2;
     }
@@ -98,7 +99,7 @@ char    *expanding(char *s, t_built *env, char *last_cmd)
         {
             result = helper_func(result, s, start, i, env, last_cmd);
             i++;
-            while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
+            while (s[i]&& s[i] != '$' && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?'))
                 i++;
             start = i;
         }

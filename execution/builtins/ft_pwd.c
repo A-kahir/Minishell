@@ -23,7 +23,7 @@ char	*ft_pwd(t_built *line_env)
 	{
 		printf("%s\n", path);
 		free(path);
-		return (ft_strdup("0"));
+		return ("0");
 	}
 	else
 	{
@@ -33,7 +33,7 @@ char	*ft_pwd(t_built *line_env)
 			if (ft_strcmp(curr->var, "PWD") == 0)
 			{
 				write(1, line_env->pwd, ft_strlen(line_env->pwd));
-				return ft_strdup("0");
+				return ("0");
 			}
 			else if (ft_strcmp(curr->var, "PWD") != 0 && curr->next == NULL)
 				flag = 1;
@@ -59,6 +59,6 @@ access parent directories: No such file or directory\n", 110);
 				curr = curr->next;
 			}
 		}
-		return (ft_strdup("0"));
+		return ("0");
 	}
 }

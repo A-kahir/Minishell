@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/18 20:44:02 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/22 11:11:30 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,7 +376,7 @@ char	*extract_token2(char *str, char c, int *i)
 	char	cha;
 
 	token = NULL;
-	while (str[*i] && str[*i] != c)
+	while (str[*i] && str[*i] != c && str[*i] != '\t')
 	{
 		if (str[*i] == '\'' || str[*i] == '\"')
 		{
@@ -394,7 +394,7 @@ char	*extract_token2(char *str, char c, int *i)
 		else
 		{
 			quote_start = *i;
-			while (str[*i] && str[*i] != c && str[*i] != '\"' && str[*i] != '\'')
+			while (str[*i] && str[*i] != c && str[*i] != '\t' && str[*i] != '\"' && str[*i] != '\'')
 				(*i)++;
 			quote_len = *i - quote_start;
 			in = ft_substr_par(str, quote_start, quote_len);
@@ -414,7 +414,7 @@ static int	count_word(char *str, char c)
 	count = 0;
 	while (str[i])
 	{
-		while (str[i] == c)
+		while (str[i] == c || (str[i] >= 9 && str[i] <= 13))
 			i++;
 		if (!str[i])
 			break ;
@@ -441,7 +441,7 @@ char	**ft_split_par(char *str, char c)
 		f_clean(str);
 	while (str[i])
 	{
-		while (str[i] == c)
+		while (str[i] == c || (str[i] >= 9 && str[i] <= 13))
 			i++;
 		if (!str[i])
 			break ;
