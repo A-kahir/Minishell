@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_fd_redirection.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 11:21:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/22 15:25:13 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:02:02 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,9 @@ int ft_fd_redirections(t_data *data, t_redir *redir)
     t_redir *curr = redir;
     int heredoc_found = 0;
 
-    // First pass: detect heredoc
     while (curr)
     {
-        if (curr->type == 3) // heredoc type
+        if (curr->type == 3)
         {
             heredoc_found = 1;
             break;
@@ -55,7 +54,7 @@ int ft_fd_redirections(t_data *data, t_redir *redir)
             if (heredoc_found)
             {
                 curr = curr->next;
-                continue; // skip input redirection if heredoc exists
+                continue;
             }
             if (last_input != -1)
                 close(last_input);

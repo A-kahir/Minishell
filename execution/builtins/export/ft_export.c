@@ -37,9 +37,12 @@ t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec *in)
 		}
 		else if (check == -1)
 		{
-			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			write(2,"minishell: export: `", 21);
+			write(2, cmd[i], ft_strlen(cmd[i]));
+			write(2, "': not a valid identifier\n", 27);
 			in->status = ft_strdup("1");
-			return (line_env);
+			if (cmd[i + 1] == NULL)
+				return (line_env);
 		}
 		else if (check == 0)
 		{

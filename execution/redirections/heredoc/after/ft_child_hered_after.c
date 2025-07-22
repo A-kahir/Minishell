@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../../execution.h"
+
 int has_output_redir(t_redir *redir)
 {
     while (redir)
