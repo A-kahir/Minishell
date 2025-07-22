@@ -1,0 +1,41 @@
+minishell-3.2$ << g cat ls
+> g
+cat: ls: No such file or directory
+minishell-3.2$ echo $?
+1
+minishell-3.2$ << g cat
+> dssdsf
+> g
+dssdsf
+minishell-3.2$ echo $?
+1
+minishell-3.2$ << g cat ls
+> g
+cat: ls: No such file or directory
+minishell-3.2$ $?
+minishell: 1: command not found
+minishell-3.2$
+
+
+
+
+
+minishell-3.2$ ls > g >> p << p < i| ls
+> p
+Makefile		g			minishell
+execution		leak_detector.sh	p
+file.txt		mand			todo
+minishell-3.2$ echo $?
+1
+minishell-3.2$
+
+
+
+
+
+minishell-3.2$ ls > g >> p << p < i > do
+> p
+minishell-3.2$ ls
+Makefile		file.txt		mand			todo
+do			g			minishell
+execution		leak_detector.sh	p

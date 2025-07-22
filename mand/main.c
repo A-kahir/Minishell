@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/22 15:22:25 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/22 17:11:22 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*getinput(char *s, int *status, int *flag)
         write(1, "exit\n", 5);
         exit(*status);
     }
-	if (g_status)
+	if (g_status == 1)
 	{
 		*status = 1;
 		*flag = 1;
@@ -101,6 +101,7 @@ static void handler(int signum)
 	rl_redisplay();
 	g_status = 1;
 }
+
 
 int main(int ac, char **av, char **env)
 {
@@ -236,7 +237,7 @@ int main(int ac, char **av, char **env)
 		{
 			ft_clean_env(&line_env);
 		}
-		else if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
+		else if (end && end->cmd && end->cmd[0] && end->cmd[1] && end->cmd[2] &&
 			ft_strcmp(end->cmd[0], "env") == 0 && (ft_strcmp(end->cmd[1], "-i") != 0
 			|| ft_strcmp(end->cmd[2], "./minishell") != 0))
 		{
