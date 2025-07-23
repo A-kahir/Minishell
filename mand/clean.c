@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:53:01 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/17 14:06:05 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/23 16:54:36 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void freedp(char **tokens)
         i++;
     }
     free(tokens);
+	tokens = NULL;
 }
 
 

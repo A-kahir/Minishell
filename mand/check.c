@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 15:14:04 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/14 17:58:57 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 13:25:11 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ int	check_before(char *s)
 
 void	print_error(char *c)
 {
-	t_exec in;
-	
 	write(2, "minishell: ", 12);
 	write(2, "syntax error near unexpected token `", 37);
 	write(2, c, ft_strlen(c));

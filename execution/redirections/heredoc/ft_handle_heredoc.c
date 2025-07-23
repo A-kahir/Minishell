@@ -59,9 +59,10 @@ int ft_handle_heredoc(char *del, t_built *line_env, t_exec stat)
             free(line);
             break;
         }
-        expnd = expanding(line, line_env, &stat);
-        tmp = ft_expand_dollar(expnd, stat.status);
-        free(expnd);
+        if (stat.heredoc_flag_q == 0)
+            tmp = expanding(line, line_env, &stat);
+        else
+            tmp = ft_strdup(line);
         if (tmp)
         {
             write(pipe_fd[1], tmp, ft_strlen(tmp));

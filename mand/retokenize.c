@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/22 14:05:57 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/23 16:23:41 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_type_buil	get_b(char *s)
 static int stayalone(char *s)
 {
     int i = 0;
-    int j = 0;
     if (!s || !*s)
         return 0;
     while(s[i] && ft_isalnum(s[i]))
@@ -76,12 +75,14 @@ t_data *retokenize(t_data *data, t_built *env, t_exec *in)
             {
                 token = extract_retoken(curr->cmd[i], 0, env, in);
                 if(semiflag(token))
+                {
                     quoted = extract_quoates(token, 0);
+                    free(token);
+                }
                 else
-                    quoted = ft_strdup(token);
+                    quoted = token;
                 char *arr[] = {quoted, NULL};
                 new_data = ft_strjoinarray(new_data, arr);
-                free(token);
                 free(quoted);
             }
             else

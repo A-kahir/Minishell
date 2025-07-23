@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 11:21:53 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/22 19:45:42 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 16:45:27 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int ft_fd_redirections(t_data *data, t_redir *redir)
             write(2, ": No such file or directory\n", 29);
             return (1);
         }
-        if (curr->target[0] == '$' && curr->target[1])
+        if (curr->target[0] == '$' && curr->target[1] && curr->type != HEREDOC)
         {
             write(2, "minishell: ", 12);
             write(2, curr->target, ft_strlen(curr->target));

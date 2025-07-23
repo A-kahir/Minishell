@@ -21,7 +21,7 @@ int    has_cmd_before(t_data *d, int pos)
 	i = 0;
 	while (cur && i < pos)
 	{
-		if (cur->cmd && cur->cmd[0] ||(cur->redir && cur->redir->target))
+		if ((cur->cmd && cur->cmd[0]) ||(cur->redir && cur->redir->target))
 			return (1);
 		cur = cur->next;
 		i++;
@@ -43,7 +43,7 @@ int    has_cmd_after(t_data *d, int pos)
 	}
 	while (cur)
 	{
-		if (cur->cmd && cur->cmd[0] || (cur->redir && cur->redir->target))
+		if ((cur->cmd && cur->cmd[0]) || (cur->redir && cur->redir->target))
 		return (1);
 		cur = cur->next;
 	}
@@ -79,52 +79,4 @@ void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h)
 		h->middle_hered = 1;
 	else if (has_cmd_before(d, pos) && !has_cmd_after(d, pos))
 		h->before_hered = 1;
-}
-
-void    copy_array(char **dest, char **src, int len)
-{
-	int    i;
-	i = 0;
-	while (i < len)
-	{
-		dest[i] = src[i];
-		i++;
-	}
-}
-
-void    merge_cmd(t_data *a, t_data *b)
-{
-	char    **new;
-	int        i;
-	int        j;
-
-	i = token_len(a->cmd);
-	j = token_len(b->cmd);
-	new = malloc(sizeof(char) * (i + j + 1));
-	if (!new)
-		return ;
-	new = ft_strjoinarray(a->cmd, b->cmd);
-	free(a->cmd);
-	free(b->cmd);
-	a->cmd = new;
-	b->cmd = NULL;
-}
-
-void    merge_middle_heredoc_cmd(t_data *d)
-{
-	t_data    *cur;
-	t_redir    *r;
-
-	cur = d;
-	while (cur && cur->next)
-	{
-		r = cur->redir;
-		while (r)
-		{
-			if (r->type == HEREDOC && cur->next && cur->next->cmd)
-				return (merge_cmd(cur, cur->next));
-			r = r->next;
-		}
-		cur = cur->next;
-	}
 }

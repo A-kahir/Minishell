@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:58 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/15 18:16:48 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 11:39:44 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char *ft_exit(t_data *data, t_exec *in)
 		if (arg_count > 2)
 		{
 			write(2, "minishell: exit: too many arguments\n", 37);
-			return (ft_strdup("1"));
+			return ("1");
 		}
 		if (arg_count == 2)
 			return (ft_strdup(data->cmd[1]));
@@ -96,7 +96,7 @@ char *ft_exit(t_data *data, t_exec *in)
 	if (arg_count > 2)
 	{
 		write(2, "minishell: exit: too many arguments\n", 37);
-		return (ft_strdup("1"));
+		return ("1");
 	}
 	if (arg_count == 2)
 	{

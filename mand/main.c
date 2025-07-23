@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 11:15:52 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 21:15:29 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ char	*getinput(char *s, int *status, int *flag)
 {
 	char	*buff;
 	buff = readline("minishell-3.2$ ");
-	if (!buff)
-    {
-        write(1, "exit\n", 5);
-        exit(*status);
-    }
 	if (g_status == 1)
 	{
 		*status = 1;
 		*flag = 1;
 		g_status = 0;
 	}
+	if (!buff)
+    {
+        write(1, "exit\n", 5);
+        exit(*status);
+    }
 	if (*buff)
 	{
 		add_history(buff);
@@ -113,11 +113,10 @@ int main(int ac, char **av, char **env)
 	t_exec in;
     static int status;
 	static int flag;
-	static char	*last_cmd;
 	
 	if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
         exit(1); 
-	last_cmd = ft_strdup("mini");
+	in.last_cmd = ft_strdup("mini");
 	(void)ac;
 	(void)av;
 	string = NULL;
@@ -167,12 +166,19 @@ int main(int ac, char **av, char **env)
 			in.status = ft_itoa(status);
 		end = part1(s, line_env, &in);
 		t_data *tmpa = retokenize(end, line_env, &in);
-		t_data *tmp22 = end;
-		in.last_cmd = last_cmd;
+		t_data *tmp22 = tmpa;
 		if(semifflag(s) || !tmp22->cmd)
-			last_cmd = ft_strdup("");
+		{
+			if(in.last_cmd)
+				free(in.last_cmd);
+			in.last_cmd = ft_strdup("");
+		}
 		else
-			last_cmd = get_last_cmd(tmp22->cmd);
+		{
+			if(in.last_cmd)
+				free(in.last_cmd);
+			in.last_cmd = get_last_cmd(tmp22->cmd);
+		}
 		freedp(s);
 		heredoc = malloc(sizeof(t_heredoc));
 		detect_heredoc_position_with_pipes(end, heredoc);
@@ -199,8 +205,7 @@ int main(int ac, char **av, char **env)
 		n_clean(end);
 		free(heredoc);
 		free(string);
-		// free(in.status);
-		free(last_cmd);
+		free(in.status);
 		string = NULL;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:42 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/22 14:32:08 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/23 17:24:24 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*extract_quoates(char *str, int i)
 	char	cha;
 
 	token = NULL;
-	while (str[i])
+	while (str[i] && (str[i] != ' ' || str[i] != '\t'))
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 		{
@@ -60,8 +60,8 @@ char	*extract_quoates(char *str, int i)
 		else
 		{
 			quote_start = i;
-			while (str[i] && (str[i] != ' ' || str[i] == '\t') && str[i] != '\"'
-				&& str[i] != '\'' && !is_operator(str[i]))
+			while (str[i] && (str[i] != ' ' || str[i] != '\t') && str[i] != '\"'
+				&& str[i] != '\'')
 				i++;
 			quote_len = i - quote_start;
 			in = ft_substr_par(str, quote_start, quote_len);
@@ -74,19 +74,28 @@ char	*extract_quoates(char *str, int i)
 
 t_redir *create_redir_node(t_type_redir type, char *target, t_built *env, t_exec *in)
 {
+	char *tmp;
 	t_redir *new = malloc(sizeof(t_redir));
 	if (!new || !target) 
 		return (NULL);
 	new->type = type;
+	in->heredoc_flag_q = 0;
 	if (type == HEREDOC)
 	{
 		if(semiflag(target))
-			new->target = extract_quoates(target, 1);
+		{
+			new->target = extract_quoates(target, 0);
+			in->heredoc_flag_q = 1;
+		}
 		else
 			new->target = ft_strdup(target);
 	}
 	else if (semiflag(target))
-		new->target = extract_quoates(extract_target(target, 0, env, in), 0);
+	{
+		tmp = extract_target(target, 0, env, in);
+		new->target = extract_quoates(tmp, 0);
+		free(tmp);
+	}
 	else
 		new->target = extract_target(target, 0, env, in);
 	if (!new->target) 

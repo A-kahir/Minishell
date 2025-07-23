@@ -12,6 +12,7 @@ MAND_SRC = \
     mand/expanding.c \
     mand/retokenize.c \
     mand/token_target.c \
+    mand/utils2.c \
 
 EXEC_SRC = \
 	execution/ft_exec.c \

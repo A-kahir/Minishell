@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/22 14:36:38 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:23:50 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	syntax_error(char **s);
 char	*ft_strcpy(char *dest, const char *src);
 // char	*ft_strdup(const char *src);
 char	**ft_subarray(char **tokens, int start, int end);
-char	*ft_substr_par(char *s, unsigned int start, size_t len);
+char	*ft_substr_par(char *s, int start, int len);
 char	**ft_strjoinarray(char **s1, char **s2);
 char    *ft_rejoin(int size, char **strs, char *sep);
 char	**ft_split_par(char *str, char c);
@@ -105,7 +105,6 @@ char	*extract_target(char *str, int i, t_built *env, t_exec *in);
 char	*extract_quoates(char *str, int i);
 
 void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h);
-void    detect_heredoc_position(t_data *d, t_heredoc *h);
 void    merge_middle_heredoc_cmd(t_data *d);
 
 t_data	*part1(char **s, t_built *env, t_exec *in);

@@ -34,6 +34,12 @@ int g_status;
 
 struct termios g_orig_term;
 
+// typedef struct s_leaks
+// {
+// 	char	**cmd;
+// 	t_redir	*redirs;
+// } t_leaks;
+
 typedef struct s_exec
 {
 	int i;
@@ -41,6 +47,7 @@ typedef struct s_exec
 	int (*pipes)[2];
 	char *status;
 	char *last_cmd;
+	int heredoc_flag_q;
 } t_exec;
 
 // this working just for builtins.
