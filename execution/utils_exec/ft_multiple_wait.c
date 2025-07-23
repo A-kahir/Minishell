@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 12:08:48 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/21 14:43:21 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 10:56:57 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ int ft_multiple_wait(t_data *tmp, t_exec in, int status, pid_t last_pid)
 				if (!signal_printed)
 				{
 					if (flag_interactive)
-						write(1, "\n", 1);
+						write(1, "\n", 2);
 					else
-						write(1, "^C\n", 3);
+						write(1, "^C\n", 4);
 					signal_printed = 1;
 				}
 				if (ch_pid == last_pid)

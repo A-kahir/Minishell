@@ -6,47 +6,48 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:28:26 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/22 19:28:45 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/23 11:13:30 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-char	*get_parent_directory(char *current_path)
+char	*ft_parent_dir(char *current_path)
 {
-	char	*parent_path;
+	char	*parent_pth;
 	char	*last_slash;
 	int		len;
 	if (!current_path || ft_strcmp(current_path, "/") == 0)
 		return (ft_strdup("/"));
 	len = ft_strlen(current_path);
-	parent_path = ft_strdup(current_path);
-	if (len > 1 && parent_path[len - 1] == '/')
-		parent_path[len - 1] = '\0';
-	last_slash = ft_strrchr(parent_path, '/');
+	parent_pth = ft_strdup(current_path);
+	if (len > 1 && parent_pth[len - 1] == '/')
+		parent_pth[len - 1] = '\0';
+	last_slash = ft_strrchr(parent_pth, '/');
 	if (last_slash)
 	{
-		if (last_slash == parent_path)
+		if (last_slash == parent_pth)
 			*(last_slash + 1) = '\0';
 		else
 			*last_slash = '\0';
 	}
 	else
 	{
-		free(parent_path);
+		free(parent_pth);
 		return (ft_strdup("/"));
 	}
-	return (parent_path);
+	return (parent_pth);
 }
 
 t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in)
 {
 	t_built	*curr;
 	char	*home;
-	char	*current_pwd;
-	char	*parent_path;
+	char	*curr_pwd;
+	char	*parent_pth;
 	curr = line_env;
-	if (str && str[0] && str[1] && str[2])
+	
+	if (str && str[0] && str[1] && str[2] && !ft_strchr(str[1], '/'))
 	{
 		write(2, "minishell: cd: too many arguments\n", 35);
 		in->status = NULL;
@@ -86,21 +87,21 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in)
 		{
 			if (chdir(str[1]) == -1)
 			{
-				current_pwd = getcwd(NULL, 0);
-				if (!current_pwd)
+				curr_pwd = getcwd(NULL, 0);
+				if (!curr_pwd)
 				{
-					current_pwd = ft_strdup(line_env->pwd);
-					if (!current_pwd)
-						current_pwd = ft_strdup("/");
+					curr_pwd = ft_strdup(line_env->pwd);
+					if (!curr_pwd)
+						curr_pwd = ft_strdup("/");
 				}
-				if (current_pwd)
+				if (curr_pwd)
 				{
-					parent_path = get_parent_directory(current_pwd);
-					if (parent_path)
+					parent_pth = ft_parent_dir(curr_pwd);
+					if (parent_pth)
 					{
-						if (chdir(parent_path) == 0)
+						if (chdir(parent_pth) == 0)
 						{
-							free(current_pwd);
+							free(curr_pwd);
 							home = getcwd(NULL, 0);
 							if (home)
 							{
@@ -110,16 +111,16 @@ t_built	*ft_cd(char **str, t_built *line_env, int *flag_cd, t_exec *in)
 							else
 							{
 								write(2, "cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n", 109);
-								line_env->pwd = ft_strdup(parent_path);
+								line_env->pwd = ft_strdup(parent_pth);
 							}
-							free(parent_path);
+							free(parent_pth);
 							*flag_cd = 1;
 							in->status = ft_strdup("0");
 							return (line_env);
 						}
-						free(parent_path);
+						free(parent_pth);
 					}
-					free(current_pwd);
+					free(curr_pwd);
 				}
 				if (access(".", R_OK) == -1 && chdir("/") == 0)
 				{
