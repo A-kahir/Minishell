@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 21:15:29 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/24 13:01:22 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char	*getinput(char *s, int *status, int *flag)
 	free(buff);
 	return(s);
 }
+
 
 int	semifflag(char **s)
 {
