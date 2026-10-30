@@ -12,11 +12,12 @@
 
 #include "../execution.h"
 
-static int	ft_chack_pth(t_built * curr)
+static int	ft_chack_pth(t_built *curr)
 {
 	while (curr)
 	{
-		if (ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
+		if (ft_strcmp(curr->value,
+				"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0)
 		{
 			return (1);
 		}
@@ -27,14 +28,15 @@ static int	ft_chack_pth(t_built * curr)
 
 static void	ft_print_env_vars(t_built *curr, int flag_one_pth)
 {
-	int skip;
+	int	skip;
 
 	skip = ft_chack_pth(curr);
 	while (curr)
 	{
 		if (skip == 1)
 		{
-			if (curr && ft_strcmp(curr->value, "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0
+			if (curr && ft_strcmp(curr->value,
+					"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") == 0
 				&& flag_one_pth == 0)
 			{
 				curr = curr->next;
@@ -51,14 +53,15 @@ t_built	*ft_env(t_built *line_env, int flag_one_pth)
 {
 	t_built		*curr;
 	t_built		*tmp;
-	static int flag_one;
+	static int	flag_one;
 
 	if (line_env)
 	{
 		tmp = line_env;
 		while (tmp)
 		{
-			if (ft_strcmp(tmp->value, "/usr/bin/env") != 0 && tmp->next == NULL && flag_one == 0)
+			if (ft_strcmp(tmp->value, "/usr/bin/env") != 0
+				&& tmp->next == NULL && flag_one == 0)
 			{
 				line_env = ft_add_back(line_env, "_", "/usr/bin/env");
 				flag_one = 1;

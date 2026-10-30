@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:52:52 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 16:23:41 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:58:36 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,74 +32,84 @@ static t_type_buil	get_b(char *s)
 		return (NOT_BUILTIN);
 }
 
-static int stayalone(char *s)
+static char	*add_quotes_to_assignments(char *s)
 {
-    int i = 0;
-    if (!s || !*s)
-        return 0;
-    while(s[i] && ft_isalnum(s[i]))
-        i++;
-    while (s[i])
-    {
-        if(s[i] && s[i] == '=')
-        {
-            while (s[i] && s[i] == '=')
-            {
-                i++;
-            }
-            if(s[i] == '$')
-                return (0);
-            else
-                break;
-        }
-        i++;
-    }
-    return (1);
+	int	i;
+	int	eq_pos;
+	int	plus_eq;
+	int	val_start;
+
+	1 && (i = 0, eq_pos = -1, plus_eq = 0);
+	while (s[i])
+	{
+		if (s[i] == '=' || (s[i] == '+' && s[i + 1] == '='))
+		{
+			eq_pos = i;
+			plus_eq = (s[i] == '+');
+			break ;
+		}
+		i++;
+	}
+	val_start = eq_pos + 1 + plus_eq;
+	while (s[val_start] == '=')
+		val_start++;
+	if (eq_pos == -1 || check_space(ft_subpar(s, 0, i)) == 1)
+		return (ft_strdup(s, 0, 0));
+	else if (!semiflag(s + val_start))
+		return (wrap_assignment_value(s, val_start));
+	return (s);
 }
 
-t_data *retokenize(t_data *data, t_built *env, t_exec *in)
+static char	**loop(char **s)
 {
-	t_data *curr = data;
-	char **new_data = NULL;
-	int i;
-    char *quoted;
+	int		i;
+	int		count;
+	char	**t;
 
+	if (!s)
+		return (NULL);
+	count = 0;
+	while (s[count])
+		count++;
+	t = malloc_cl(sizeof(char *) * (count + 1), 0, 0);
+	if (!t)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		if (semiflag(s[i]))
+			t[i] = extract_quoates(s[i], 0);
+		else
+			t[i] = ft_strdup(s[i], 0, 0);
+		i++;
+	}
+	t[i] = NULL;
+	return (t);
+}
+
+t_data	*retokenize(t_data *data, t_built *env, t_exec *in)
+{
+	t_data			*curr;
+	char			**new_data;
+	char			*retok;
+
+	curr = data;
 	while (curr)
 	{
-		new_data = NULL;
-		i = 0;
-		while (curr->cmd[i])
-        {
-            char *token;
-            if (semiflag(curr->cmd[i]) || !stayalone(curr->cmd[i]))
-            {
-                token = extract_retoken(curr->cmd[i], 0, env, in);
-                if(semiflag(token))
-                {
-                    quoted = extract_quoates(token, 0);
-                    free(token);
-                }
-                else
-                    quoted = token;
-                char *arr[] = {quoted, NULL};
-                new_data = ft_strjoinarray(new_data, arr);
-                free(quoted);
-            }
-            else
-            {
-                token = expanding(curr->cmd[i], env, in);
-                char **split = ft_split_par(token, ' ');
-                new_data = ft_strjoinarray(new_data, split);
-                free(token);
-                freedp(split);
-            }
-            i++;
-        }
+		1 && (new_data = NULL, in->i = 0);
+		while (curr->cmd && curr->cmd[in->i])
+		{
+			retok = extract_retoken(add_quotes_to_assignments(
+						curr->cmd[in->i]), 0, env, in);
+			new_data = ft_joinarray(new_data, ft_split_par(retok, ' '));
+			in->i++;
+		}
 		freedp(curr->cmd);
-		curr->cmd = new_data;
-        if (curr->cmd && curr->cmd[0])
-		    curr->builtin_type = get_b(curr->cmd[0]);
+		curr->cmd = loop(new_data);
+		freedp(new_data);
+		if (curr->cmd && curr->cmd[0])
+			curr->builtin_type = get_b(curr->cmd[0]);
 		curr = curr->next;
 	}
-	return data;
+	return (data);
 }

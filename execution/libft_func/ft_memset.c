@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_status.c                                        :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 16:47:28 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/14 17:25:19 by akahir           ###   ########.fr       */
+/*   Created: 2025/07/28 20:00:37 by akahir            #+#    #+#             */
+/*   Updated: 2025/07/28 20:00:49 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void ft_status(t_exec in, char *value)
+void	*ft_memset(void *b, int c, size_t len)
 {
-    if (in.status)
-    {
-        free(in.status);
-        in.status = NULL;
-    }
-    in.status = ft_strdup(value);
+	unsigned char	*str;
+	unsigned char	ch;
+	size_t			i;
+
+	str = (unsigned char *)b;
+	ch = (unsigned char)c;
+	i = 0;
+	while (i < len)
+	{
+		str[i] = ch;
+		i++;
+	}
+	return ((void *)str);
 }

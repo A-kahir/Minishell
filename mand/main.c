@@ -3,211 +3,108 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:52:57 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/24 13:01:22 by akahir           ###   ########.fr       */
+/*   Updated: 2025/08/03 17:02:55 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	clear(void)
+int	ft_part_execution(t_data *end, t_built *line_env, t_exec in)
 {
-	printf("\033[H\033[J");
-}
+	int	status;
 
-void	initsh(void)
-{
-	clear();
-	printf("\n\n\n\n******************"
-		"************************");
-	printf("\n\n\n\t****WELCOME****");
-	printf("\n\n\n\n*******************"
-		"***********************");
-	sleep(1);
-	clear();
-}
-
-void	disable_echoctl(void)
-{
-	struct termios	term;
-
-	if (tcgetattr(0, &term) == -1)
-		return ;
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(0, TCSANOW, &term);
-}
-
-char	*getinput(char *s, int *status, int *flag)
-{
-	char	*buff;
-	buff = readline("minishell-3.2$ ");
-	if (g_status == 1)
+	status = 0;
+	if (end && end->cmd && end->cmd[0] && end->cmd[1] && end->cmd[2]
+		&& !ft_strcmp(end->cmd[0], "env") && (ft_strcmp(end->cmd[1], "-i")
+			|| ft_strcmp(end->cmd[2], "./minishell")))
 	{
-		*status = 1;
-		*flag = 1;
-		g_status = 0;
+		write(2, "minishell: ", 12);
+		write(2, "env: No such file or directory\n", 32);
+		status = 127;
 	}
-	if (!buff)
-    {
-        write(1, "exit\n", 5);
-        exit(*status);
-    }
-	if (*buff)
+	else
 	{
-		add_history(buff);
-		s = ft_strdup(buff);
-		free(buff);
-		return(s);
+		ft_check_hered(end->redir);
+		status = ft_exec(end, line_env, in);
 	}
-	free(buff);
-	return(s);
+	return (status);
 }
 
-
-int	semifflag(char **s)
+t_data	*parsing(char **s, t_exec *in, int status, t_built *line_env)
 {
-	int	i;
-	
-	i = 0;
-	while (s[i])
-	{
-		if (!ft_strcmp(s[i], "|"))
-			return(1);
-		i++;
-	}
-	return(0);
-}
-char	*get_last_cmd(char **s)
-{
-	int	i;
-
-	i = 0;
-	while(s[i])
-	{
-		if (s[i + 1] == NULL)
-			break ;
-		i++;
-	}
-	return(ft_strdup(s[i]));
-}
-
-static void handler(int signum)
-{
-	(void)signum;
-	printf("\n");
- 	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_status = 1;
-}
-
-
-int main(int ac, char **av, char **env)
-{
-	char	**s;
 	t_data	*end;
-	char *string;
-	static t_built *line_env;
-	t_heredoc *heredoc;
-	t_exec in;
-    static int status;
-	static int flag;
-	
-	if(isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
-        exit(1); 
-	in.last_cmd = ft_strdup("mini");
-	(void)ac;
-	(void)av;
-	string = NULL;
+	t_data	*tmp22;
+
 	end = NULL;
-	initsh();
-	static int one_time;
-	if (!line_env && one_time == 0)
+	if (semifflag(s))
+		in->status = ft_itoa(0);
+	else
+		in->status = ft_itoa(status);
+	end = part1(s, line_env, in);
+	if (!end)
+		return (malloc_cl(0, 1, 0), NULL);
+	tmp22 = retokenize(end, line_env, in);
+	if (semifflag(s) || !tmp22->cmd)
+		in->last_cmd = ft_strdup("", 0, 1);
+	else
+		in->last_cmd = get_last_cmd(tmp22->cmd);
+	return (end);
+}
+
+int	ft_cantiue(int *status, t_parsing *t, int *flag)
+{
+	if (check_before(t->str))
 	{
-		if (!env || !env[0] || ft_empty_env(env))
-			line_env = ft_no_full_env(line_env);
-		else
-			line_env = ft_fill_struct(env);
-		if (line_env)
-			line_env = ft_update_exp(line_env, 0);
-		one_time = 1;
+		1 && (*status = 258, *flag = 1, t->str = NULL);
+		return (1);
 	}
-	disable_echoctl();
-	while(1)
+	if (syntax_error(tokenize(t->str)) != 1)
 	{
-		signal(SIGINT, handler);
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGTSTP, SIG_IGN);
-		string = getinput(string, &status, &flag);
-		if(!string)
-			continue;
-		if(check_before(string))
-		{
-			status = 258;
-			flag = 1;
-			free(string);
-			string = NULL;
-			continue;
-		}
-		s = tokenize(string);
-		if(syntax_error(s) != 1)
-		{
-			status = 258;
-			flag = 1;
-			free(string);
-			string = NULL;
-			freedp(s);
-			continue;
-		}
-		if (semifflag(s))
-			in.status = ft_itoa(0);
-		else
-			in.status = ft_itoa(status);
-		end = part1(s, line_env, &in);
-		t_data *tmpa = retokenize(end, line_env, &in);
-		t_data *tmp22 = tmpa;
-		if(semifflag(s) || !tmp22->cmd)
-		{
-			if(in.last_cmd)
-				free(in.last_cmd);
-			in.last_cmd = ft_strdup("");
-		}
-		else
-		{
-			if(in.last_cmd)
-				free(in.last_cmd);
-			in.last_cmd = get_last_cmd(tmp22->cmd);
-		}
-		freedp(s);
-		heredoc = malloc(sizeof(t_heredoc));
-		detect_heredoc_position_with_pipes(end, heredoc);
-		if (end && end->cmd && end->cmd[0] && end->cmd[1] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && ft_strcmp(end->cmd[1], "-i") == 0
-			&& ft_strcmp(end->cmd[2], "./minishell") == 0)
-		{
-			ft_clean_env(&line_env);
-		}
-		else if (end && end->cmd && end->cmd[0] && end->cmd[1] && end->cmd[2] &&
-			ft_strcmp(end->cmd[0], "env") == 0 && (ft_strcmp(end->cmd[1], "-i") != 0
-			|| ft_strcmp(end->cmd[2], "./minishell") != 0))
-		{
-			write(2, "minishell: ", 12);
-			write(2, "env: No such file or directory\n", 32);
-			status = 127;
-		}
-		else
-		{
-			ft_check_hered(end->redir);
-			status = ft_exec(end, heredoc, line_env, in);
-		}
-		flag = 1;
-		n_clean(end);
-		free(heredoc);
-		free(string);
-		free(in.status);
-		string = NULL;
+		1 && (*status = 258, *flag = 1, t->str = NULL, malloc_cl(0, 1, 0));
+		return (1);
 	}
 	return (0);
+}
+
+int	ft_main_loop(t_built *l_ev, t_exec in, int *status, int *flag)
+{
+	t_parsing	t;
+
+	t.str = NULL;
+	while (1)
+	{
+		1 && (handle_signal(), t.str = getinput(t.str, status, flag));
+		if (!t.str)
+			continue ;
+		if (ft_cantiue(status, &t, flag) == 1)
+			continue ;
+		t.end = parsing(tokenize(t.str), &in, *status, l_ev);
+		if (!t.end)
+		{
+			t.str = NULL;
+			continue ;
+		}
+		*status = ft_part_execution(t.end, l_ev, in);
+		1 && (*flag = 1, malloc_cl(0, 1, 0), t.str = NULL);
+	}
+	return (0);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	static t_built	*l_ev;
+	t_exec			in;
+	static int		status;
+	static int		flag;
+
+	if (isatty(STDIN_FILENO) == 0 || isatty(STDOUT_FILENO) == 0)
+		exit(1);
+	(void)ac;
+	(void)av;
+	1 && (in.last_cmd = ft_strdup("mini", 0, 0), l_ev = ft_in_l_ev(l_ev, env));
+	ft_main_loop(l_ev, in, &status, &flag);
+	return (malloc_cl(0, 2, 0), 0);
 }

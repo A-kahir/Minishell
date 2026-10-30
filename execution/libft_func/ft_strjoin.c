@@ -12,13 +12,14 @@
 
 #include "../execution.h"
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char *s1, char *s2, int flag_struct)
 {
 	char	*ptr;
 	int		i;
 	int		j;
 
-	ptr = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	ptr = (char *)malloc_cl((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char),
+			ALLOCATE, flag_struct);
 	i = 0;
 	j = 0;
 	if (ptr == NULL)

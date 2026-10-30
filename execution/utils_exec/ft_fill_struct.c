@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:23:01 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/19 19:38:48 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/28 19:59:43 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_take_value(t_built *line_env, char *env_line, int start)
 	if (env_line[start] == '=')
 		start++;
 	len = ft_strlen(&env_line[start]);
-	line_env->value = malloc(len + 1);
+	line_env->value = malloc_cl(len + 1, ALLOCATE, 1);
 	if (!line_env->value)
 		return ;
 	while (env_line[start])
@@ -41,7 +41,7 @@ void	ft_take_var(t_built *line_env, int i, char **env)
 	j = 0;
 	while (env[i][j] != '=' && env[i][j] != '\0')
 		j++;
-	line_env->var = malloc(j + 1);
+	line_env->var = malloc_cl(j + 1, ALLOCATE, 1);
 	if (!line_env->var)
 		return ;
 	k = 0;
@@ -62,13 +62,13 @@ static int	ft_add_new_node(t_built **head, char *env_line)
 	t_built	*new_node;
 	t_built	*last;
 
-	new_node = malloc(sizeof(t_built));
+	new_node = malloc_cl(sizeof(t_built), ALLOCATE, 1);
 	if (!new_node)
 		return (0);
-	memset(new_node, 0, sizeof(t_built));
+	ft_memset(new_node, 0, sizeof(t_built));
 	ft_take_var(new_node, 0, &env_line);
 	if (new_node->value && ft_strcmp(new_node->value, "./minishell") == 0)
-		return (free(new_node->var), free(new_node->value), free(new_node), 1);
+		return (1);
 	new_node->old_pwd = NULL;
 	new_node->pwd = NULL;
 	new_node->next = NULL;
@@ -104,10 +104,9 @@ t_built	*ft_fill_struct(char **env)
 		next = temp->next;
 		if (temp->value && ft_strcmp(temp->value, "./minishell") == 0)
 			ft_rm_list(&head, temp);
-		if (temp && ft_strcmp(temp->var, "_") == 0 && ft_strstr(temp->value, "./minishell") == 0)
-        {
-            ft_rm_list(&head, temp);
-        }
+		if (temp && ft_strcmp(temp->var, "_") == 0
+			&& ft_strstr(temp->value, "./minishell") == 0)
+			ft_rm_list(&head, temp);
 		temp = next;
 	}
 	return (head);

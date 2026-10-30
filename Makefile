@@ -2,17 +2,23 @@ NAME = minishell
 
 MAND_SRC = \
     mand/utils.c \
+	mand/clean.c \
     mand/main.c \
-    mand/clean.c \
-    mand/tokenize.c \
+    mand/tokenize_helpers.c \
+    mand/tokenize_func.c \
     mand/check.c \
+    mand/check2.c \
     mand/initializing.c \
+    mand/initializing2.c \
     mand/expanding_target.c \
-    mand/heredoc_position.c \
     mand/expanding.c \
+    mand/heredo_expanding.c \
     mand/retokenize.c \
+    mand/retokenize_helpers.c \
     mand/token_target.c \
     mand/utils2.c \
+	mand/redir_command.c \
+	mand/parsing.c \
 
 EXEC_SRC = \
 	execution/ft_exec.c \
@@ -43,27 +49,40 @@ UTILS_EXEC_SRC = \
 	execution/utils_exec/ft_clean_env.c \
 	execution/utils_exec/ft_empty_env.c \
 	execution/utils_exec/ft_check_this_var.c \
-	execution/utils_exec/ft_expand_dollar.c \
 	execution/utils_exec/ft_fd_redirection.c \
 	execution/utils_exec/ft_check_for_echo.c \
-	execution/utils_exec/ft_status.c \
 	execution/utils_exec/ft_check_hered.c \
 	execution/utils_exec/ft_signle_wait.c \
-	execution/utils_exec/ft_multiple_wait.c
+	execution/utils_exec/ft_multiple_wait.c \
+	execution/utils_exec/ft_parent_dir.c \
+	execution/utils_exec/ft_cd_normal.c \
+	execution/utils_exec/ft_cd_parent.c \
+	execution/utils_exec/ft_is_numiric.c \
+	execution/utils_exec/ft_specify_type_redir.c \
+	execution/utils_exec/ft_child_read_f.c \
+	execution/utils_exec/ft_check_path_var.c \
+	execution/utils_exec/ft_open_redirections_fd.c \
+	execution/utils_exec/ft_only_spaces.c \
+	execution/utils_exec/ft_errno_print.c \
+	execution/utils_exec/ft_get_path_f.c \
+	execution/utils_exec/cantinue_un_path.c \
+	execution/utils_exec/cantinue_no_env.c \
+	execution/utils_exec/count_normal.c \
+	execution/utils_exec/ft_open_red.c \
+	execution/utils_exec/cantinue_mul_wait.c \
+	execution/utils_exec/ft_kill_pids.c \
+	execution/utils_exec/ft_add_pid.c \
+	execution/utils_exec/ft_cant_trunc_app_help.c \
 
 REDIR_SRC = \
 	execution/redirections/ft_tran_app.c \
 	execution/redirections/ft_read_f.c \
-	execution/redirections/ft_is_redir.c
+	execution/redirections/ft_is_redir.c \
 
 HEREDOC_SRC = \
 	execution/redirections/heredoc/ft_handle_heredoc.c \
-	execution/redirections/heredoc/middle/ft_heredoc_middle.c \
-	execution/redirections/heredoc/middle/ft_child_hered_middle.c \
-	execution/redirections/heredoc/before/ft_heredoc_before.c \
-	execution/redirections/heredoc/before/ft_child_hered_before.c \
-	execution/redirections/heredoc/after/ft_heredoc_after.c \
-	execution/redirections/heredoc/after/ft_child_hered_after.c
+	execution/redirections/heredoc/ft_heredoc.c \
+	execution/redirections/heredoc/ft_child_heredoc.c
 
 LIBFT_FUNC_SRC = \
 	execution/libft_func/ft_add_back.c \
@@ -78,6 +97,7 @@ LIBFT_FUNC_SRC = \
 	execution/libft_func/ft_strdup.c \
 	execution/libft_func/ft_strjoin.c \
 	execution/libft_func/ft_strlen.c \
+	execution/libft_func/ft_memset.c \
 	execution/libft_func/ft_strncmp.c \
 	execution/libft_func/ft_substr.c \
 	execution/libft_func/ft_itoa.c \
@@ -85,6 +105,8 @@ LIBFT_FUNC_SRC = \
 	execution/libft_func/ft_close_fd_opening.c \
 	execution/libft_func/ft_strrchr.c \
 	execution/libft_func/ft_strstr.c \
+	execution/libft_func/malloc_cl.c \
+	execution/libft_func/ft_strnstr.c \
 
 BUILTINS_SRC = \
 	execution/builtins/ft_unset.c \
@@ -101,14 +123,14 @@ SRC = $(MAND_SRC) $(EXEC_SRC) $(UTILS_EXEC_SRC) $(REDIR_SRC) $(HEREDOC_SRC) $(LI
 
 OBJS = $(SRC:.c=.o)
 
-CC = cc  -g -fsanitize=address #-g -Wall -Wextra -Werror
+CC = cc
 RM = rm -f
- CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 READLINE_INC = -I$(shell brew --prefix readline)/include
-READLINE_LIB = -L$(shell brew --prefix readline)/lib -lreadline
+READLINE_LIB = -L$(shell brew --prefix readline)/lib -lreadline 
 
-%.o: %.c mand/minishell.h
-	$(CC) $(READLINE_INC) -c $< -o $@
+%.o: %.c mand/minishell.h execution/execution.h
+	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
 
 $(NAME): $(OBJS)
 	$(CC) $(OBJS) -o $(NAME) $(READLINE_LIB)

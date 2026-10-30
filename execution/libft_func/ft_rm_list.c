@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:24:12 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/18 20:48:45 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/25 14:27:10 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 void	ft_rm_list(t_built **head, t_built *target)
 {
 	t_built	*temp;
-	t_built	*prv = NULL;
+	t_built	*prv;
 
 	if (!target || !head || !*head)
 		return ;
+	prv = NULL;
 	temp = *head;
 	while (temp)
 	{
@@ -28,21 +29,12 @@ void	ft_rm_list(t_built **head, t_built *target)
 				*head = temp->next;
 			else
 				prv->next = temp->next;
-
-			if (temp && temp->var)
-				free(temp->var);
 			temp->var = NULL;
-			if (temp && temp->value)
-				free(temp->value);
 			temp->value = NULL;
-			// if (temp && temp->old_pwd)
-			// 	free(temp->old_pwd);
 			temp->old_pwd = NULL;
 			temp->pwd = NULL;
-			if (temp)
-				free(temp);
 			temp = NULL;
-			return;
+			return ;
 		}
 		prv = temp;
 		temp = temp->next;

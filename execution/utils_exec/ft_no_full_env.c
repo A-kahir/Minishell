@@ -26,9 +26,9 @@ static int	ft_already_exists(t_built *line_env, char *var)
 	return (0);
 }
 
-t_built *ft_no_full_env(t_built *line_env)
+t_built	*ft_no_full_env(t_built *line_env)
 {
-	char *pwd;
+	char	*pwd;
 
 	line_env = NULL;
 	if (!ft_already_exists(line_env, "PATH"))
@@ -44,7 +44,6 @@ t_built *ft_no_full_env(t_built *line_env)
 	}
 	if (!ft_already_exists(line_env, "SHLVL"))
 		line_env = ft_add_back(line_env, "SHLVL", "1");
-
 	if (!ft_already_exists(line_env, "OLDPWD"))
 		line_env = ft_add_back(line_env, "OLDPWD", NULL);
 	return (line_env);

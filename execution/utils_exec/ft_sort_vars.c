@@ -6,13 +6,13 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:30:14 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 16:24:40 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/25 22:40:13 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-static void	ft_swap_var(t_built *a, t_built *b)
+static void	ft_swp_vars(t_built *a, t_built *b)
 {
 	char	*tmp_var;
 	char	*tmp_value;
@@ -25,24 +25,24 @@ static void	ft_swap_var(t_built *a, t_built *b)
 	b->value = tmp_value;
 }
 
-t_built	*ft_sort_vars(t_built *head)
+t_built	*ft_sort_vars(t_built *head_node)
 {
 	t_built	*a;
 	t_built	*b;
 
-	if (!head || !head->next)
-		return (head);
-	a = head;
+	if (!head_node || !head_node->next)
+		return (head_node);
+	a = head_node;
 	while (a != NULL)
 	{
 		b = a->next;
 		while (b != NULL)
 		{
 			if (ft_strcmp(a->var, b->var) > 0)
-				ft_swap_var(a, b);
+				ft_swp_vars(a, b);
 			b = b->next;
 		}
 		a = a->next;
 	}
-	return (head);
+	return (head_node);
 }

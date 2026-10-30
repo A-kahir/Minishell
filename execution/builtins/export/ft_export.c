@@ -12,47 +12,55 @@
 
 #include "../../execution.h"
 
-t_built *ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec *in)
+static int	handle_export_var(t_built *line_env, char *arg, t_exec *in,
+	int *valid_var_found)
 {
-	int i = 1;
-	int valid_var_found = 0;
+	int	check;
 
+	if (arg[0] == '\0')
+		return (0);
+	check = ft_specify_var(arg);
+	if (check == 4)
+		return (0);
+	else if (check == 1)
+	{
+		ft_is_positif(line_env, arg);
+		*valid_var_found = 1;
+	}
+	else if (check == -1)
+	{
+		write(2, "minishell: export: `", 21);
+		write(2, arg, ft_strlen(arg));
+		write(2, "': not a valid identifier\n", 27);
+		return ((in->status = ft_strdup("1", 0, 0)), -1);
+	}
+	else if (check == 0)
+	{
+		ft_add_var(line_env, arg);
+		*valid_var_found = 1;
+	}
+	return (0);
+}
+
+t_built	*ft_export(t_built *line_env, char **cmd, int flag_one_pth, t_exec *in)
+{
+	int	i;
+	int	valid_var_found;
+	int	flag;
+
+	i = 1;
+	valid_var_found = 0;
+	flag = 0;
 	while (cmd[i])
 	{
-		if (cmd[i][0] == '\0')
-		{
-			i++;
-			continue;
-		}
-		int check = ft_specify_var(cmd[i]);
-		if (check == 4)
-		{
-			i++;
-			continue;
-		}
-		else if (check == 1)
-		{
-			ft_is_positif(line_env, cmd[i]);
-			valid_var_found = 1;
-		}
-		else if (check == -1)
-		{
-			write(2,"minishell: export: `", 21);
-			write(2, cmd[i], ft_strlen(cmd[i]));
-			write(2, "': not a valid identifier\n", 27);
-			in->status = ft_strdup("1");
-			if (cmd[i + 1] == NULL)
-				return (line_env);
-		}
-		else if (check == 0)
-		{
-			ft_add_var(line_env, cmd[i]);
-			valid_var_found = 1;
-		}
+		flag = handle_export_var(line_env, cmd[i], in, &valid_var_found);
+		if (flag == -1 && cmd[i + 1] == NULL)
+			return (line_env);
 		i++;
 	}
 	if (!valid_var_found)
 		ft_only_print(line_env, flag_one_pth);
-	in->status = ft_strdup("0");
+	if (!in->status || ft_strcmp(in->status, "1") != 0)
+		in->status = ft_strdup("0", 0, 0);
 	return (line_env);
 }

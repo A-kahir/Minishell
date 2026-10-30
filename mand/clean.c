@@ -6,69 +6,58 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:53:01 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 16:54:36 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:54:48 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    f_clean(char *s)
+void	freedp(char **tokens)
 {
-	if (s)
-		free(s);
-	write(1, "exit\n", 6);
-	exit(1);
-}
+	int	i;
 
-void free_redir(t_redir *redir)
-{
-	t_redir *tmp;
-	while (redir)
+	i = 0;
+	if (!tokens)
+		return ;
+	while (tokens[i])
 	{
-		tmp = redir->next;
-		if (redir->target)
-			free(redir->target);
-		redir->type = -1;
-		free(redir);
-		redir = tmp;
+		i++;
 	}
 }
 
-void freedp(char **tokens)
+char	*ft_subpar(char *s, int start, int len)
 {
-    int i = 0;
-    if (!tokens)
-        return;
-    while (tokens[i])
-    {
-        free(tokens[i]);
-        i++;
-    }
-    free(tokens);
-	tokens = NULL;
-}
+	char	*result;
+	int		l1;
+	int		i;
 
-
-void freenod(t_data *n)
-{
-	if (!n)
-		return;
-	if (n->cmd)
-		freedp(n->cmd);
-	if (n->redir)
-		free_redir(n->redir);
-	free(n);
-	n = NULL;
-}
-
-void	n_clean(t_data *n)
-{
-	t_data	*t;
-
-	while(n)
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen(s))
+		return (ft_strdup("", 0, 0));
+	if (start + len > ft_strlen(s))
+		l1 = ft_strlen(s) - start;
+	else
+		l1 = len;
+	if (l1 == 0)
+		return (ft_strdup("", 0, 0));
+	result = (char *)malloc_cl(sizeof(char) * (l1 + 1), ALLOCATE, 0);
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (i < l1 && i < ft_strlen(s))
 	{
-		t = n->next;
-		freenod(n);
-		n = t;
+		result[i] = s[i + start];
+		i++;
 	}
+	result[i] = '\0';
+	return (result);
+}
+
+void	handle_signal(void)
+{
+	signal(SIGINT, handler);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
+	rl_catch_signals = 0;
 }

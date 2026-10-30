@@ -6,15 +6,15 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 13:09:13 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/16 15:36:21 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/25 18:57:48 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-int ft_check_this_var(char *str, t_built *line_env)
+int	ft_check_this_var(char *str, t_built *line_env)
 {
-	t_built *curr;
+	t_built	*curr;
 
 	curr = line_env;
 	while (curr)

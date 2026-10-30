@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:20:17 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/02 15:54:03 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/27 15:28:46 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_atoi(const char *str)
 	max = 9223372036854775807;
 	while (str && str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
 		i++;
-	if (str && (str[i] == '-') || (str[i] == '+'))
+	if (str && (str[i] == '-' || str[i] == '+'))
 	{
 		if (str[i] == '-')
 			signe = -1;

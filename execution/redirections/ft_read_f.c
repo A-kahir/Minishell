@@ -12,135 +12,67 @@
 
 #include "../execution.h"
 
-void ft_child_read_f(t_data *curr, t_built *line_env, t_ex_othr env_here, t_exec in)
+static int	ft_init_read(t_exec *in, int n_cmds)
 {
-    char **cmd_args;
-    char *command;
-    t_redir *redir;
-    int fd;
-
-    if (isatty(0))
-		tcgetattr(0, &g_orig_term);
-    redir = curr->redir;
-    fd = ft_fd_redirections(curr, redir);
-    if (fd == 1)
-       exit(1);
-    if (!curr->cmd || !curr->cmd[0])
-        exit(0);
-    if (in.n_cmds > 1)
-    {
-        int has_input_redir = 0;
-        while (redir)
-        {
-            if (redir->type == READ_F)
-            {
-                has_input_redir = 1;
-                break;
-            }
-            redir = redir->next;
-        }
-        if (!has_input_redir && in.i > 0)
-            dup2(in.pipes[in.i - 1][0], 0);
-        if (in.i < in.n_cmds - 1)
-            dup2(in.pipes[in.i][1], 1);
-        int i = 0;
-        while (i < in.n_cmds - 1)
-        {
-            if (i != in.i - 1)
-                close(in.pipes[i][0]);
-            if (i != in.i)
-                close(in.pipes[i][1]);
-            i++;
-        }
-    }
-    command = ft_check_built_cmd(curr);
-    if (ft_strcmp(command, "built") == 0)
+	in->n_cmds = n_cmds;
+	if (in->n_cmds == 0)
+		return (0);
+	in->pipes = malloc_cl(sizeof(int [2]) * (in->n_cmds - 1), ALLOCATE, 0);
+	if (!in->pipes)
+		return (perror("malloc failed"), 1);
+	in->i = 0;
+	while (in->i < in->n_cmds - 1)
 	{
-		int status = ft_is_builtins(curr, line_env, in);
-		exit(status);
-	}
-    if (!curr->cmd || !curr->cmd[0])
-    {
-        write(2, "minishell: ", 12);
-        write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
-        write(2, "command not found\n", 19);
-        exit(127);
-    }
-    cmd_args = ft_get_path(curr->cmd[0], env_here.env, line_env);
-    if (!cmd_args || !cmd_args[0])
-    {
-        write(2, "minishell: ", 12);
-        write(2, curr->cmd[0], ft_strlen(curr->cmd[0]));
-        write(2, ": command not found\n", 21);
-        exit(127);
-    }
-    if (execve(cmd_args[0], curr->cmd, env_here.env) == -1)
-    {
-        if (errno == ENOEXEC)
+		if (pipe(in->pipes[in->i]) == -1)
 		{
-			char *args[3];
-			args[0] = "/bin/sh";
-			args[1] = cmd_args[0];
-			args[2] = NULL;
-   			if (execve("/bin/sh", args, env_here.env) == -1)
-				(perror("execve failed"), ft_free_split(cmd_args), exit(1));
-			exit(127);
+			ft_close_pipes(in->pipes, in->n_cmds);
+			perror("Pipe");
+			return (1);
 		}
-        else
-            (perror("execve failed"), ft_free_split(cmd_args), exit(1));
-    }
+		in->i++;
+	}
+	return (2);
 }
 
-int ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
+static int	ft_read_loop(t_data *curr, t_built *line_env,
+	t_ex_othr env_here, t_exec *in)
 {
-    t_data *curr;
-    t_exec in;
-    int status;
+	pid_t		last_pid;
+	pid_t		pid;
+	int			status;
+	t_pid_list	*lst_pids;
 
-    in.n_cmds = ft_count_cmds(data);
-    if (in.n_cmds == 0)
-        return (0);
-    in.pipes = malloc(sizeof(int[2]) * (in.n_cmds - 1));
-    if (!in.pipes)
-        return (perror("malloc failed"), 1);
-    in.i = 0;
-    while (in.i < in.n_cmds - 1)
-    {
-        if (pipe(in.pipes[in.i]) == -1)
-        {
-            ft_close_pipes(in.pipes, in.n_cmds);
-            free(in.pipes);
-            return (perror("Pipe creation failed"), 1);
-        }
-        in.i++;
-    }
-    curr = data;
-    in.i = 0;
-    pid_t last_pid;
-    while (in.i < in.n_cmds)
-    {
-        pid_t pid = fork();
-        if (pid == -1)
-        {
-            ft_close_pipes(in.pipes, in.n_cmds);
-            free(in.pipes);
-            perror("Fork failed");
-            status = 1;
-        }
-        else if (pid == 0)
-        {
-            signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-            ft_child_read_f(curr, line_env, env_here, in);
-        }
-        else
-            if (in.i == in.n_cmds - 1)
-                last_pid = pid;
-        curr = curr->next;
-        in.i++;
-    }
-    ft_close_pipes(in.pipes, in.n_cmds);
-    status = ft_signle_wait(status, last_pid);
-    free(in.pipes);
-    return (status);
+	1 && (in->i = 0, status = 0, lst_pids = 0);
+	while (in->i < in->n_cmds)
+	{
+		pid = fork();
+		if (pid == -1)
+			(ft_close_pipes(in->pipes, in->n_cmds), perror("Fork"), status = 1,
+				ft_close_fd_opening(), ft_kill_p(lst_pids));
+		else if (pid == 0)
+		{
+			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL));
+			ft_child_read_f(curr, line_env, env_here, *in);
+		}
+		else if (in->i == in->n_cmds - 1)
+			last_pid = pid;
+		lst_pids = ft_add_pid(lst_pids, pid);
+		curr = curr->next;
+		in->i++;
+	}
+	ft_close_pipes(in->pipes, in->n_cmds);
+	return (ft_signle_wait(status, last_pid, in));
+}
+
+int	ft_read_f(t_data *data, t_built *line_env, t_ex_othr env_here)
+{
+	t_exec	in;
+	int		init_result;
+
+	if (isatty(0))
+		tcgetattr(0, &in.g_orig_term);
+	init_result = ft_init_read(&in, ft_count_cmds(data));
+	if (init_result != 2)
+		return (init_result);
+	return (ft_read_loop(data, line_env, env_here, &in));
 }

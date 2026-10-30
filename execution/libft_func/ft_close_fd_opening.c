@@ -6,15 +6,15 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 18:12:34 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/08 18:12:48 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/25 14:24:24 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void ft_close_fd_opening(void)
+void	ft_close_fd_opening(void)
 {
-	int fd;
+	int	fd;
 
 	fd = 3;
 	while (fd < 1024)

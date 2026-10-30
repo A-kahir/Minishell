@@ -6,7 +6,7 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:58:40 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 13:40:53 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/08/03 12:24:04 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	token_len(char **tokens)
 	return (len);
 }
 
-char	**ft_strjoinarray(char **s1, char **s2)
+char	**ft_joinarray(char **s1, char **s2)
 {
 	char	**t;
 	int		i;
@@ -63,13 +63,13 @@ char	**ft_strjoinarray(char **s1, char **s2)
 	j = 0;
 	l1 = token_len(s1);
 	l2 = token_len(s2);
-	t = malloc(sizeof(char *) * (l1 + l2 + 1));
+	t = malloc_cl(sizeof(char *) * (l1 + l2 + 1), ALLOCATE, 0);
 	if (!t)
 		return (NULL);
 	while (i < l1)
-		t[i++] = ft_strdup(*s1++);
+		t[i++] = ft_strdup(*s1++, 0, 0);
 	while (j < l2)
-		t[i + j++] = ft_strdup(*s2++);
+		t[i + j++] = ft_strdup(*s2++, 0, 0);
 	t[i + j] = NULL;
 	return (t);
 }
@@ -80,10 +80,12 @@ char	**ft_subarray(char **tokens, int start, int end)
 	int		i;
 
 	i = 0;
-	sub = malloc(sizeof(char *) * (end - start + 1));
+	sub = malloc_cl(sizeof(char *) * (end - start + 1), ALLOCATE, 0);
+	if (!sub)
+		return (NULL);
 	while (start < end)
 	{
-		sub[i++] = ft_strdup(tokens[start++]);
+		sub[i++] = ft_strdup(tokens[start++], 0, 0);
 	}
 	sub[i] = NULL;
 	return (sub);

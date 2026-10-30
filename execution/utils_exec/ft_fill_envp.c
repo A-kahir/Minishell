@@ -6,7 +6,7 @@
 /*   By: akahir <akahir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:39:36 by akahir            #+#    #+#             */
-/*   Updated: 2025/06/29 16:06:10 by akahir           ###   ########.fr       */
+/*   Updated: 2025/07/25 19:30:18 by akahir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,10 @@ static char	*ft_build_env(t_built *curr)
 	char	*temp;
 	char	*env_str;
 
-	temp = ft_strjoin(curr->var, "=");
+	temp = ft_strjoin(curr->var, "=", 1);
 	if (!temp)
 		return (NULL);
-	env_str = ft_strjoin(temp, curr->value);
-	free(temp);
+	env_str = ft_strjoin(temp, curr->value, 1);
 	if (!env_str)
 		return (NULL);
 	return (env_str);
@@ -50,10 +49,9 @@ char	**ft_fill_envp(t_built *line_env)
 	int		len;
 
 	len = ft_len_struct(line_env);
-	envp = malloc(sizeof(char *) * (len + 1));
+	envp = malloc_cl(sizeof(char *) * (len + 1), ALLOCATE, 1);
 	if (!envp)
 		return (NULL);
-
 	i = 0;
 	curr = line_env;
 	while (curr)
@@ -62,12 +60,7 @@ char	**ft_fill_envp(t_built *line_env)
 		{
 			envp[i] = ft_build_env(curr);
 			if (!envp[i])
-			{
-				while (--i >= 0)
-					free(envp[i]);
-				free(envp);
 				return (NULL);
-			}
 			i++;
 		}
 		curr = curr->next;

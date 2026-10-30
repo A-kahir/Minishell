@@ -12,7 +12,7 @@
 
 #include "../execution.h"
 
-char	*ft_strdup(char *s1)
+char	*ft_strdup(char *s1, int flag, int struct_flag)
 {
 	char	*ptr;
 	int		len;
@@ -21,11 +21,9 @@ char	*ft_strdup(char *s1)
 	if (s1 == NULL)
 		return (NULL);
 	len = ft_strlen(s1);
-	ptr = malloc((len + 1) * sizeof(char));
+	ptr = malloc_cl((len + 1) * sizeof(char), flag, struct_flag);
 	if (ptr == NULL)
-	{
 		return (NULL);
-	}
 	i = 0;
 	while (i < len)
 	{

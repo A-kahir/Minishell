@@ -1,82 +1,90 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_position.c                                 :+:      :+:    :+:   */
+/*   expanding_target.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/30 15:43:15 by yael-oua            #+#    #+#             */
-/*   Updated: 2025/06/30 15:43:15 by yael-oua           ###   ########.fr       */
+/*   Created: 2025/07/10 15:57:59 by yael-oua          #+#    #+#             */
+/*   Updated: 2025/08/06 16:31:48 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int    has_cmd_before(t_data *d, int pos)
+static char	*helper_func2(char *var, char *result, t_exec *in)
 {
-	int        i;
-	t_data    *cur;
+	char	*tmp2;
 
-	cur = d;
-	i = 0;
-	while (cur && i < pos)
+	if (!ft_strcmp(var, "?"))
 	{
-		if ((cur->cmd && cur->cmd[0]) ||(cur->redir && cur->redir->target))
-			return (1);
-		cur = cur->next;
-		i++;
+		tmp2 = ft_strjoin_par(result, in->status);
+		result = tmp2;
 	}
-	return (0);
+	else if (!ft_strcmp(var, "_") && in->last_cmd
+		&& !ft_strchr(in->last_cmd, ' ') && !ft_strchr(in->last_cmd, '\t'))
+	{
+		tmp2 = ft_strjoin_par(result, in->last_cmd);
+		result = tmp2;
+	}
+	else
+	{
+		tmp2 = ft_strjoin_par(result, ft_strjoin_par("$", var));
+		result = tmp2;
+	}
+	return (result);
 }
 
-int    has_cmd_after(t_data *d, int pos)
+static char	*helper_func(char *result, t_expanding *l, t_built *env, t_exec *in)
 {
-	int        i;
-	t_data    *cur;
+	int		i;
+	char	*tmp;
+	char	*var;
+	char	*val;
+	char	*tmp2;
 
-	cur = d;
-	i = 0;
-	while (cur && i <= pos)
-	{
-		cur = cur->next;
+	tmp = ft_subpar(l->s, l->start, l->i - l->start);
+	i = l->i + 1;
+	while (l->s[i] && (ft_isalnum(l->s[i]) || l->s[i] == '_' || l->s[i] == '?'))
 		i++;
-	}
-	while (cur)
+	var = ft_subpar(l->s, l->i + 1, i - (l->i + 1));
+	val = get_env_value(var, env);
+	tmp2 = ft_strjoin_par(result, tmp);
+	result = tmp2;
+	if (val && !ft_strchr(val, ' ') && !ft_strchr(val, '\t'))
 	{
-		if ((cur->cmd && cur->cmd[0]) || (cur->redir && cur->redir->target))
-		return (1);
-		cur = cur->next;
+		tmp2 = ft_strjoin_par(result, val);
+		result = tmp2;
 	}
-	return (0);
+	else
+		result = helper_func2(var, result, in);
+	return (result);
 }
 
-void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h)
+char	*exp_target(char *s, t_built *env, t_exec *in)
 {
-	t_data    *cur;
-	t_redir    *r;
-	int        pos;
+	t_expanding	exp;
+	char		*result;
 
-	cur = d;
-	h->before_hered = 0;
-	h->middle_hered = 0;
-	h->after_hered = 0;
-	pos = 0;
-	while (cur)
+	1 && (exp.i = 0, exp.start = 0, result = NULL, exp.s = s);
+	while (exp.s[exp.i])
 	{
-		r = cur->redir;
-		while (r && r->type != HEREDOC)
-			r = r->next;
-		if (r)
-			break ;
-		cur = cur->next;
-		pos++;
+		if (!ft_strncmp(exp.s + exp.i, "$$", 2))
+			1 && (exp.i += 2, exp.start = exp.i);
+		else if (exp.s[exp.i] == '$')
+		{
+			result = helper_func(result, &exp, env, in);
+			exp.i++;
+			while (exp.s[exp.i] && (ft_isalnum(exp.s[exp.i])
+					|| exp.s[exp.i] == '_' || exp.s[exp.i] == '?'))
+				exp.i++;
+			exp.start = exp.i;
+		}
+		else
+			exp.i++;
 	}
-	if (!cur)
-		return ;
-	if ((pos == 0 || has_cmd_after(d, pos)) && !has_cmd_before(d, pos))
-		h->after_hered = 1;
-	else if (has_cmd_before(d, pos) && has_cmd_after(d, pos))
-		h->middle_hered = 1;
-	else if (has_cmd_before(d, pos) && !has_cmd_after(d, pos))
-		h->before_hered = 1;
+	if (exp.start < exp.i)
+		result = ft_strjoin_par(result, ft_subpar(exp.s,
+					exp.start, exp.i - exp.start));
+	return (result);
 }

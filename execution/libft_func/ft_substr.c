@@ -21,14 +21,14 @@ char	*ft_substr(char *s, int start, size_t len)
 		return (NULL);
 	if (s == NULL || start >= ft_strlen(s))
 	{
-		return (ft_strdup(""));
+		return (ft_strdup("", 0, 0));
 	}
 	alloc_size = ft_strlen(s) - start;
 	if (alloc_size > len)
 	{
 		alloc_size = len;
 	}
-	ptr = malloc((alloc_size + 1) * sizeof(char));
+	ptr = malloc_cl((alloc_size + 1) * sizeof(char), ALLOCATE, 0);
 	if (ptr == NULL)
 	{
 		return (NULL);

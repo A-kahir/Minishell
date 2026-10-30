@@ -23,8 +23,7 @@ static int	ft_update_existing_var(t_built *line_env, char *var, char *value)
 		{
 			if (value)
 			{
-				free(curr->value);
-				curr->value = ft_strdup(value);
+				curr->value = ft_strdup(value, 0, 1);
 			}
 			return (1);
 		}
@@ -46,21 +45,15 @@ void	ft_add_var(t_built *line_env, char *cmd)
 	if (equal)
 	{
 		var = ft_substr(cmd, 0, equal - cmd);
-		value = ft_strdup(equal + 1);
+		value = ft_strdup(equal + 1, 0, 1);
 	}
 	else
-		var = ft_strdup(cmd);
+		var = ft_strdup(cmd, 0, 1);
 	if (!var || var[0] == '\0')
 	{
-		free(var);
-		if (value)
-			free(value);
-		return;
+		return ;
 	}
 	found = ft_update_existing_var(line_env, var, value);
 	if (!found)
 		ft_add_back(line_env, var, value);
-	free(var);
-	if (value)
-		free(value);
 }

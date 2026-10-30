@@ -6,46 +6,30 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:29:02 by akahir            #+#    #+#             */
-/*   Updated: 2025/07/22 14:02:28 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/07/27 15:30:33 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../execution.h"
 
-void	ft_echo(char **str, t_exec in)
+void	ft_echo(char **str)
 {
-	int		i = 1;
-	int		flag_n = 0;
+	int		i;
+	int		flag_n;
+	int		j;
 
+	flag_n = 0;
+	i = 1;
 	while (str[i] && ft_check(str, &i))
 		flag_n = 1;
 	while (str[i])
 	{
-		// if (str[i][0] == '$' && str[i][1] == '\0')
-		// 	break ;
-		// if (ft_strcmp(str[i], "$?") == 0)
-		// {
-		// 	if (in.status)
-		// 		write(1, in.status, ft_strlen(in.status));
-		// }
-		// else
-		// {
-			int j = 0;
-			while (str[i][j])
-			{
-				// if (str[i][j] == '$' && str[i][j + 1] == '?')
-				// {
-				// 	if (in.status)
-				// 		write(1, in.status, ft_strlen(in.status));
-				// 	j += 2;
-				// }
-				// else
-				// {
-					write(1, &str[i][j], 1);
-					j++;
-				// }
-			}
-		// }
+		j = 0;
+		while (str[i][j])
+		{
+			write(1, &str[i][j], 1);
+			j++;
+		}
 		if (str[i + 1])
 			write(1, " ", 1);
 		i++;

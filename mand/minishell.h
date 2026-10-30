@@ -6,132 +6,111 @@
 /*   By: yael-oua <yael-oua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 10:55:43 by yael-oua          #+#    #+#             */
-/*   Updated: 2025/07/23 13:23:50 by yael-oua         ###   ########.fr       */
+/*   Updated: 2025/08/07 10:23:04 by yael-oua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
-#include<stdio.h>
-// #include<string.h>
-#include<stdlib.h>
-#include<unistd.h>
-#include<sys/types.h>
-#include<sys/wait.h>
-#include<readline/readline.h>
-#include<readline/history.h>
-#include <termios.h>
-#include"../execution/execution.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "../execution/execution.h"
 
-
-// typedef struct s_heredoc
-// {
-// 	int before_hered; // example : (cmd << EOF) or (cmd1 | cmd2 << EOF)
-// 	int after_hered;  // example : (<< EOF cmd) or (<< EOF cmd1 | cmd2)
-// 	int middle_hered; // example : (cmd << EOF cmd) or (cmd1 | cmd2 << EOF cmd1 | cmd2)
-// } t_heredoc;
-
-// typedef enum s_type_node
-// {
-// 	PIPE_NODE,
-// 	CMD_NODE
-// }	t_type_node;
-
-// typedef enum s_type_redir
-// {
-// 	NOT_REDIR = -1,
-// 	TRUNCATE,  // > Redirects standard output to a file, overwriting the file if it exists.
-// 	APPEND,    // >> Redirects standard output to a file, appending to the file if it exists.
-// 	READ_F,    // < Redirects a file as standard input to a command.
-// 	HEREDOC    // << Tells the shell to read input until a specific delimiter is reached.
-// }	t_type_redir;
-
-// typedef struct s_redir
-// {
-// 	t_type_redir type;
-// 	char *target;
-// 	struct s_redir *next;
-// }	t_redir;
-
-// typedef enum s_type_buil
-// {
-// 	NOT_BUILTIN = -1,
-// 	IS_ECHO,
-// 	IS_CD,
-// 	IS_PWD,
-// 	IS_EXPORT,
-// 	IS_UNSET,
-// 	IS_ENV,
-// 	IS_EXIT
-// }	t_type_buil;
-
-// typedef struct s_data
-// {
-// 	t_type_node type; // if i have a pipe you need to give me type->PIPE_NODE else if he is a builtin or just a cmd = type->CMD_NOED
-// 	t_redir *redir;           // redirection list
-// 	t_type_buil builtin_type; // store the builtin directly (not in a substruct)
-// 	char **cmd;               // {"cd", "cat", "-e",  "Documents", "builtins", NULL}
-// 	struct s_data *next;
-// }	t_data;
-
-
-typedef struct s_cmd {
+typedef struct s_parsing
+{
 	char	**s;
-	int		not_pipe; 
-} t_cmd;
+	t_data	*end;
+	char	*str;
+}	t_parsing;
 
-int		is_operator(char c);
-char	**tokenize(char *str);
+typedef struct s_norm
+{
+	char	**s;
+	int		i;
+	int		k;
+}	t_norm;
 
-int	check_before(char *s);
-int	syntax_error(char **s);
+typedef struct s_less
+{
+	t_data	*curr;
+	t_data	*node;
+}	t_less;
 
-// size_t	ft_strlen(const char *str);
-char	*ft_strcpy(char *dest, const char *src);
-// char	*ft_strdup(const char *src);
-char	**ft_subarray(char **tokens, int start, int end);
-char	*ft_substr_par(char *s, int start, int len);
-char	**ft_strjoinarray(char **s1, char **s2);
-char    *ft_rejoin(int size, char **strs, char *sep);
-char	**ft_split_par(char *str, char c);
-char	**redo(char **s, t_built *env);
-// int		ft_strcmp(const char *s1, const char *s2);
-// int		ft_strncmp(const char *s1, const char *s2, size_t n);
+typedef struct s_expanding
+{
+	char	*s;
+	int		i;
+	int		start;
+	char	*tmp;
+}	t_expanding;
 
-char *get_env_value(char *var, t_built *env);
-char	*expanding_target(char *s, t_built *env, t_exec *in);
-char	*extract_target(char *str, int i, t_built *env, t_exec *in);
-char	*extract_quoates(char *str, int i);
+typedef struct s_tokenizing
+{
+	int		quote_len;
+	int		st;
+	char	cha;
+}	t_tokenize;
 
-void    detect_heredoc_position_with_pipes(t_data *d, t_heredoc *h);
-void    merge_middle_heredoc_cmd(t_data *d);
+typedef struct s_retokenize
+{
+	int		i;
+	char	*quoted;
+	char	*token;
+	char	**split;
+}	t_retokenize;
 
-t_data	*part1(char **s, t_built *env, t_exec *in);
-int	semiflag(char *s);
-char	*extract_retoken(char *str, int i, t_built *env, t_exec *in);
-t_data *retokenize(t_data *data, t_built *env, t_exec *in);
-char	**join_zmr(char *s1, char *s2);
+int				is_o(char c);
+char			*get_token(char *str, int *i);
+int				count_tokens(char *str);
+char			**tokenize(char *str);
 
-void	f_clean(char *s);
-void	n_clean(t_data *n);
-void freedp(char **tokens);
-void	freenod(t_data *n);
+char			*getinput(char *s, int *status, int *flag);
+int				semifflag(char **s);
+char			*get_last_cmd(char **s);
+void			handle_signal(void);
+void			handler(int signum);
+t_built			*ft_in_l_ev(t_built *line_env, char **env);
+int				check_before(char *s);
+int				syntax_error(char **s);
 
-int		token_len(char **tokens);
-// char	*extract_token(char *str, int *i);
-char	*ft_strjoin_par(char *s1, char *s2);
-int	does_it_exist(char *s, t_built *env);
-// char *get_value_from_env(const char *key, t_built *env);
-// char *expand_dollar(char *input, t_built *env);
-char    *expanding(char *s, t_built *env, t_exec *in);
+char			**ft_subarray(char **tokens, int start, int end);
+char			*ft_subpar(char *s, int start, int len);
+char			**ft_joinarray(char **s1, char **s2);
+char			**ft_split_par(char *str, char c);
+int				mp(char *s1, char *s2);
+int				ft_isdigit(int c);
+int				ft_isalpha(int c);
+int				ft_isalnum(int c);
+int				token_len(char **tokens);
+char			*ft_strjoin_par(char *s1, char *s2);
 
+char			*get_env_value(char *var, t_built *env);
+char			*expanding(char *s, t_built *env, t_exec *in);
+char			*expanding_heredoc(char *s, t_built *env, t_exec *in);
+char			*exp_target(char *s, t_built *env, t_exec *in);
+char			*extract_target(char *str, int i, t_built *env, t_exec *in);
+char			*extract_quoates(char *str, int i);
 
+t_data			*part1(char **s, t_built *env, t_exec *in);
+int				semiflag(char *s);
+char			**command(char **s, int i, int k);
+t_redir			*creatn2(t_norm *norm, t_built *env, t_exec *in);
+int				check_red(char **s, int i, int k);
+t_type_redir	check_redirection(char *token);
+t_redir			*create_redir_node(t_type_redir type,
+					char *target, t_built *env, t_exec *in);
+int				find_pipe(char **s);
 
-int	ft_isdigit(int c);
-int	ft_isalpha(int c);
-int	ft_isalnum(int c);
-size_t	ft_strcspn(const char *s, const char *reject);
+char			*extract_retoken(char *str, int i, t_built *env, t_exec *in);
+t_data			*retokenize(t_data *data, t_built *env, t_exec *in);
+int				lookfor_ex(char *s);
+char			*wrap_assignment_value(char *s, int val_start);
+int				check_space(char *s);
 
+void			freedp(char **tokens);
 
 #endif

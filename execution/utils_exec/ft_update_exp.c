@@ -27,8 +27,7 @@ static	t_built	*ft_update_oldpwd(t_built *line, int flag_cd,
 				line->old_pwd = NULL;
 			if (flag_cd == 1 && line->old_pwd)
 			{
-				free(curr->value);
-				curr->value = ft_strdup(line->old_pwd);
+				curr->value = ft_strdup(line->old_pwd, 0, 1);
 			}
 			break ;
 		}
@@ -50,8 +49,7 @@ static t_built	*ft_update_pwd(t_built *line)
 			buff = getcwd(NULL, 0);
 			if (buff)
 			{
-				free(curr->value);
-				curr->value = ft_strdup(buff);
+				curr->value = ft_strdup(buff, 0, 1);
 				free(buff);
 			}
 			break ;
@@ -72,7 +70,7 @@ t_built	*ft_update_exp(t_built *line, int flag_cd)
 	if (!have_old_pwd)
 	{
 		if (flag_cd == 1 && line->old_pwd)
-			line = ft_add_front(line, "OLDPWD", ft_strdup(line->old_pwd));
+			line = ft_add_front(line, "OLDPWD", ft_strdup(line->old_pwd, 0, 1));
 		else
 			line = ft_add_front(line, "OLDPWD", NULL);
 	}

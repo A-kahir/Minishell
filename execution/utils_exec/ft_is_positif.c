@@ -17,26 +17,25 @@ static void	ft_take_val(t_built *curr, char *append_str)
 	char	*temp;
 
 	if (curr->value)
-		temp = ft_strjoin(curr->value, append_str);
+		temp = ft_strjoin(curr->value, append_str, 1);
 	else
-		temp = ft_strdup(append_str);
-	free(curr->value);
+		temp = ft_strdup(append_str, 0, 1);
 	curr->value = temp;
 }
 
 static void	ft_add_to_export(t_built *curr, char **var,
-	char *skip_equal, t_built *line_env)
+	char *skip_eq, t_built *line_env)
 {
 	while (curr)
 	{
 		if (ft_strcmp(curr->var, var[0]) == 0)
 		{
-			ft_take_val(curr, skip_equal);
+			ft_take_val(curr, skip_eq);
 			break ;
 		}
 		else if (curr->next == NULL)
 		{
-			ft_add_back(line_env, var[0], skip_equal);
+			ft_add_back(line_env, var[0], skip_eq);
 			break ;
 		}
 		curr = curr->next;
@@ -47,17 +46,22 @@ void	ft_is_positif(t_built *line_env, char *cmd)
 {
 	t_built	*curr;
 	char	**var;
-	char	*skip_equal;
+	char	*skip_eq;
+	char	*equal_pos;
 
-	var = ft_split(cmd, '+');
-	if (!var || !var[0] || !var[1])
-	{
-		ft_free_split(var);
+	equal_pos = ft_strnstr(cmd, "+=", ft_strlen(cmd));
+	if (!equal_pos)
 		return ;
-	}
-	skip_equal = ft_strdup(var[1] + 1);
+	var = malloc_cl(sizeof(char *) * 3, 0, 0);
+	if (!var)
+		return ;
+	var[0] = ft_substr(cmd, 0, equal_pos - cmd);
+	var[1] = ft_strdup(equal_pos + 2, 0, 0);
+	var[2] = NULL;
+	if (!var[0] || !var[1])
+		return ;
+	skip_eq = var[1];
 	curr = line_env;
-	ft_add_to_export(curr, var, skip_equal, line_env);
-	free(skip_equal);
+	ft_add_to_export(curr, var, skip_eq, line_env);
 	ft_free_split(var);
 }

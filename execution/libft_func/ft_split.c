@@ -35,17 +35,15 @@ static int	count_words(char const *s, char c)
 	return (count);
 }
 
-static void	free_memory(char **ptr, size_t count)
+static void	free_memory(size_t count)
 {
 	size_t	k;
 
 	k = 0;
 	while (k < count)
 	{
-		free(ptr[k]);
 		k++;
 	}
-	free(ptr);
 }
 
 static size_t	skip_delimiters(const char *s, size_t i, char c)
@@ -65,7 +63,7 @@ static int	handle_word(const char *s, size_t *i, char **ptr, char c)
 	{
 		while (s[*i + len_words] && s[*i + len_words] != c)
 			len_words++;
-		*ptr = (char *)malloc((len_words + 1) * sizeof(char));
+		*ptr = (char *)malloc_cl((len_words + 1) * sizeof(char), ALLOCATE, 0);
 		if (!*ptr)
 			return (0);
 		j = 0;
@@ -89,7 +87,8 @@ char	**ft_split(char *s, char c)
 
 	if (s == NULL)
 		return (NULL);
-	ptr = (char **)malloc((count_words(s, c) + 1) * sizeof(char *));
+	ptr = (char **)malloc_cl((count_words(s, c) + 1) * sizeof(char *),
+			ALLOCATE, 0);
 	if (!ptr)
 		return (NULL);
 	i = skip_delimiters(s, 0, c);
@@ -100,7 +99,7 @@ char	**ft_split(char *s, char c)
 			stock++;
 		else
 		{
-			free_memory(ptr, stock);
+			free_memory(stock);
 			return (NULL);
 		}
 		i = skip_delimiters(s, i, c);
