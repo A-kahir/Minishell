@@ -1,10 +1,18 @@
 # Minishell
 
-A simplified UNIX shell implementation written in C, inspired by Bash. Developed as part of the 42 Network curriculum in 2025, in collaboration with [@arcane128](https://github.com/arcane128).
+<p align="center">
+  A simplified UNIX shell implementation written in C, inspired by Bash.
+</p>
+
+<p align="center">
+  Developed as part of the 42 Network curriculum in 2025.
+</p>
+
+---
 
 ## 📖 About the Project
 
-Minishell is a project that introduces the fundamentals of shell programming and process management in UNIX systems.
+**Minishell** is a project that introduces the fundamentals of shell programming and process management in UNIX systems.
 
 The objective is to recreate a simplified version of Bash, allowing users to interact with their operating system through a command-line interface.
 
@@ -32,11 +40,13 @@ Throughout this project, we explored essential UNIX concepts such as process cre
 
 ## 🛠️ Technologies Used
 
-- **C** – Main programming language.
-- **GNU Readline** – Command-line input and history.
-- **Makefile** – Project compilation.
-- **UNIX System Calls** – Process management and file operations.
-- **Linux** – Development environment.
+| Technology | Description |
+|---|---|
+| C | Main programming language |
+| GNU Readline | Command-line input and history |
+| Makefile | Project compilation |
+| UNIX System Calls | Process management and file operations |
+| Linux | Development environment |
 
 ## 🚀 Installation & Usage
 
@@ -89,11 +99,16 @@ Developed collaboratively in 2025 by:
 
 ## 🔗 Original Repository
 
-This repository is a copy of the original project added to my personal GitHub repositories for portfolio and presentation purposes.
+> **Note:** This repository is a copy of the original collaborative project, added to my personal GitHub repositories for portfolio and presentation purposes.
 
-The original collaborative project is available here:
+The original project is hosted here:
 
-**[https://github.com/arcane128/mintest](https://github.com/arcane128/mintest)**
+**[arcane128/minitest](https://github.com/arcane128/mintest)**
 
 All credit for the original collaborative work goes to the contributors.
 
+---
+
+<p align="center">
+  Made with ❤️ as part of the 42 Network journey.
+</p>
