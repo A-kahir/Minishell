@@ -106,9 +106,3 @@ The original project is hosted here:
 **[arcane128/minitest](https://github.com/arcane128/mintest)**
 
 All credit for the original collaborative work goes to the contributors.
-
----
-
-<p align="center">
-  Made with [@arcane128](https://github.com/arcane128) as part of the 42 Network journey.
-</p>
