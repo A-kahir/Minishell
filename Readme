@@ -1,0 +1,94 @@
+# Minishell
+
+A simple UNIX shell implementation written in C, inspired by Bash. This project was developed as part of the 42 Network curriculum in 2025, in collaboration with **[@arcane128](https://github.com/arcane128)**.
+
+## 📖 About the Project
+
+Minishell is a project that introduces the fundamentals of shell programming and process management in UNIX systems.
+
+The goal is to recreate a simplified version of Bash, allowing users to interact with their operating system through a command-line interface.
+
+Through this project, we explored important concepts such as process creation, command execution, pipes, redirections, environment variables, signals, and memory management.
+
+## ✨ Features
+
+- Interactive command-line prompt.
+- Command execution using system executables.
+- Built-in commands:
+  - `echo`
+  - `cd`
+  - `pwd`
+  - `export`
+  - `unset`
+  - `env`
+  - `exit`
+- Single and double quote handling.
+- Environment variable expansion.
+- Input and output redirections.
+- Heredoc support.
+- Pipes (`|`) for connecting commands.
+- Signal handling (`Ctrl+C`, `Ctrl+D`, `Ctrl+\`).
+- Exit status management (`$?`).
+
+## 🛠️ Technologies Used
+
+- **C** – Main programming language.
+- **GNU Readline** – Command-line input and history.
+- **Makefile** – Project compilation.
+- **UNIX System Calls** – Process management and file operations.
+- **Linux** – Development environment.
+
+## 🚀 Installation & Usage
+
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd minishell
+```
+
+### 2. Compile the project
+
+```bash
+make
+```
+
+### 3. Run Minishell
+
+```bash
+./minishell
+```
+
+### 4. Clean generated files
+
+```bash
+make clean
+make fclean
+make re
+```
+
+## 📚 What I Learned
+
+Working on Minishell helped me develop a deeper understanding of:
+
+- UNIX processes and process creation.
+- System calls such as `fork()`, `execve()`, `wait()`, and `pipe()`.
+- File descriptors and input/output redirections.
+- Inter-process communication.
+- Signals and process synchronization.
+- Parsing and tokenization.
+- Dynamic memory allocation and memory management.
+- Collaborative development using Git.
+
+## 👥 Contributors
+
+**Developed in collaboration with:**
+
+- [@arcane128](https://github.com/arcane128)
+- Aymane Kahir
+
+## 📌 Repository Note
+
+**Important:** This repository is a copy of the Minishell project added to my personal GitHub repositories for portfolio and project presentation purposes.
+
+The original project is hosted on the original collaborator's GitHub repository. Credit goes to both contributors for the collaborative work completed in 2025.
